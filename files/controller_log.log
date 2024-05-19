@@ -1,0 +1,49 @@
+[2023-11-28 01:33:02] CRITICAL
+DUMP!!!
+Traceback (most recent call last):
+  File "D:\Python\Telegram Bots\@NarcoSize - Hedge - v1.0\exchange_controller.py", line 655, in <module>
+    main()
+  File "D:\Python\Telegram Bots\@NarcoSize - Hedge - v1.0\exchange_controller.py", line 650, in main
+    checker()
+  File "D:\Python\Telegram Bots\@NarcoSize - Hedge - v1.0\exchange_controller.py", line 588, in checker
+    positions = bybit_session.get_positions(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python\Main Interpreters\Lib\site-packages\pybit\_v5_position.py", line 22, in get_positions
+    return self._submit_request(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python\Main Interpreters\Lib\site-packages\pybit\_http_manager.py", line 248, in _submit_request
+    s = self.client.send(r, timeout=self.timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python\Main Interpreters\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python\Main Interpreters\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "D:\Python\Main Interpreters\Lib\site-packages\urllib3\connectionpool.py", line 714, in urlopen
+    httplib_response = self._make_request(
+                       ^^^^^^^^^^^^^^^^^^^
+  File "D:\Python\Main Interpreters\Lib\site-packages\urllib3\connectionpool.py", line 466, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "D:\Python\Main Interpreters\Lib\site-packages\urllib3\connectionpool.py", line 461, in _make_request
+    httplib_response = conn.getresponse()
+                       ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Юыху\AppData\Local\Programs\Python\Python311\Lib\http\client.py", line 1375, in getresponse
+    response.begin()
+  File "C:\Users\Юыху\AppData\Local\Programs\Python\Python311\Lib\http\client.py", line 318, in begin
+    version, status, reason = self._read_status()
+                              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Юыху\AppData\Local\Programs\Python\Python311\Lib\http\client.py", line 279, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Юыху\AppData\Local\Programs\Python\Python311\Lib\socket.py", line 706, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Юыху\AppData\Local\Programs\Python\Python311\Lib\ssl.py", line 1278, in recv_into
+    return self.read(nbytes, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Юыху\AppData\Local\Programs\Python\Python311\Lib\ssl.py", line 1134, in read
+    return self._sslobj.read(len, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
