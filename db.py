@@ -603,3 +603,26 @@ class Database:
             result = self.connection.execute(
                 "SELECT * FROM recommendations").fetchall()
             return result
+
+    # ======================================================================================================================
+    # ===== ТАБЛИЦА: waiters =================================================================================================
+    # ======================================================================================================================
+
+    # --- Добавить значение ---
+
+    def add_waiter(self, user_id, user_link, user_name=None, user_first_name=None, user_last_name=None):
+        with self.connection:
+            return self.cursor.execute(
+                "INSERT INTO waiters (waiter_id, waiter_link, waiter_name, waiter_first_name, waiter_last_name) VALUES (?, ?, ?, ?, ?)",
+                (user_id, user_link, user_name, user_first_name, user_last_name))
+
+    def del_waiter(self, user_id):
+        with self.connection:
+            return self.cursor.execute(
+                "DELETE FROM waiters WHERE waiter_id = ?",
+                (user_id,))
+
+    def check_waiter_exists(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM waiters WHERE waiter_id=?", (user_id,)).fetchall()
+            return bool(len(result))

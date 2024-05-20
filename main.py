@@ -82,6 +82,7 @@ time_wait = 1000  # Задержка в мс
 """
 
 import handlers.menu_start as m_start
+import handlers.waiter_start as w_start
 import handlers.menu_client as m_settings
 import handlers.menu_food as m_food
 
@@ -104,6 +105,12 @@ async def start(message: types.Message):
     else:
         print(f"│ [{Tools.timenow()}] NEW {message.from_user.first_name} → Меню")
         await m_start.start(message)
+
+
+@dp.message_handler(commands=['waiter'])
+async def start(message: types.Message):
+    user = message.from_user.id
+    await w_start.start(message)
 
 
 @dp.inline_handler()
