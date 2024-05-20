@@ -19,10 +19,8 @@ def waiter_action(first_name, location):
 
 async def start(message: types.Message):
     user = message.from_user.id
-
     # Новый официант:
     if not db.check_waiter_exists(user):
-
         # Регистрируем официанта:
         db.add_waiter(
             user,
@@ -37,24 +35,11 @@ async def start(message: types.Message):
                f'\n@{message.from_user.username}' \
                f'\nid <a href="tg://user?id={user}">{user}</a>' \
                f'\n'
-
         await bot.send_message(375565156, text)
     else:
         text = f'\nВы уже зарегистрировались как официант'
         await bot.send_message(375565156, text)
-    # Данные чата:
-    try:
-        await bot.delete_message(user, call.message.message_id)
-    except:
-        pass
 
-    # Очистка чата:
-    if int(db.get_users_first_message(user)) != 0:
-        for i in range(first, last, 1):
-            try:
-                await bot.delete_message(user, int(i))
-            except Exception as ex:
-                pass
 
 @dp.callback_query_handler(text_contains=f"menu_start")
 async def menu_start(call: types.CallbackQuery):
