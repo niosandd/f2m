@@ -18,7 +18,6 @@ from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
     ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle
 
-import qr_for_waiter
 from main import dp, bot, db, config, Tools
 
 from db import Database
@@ -26,6 +25,7 @@ import menu
 
 import pyqrcode
 import png
+from urllib.parse import quote
 
 token = "7016628811:AAEsbZR29HQ6GPmMS3aamYFduUsaXoPT1Ew"
 admin = config()['telegram']['admin']
@@ -975,11 +975,15 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
-        url = f"https://t.me/food2mood_bot?start=order:{dish}"
-        qrcode = pyqrcode.create(url)
-        qrcode.png('QR CODE.png', scale=6)
-        with open('QR CODE.png', made='rb') as file:
-            bot.send_photo(message.chat.id, photo=file)
+        url = "https://t.me/food2mood_bot?start={0}".format("order" + quote(dish['Название']))
+        print(url)
+        try:
+            qrcode = pyqrcode.create(url)
+            qrcode.png('QR CODE.png', scale=6)
+            with open('QR CODE.png', made='rb') as file:
+                bot.send_photo(message.chat.id, photo=file)
+        except Exception as e:
+            print(e)
         # db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(dish['Ресторан'], dish['Адрес'], dish['Название'])[0])
         db.set_users_mode(user, message_obj.message_id,
