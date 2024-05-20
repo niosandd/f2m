@@ -90,7 +90,9 @@ import handlers.menu_food as m_food
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
     user = message.from_user.id
-    if db.check_users_user_exists(message.from_user.id):
+    if "order" in message:
+        await w_start.get_order(message)
+    elif db.check_users_user_exists(message.from_user.id):
         print(f"│ [{Tools.timenow()}] {message.from_user.first_name} → Меню")
         if not db.get_users_ban(message.from_user.id):
             await m_start.start(message)
@@ -109,7 +111,6 @@ async def start(message: types.Message):
 
 @dp.message_handler(commands=['waiter'])
 async def start(message: types.Message):
-    user = message.from_user.id
     await w_start.start(message)
 
 

@@ -35,102 +35,23 @@ async def start(message: types.Message):
                f'\n@{message.from_user.username}' \
                f'\nid <a href="tg://user?id={user}">{user}</a>' \
                f'\n'
-        await bot.send_message(375565156, text)
+        await bot.send_message(user, text)
     else:
         text = f'\nВы уже зарегистрировались как официант'
-        await bot.send_message(375565156, text)
+        await bot.send_message(user, text)
 
 
-@dp.callback_query_handler(text_contains=f"menu_start")
-async def menu_start(call: types.CallbackQuery):
-    user = call.from_user.id
-    db.set_users_mode(user, call.message.message_id, 'start')
+async def get_order(message: types.Message):
+    user = message.from_user.id
+    # Проверяем официанта:
+    if db.check_waiter_exists(user):
+        order = message.split(":")[-1]
+        text = f'\nНовый заказ:' \
+               f'\n' \
+               f'\n<b>{order}</b>' \
+               f'\n'
+        await bot.send_message(user, text)
 
-    # Данные чата:
-    try:
-        await bot.delete_message(user, call.message.message_id)
-    except:
-        pass
-    first = int(db.get_users_first_message(user))
-    last = int(db.get_users_last_message(user)) + 1
-    db.set_users_first_message(user, 0)
-    db.set_users_last_message(user, 0)
-
-    # Действие:
-    db.set_users_mode(user, 0, 'start')
-
-    if db.check_client(user):
-        message_obj = await bot.send_message(
-            chat_id=user,
-            text=f"<b>Привет!</b> 👋🏻\n"
-                    f"\n"
-                    f"На связи <b>food2mood</b> - сервис персональных рекомендаций блюд под настроение 😃🍽️\n\n"
-                    f"<blockquote>«В каждом блюде содержится множество веществ, витаминов и минералов, которые по-разному воздействуют на нервную систему» - 🧑‍⚕️🩺</blockquote>\n\n"
-                    f"<b>food2mood</b> проанализирует их и <u>составит подборки</u> блюд СПЕЦИАЛЬНО ДЛЯ ТЕБЯ!\n\n"
-                    f"<b>Мы помним тебя, друг! 🤝\n</b> <i>Если твои вкусовые предпочтение изменились, обнови информацию в анкете 📋</i> \n"
-                    f"\n"
-                    f"Иначе скорее получай рекомендации! 🍤",
-            reply_markup=buttons_start_02()
-        )
-    else:
-        message_obj = await bot.send_message(
-            chat_id=user,
-            text=f"<b>Привет!</b> 👋🏻\n"
-                    f"\n"
-                    f"На связи <b>food2mood</b> - сервис персональных рекомендаций блюд под настроение 😃🍽️\n"
-                    f"\n"
-                    f"<blockquote>«В каждом блюде содержится множество веществ, витаминов и минералов, "
-                 f"которые по-разному воздействуют на нервную систему» - 🧑‍⚕️🩺</blockquote>\n"
-                    f"<b>food2mood</b> проанализирует их и <u>составит подборки</u> блюд СПЕЦИАЛЬНО ДЛЯ ТЕБЯ!\n"
-                    f"\n"
-                    f"Чтобы начать, заполни анкету из 3 простых вопросов! 👇🏻",
-            reply_markup=buttons_start_01()
-        )
-
-
-
-    if int(db.get_users_first_message(user)) == 0:
-        db.set_users_first_message(user, message_obj.message_id)
-    db.set_users_last_message(user, message_obj.message_id)
-
-    # Очистка чата:
-    if int(db.get_users_first_message(user)) != 0:
-        for i in range(first, last, 1):
-            try:
-                await bot.delete_message(user, int(i))
-            except Exception as ex:
-                pass
-
-
-def buttons_start_01():
-    menu = InlineKeyboardMarkup(row_width=1)
-
-    btn1 = InlineKeyboardButton(text="ЗАПОЛНИТЬ АНКЕТУ 📋",
-                                callback_data="client_register")
-
-    menu.add(btn1)
-
-    return menu
-
-
-
-def buttons_start_02():
-    menu = InlineKeyboardMarkup(row_width=1)
-
-    btn1 = InlineKeyboardButton(text="Получить рекомендации! 🍤",
-                                callback_data="food_mood")
-
-    btn2 = InlineKeyboardButton(text="Заполнить анкету заново 📋",
-                                callback_data="client_register_again")
-
-    btn3 = InlineKeyboardButton(text="Мои f2m coin 🪙",
-                                callback_data="food_to_mood_coin_status")
-
-    menu.add(btn1)
-    menu.add(btn2)
-    menu.add(btn3)
-
-    return menu
 
 """
 Обработка команды /waiter

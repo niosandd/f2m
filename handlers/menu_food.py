@@ -18,6 +18,7 @@ from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
     ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle
 
+import qr_for_waiter
 from main import dp, bot, db, config, Tools
 
 from db import Database
@@ -613,7 +614,7 @@ def buttons_food_04(available_categories):
                              callback_data="food_category_Напитки") if "Напитки" in available_categories else None,
         InlineKeyboardButton(text=f"Хлеб {icons['Хлеб']}",
                              callback_data="food_category_Хлеб") if "Хлеб" in available_categories else None,
-        InlineKeyboardButton(text="« Поменять автора рекоменадций", callback_data="food_rec_get2")
+        InlineKeyboardButton(text="« Поменять автора рекомендаций", callback_data="food_rec_get2")
     ]
 
     # Фильтрация None значений из списка кнопок и добавление их в меню
@@ -971,6 +972,7 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
+        await qr_for_waiter.make_qrcode(dish['Название'])
         # db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(dish['Ресторан'], dish['Адрес'], dish['Название'])[0])
         db.set_users_mode(user, message_obj.message_id,
