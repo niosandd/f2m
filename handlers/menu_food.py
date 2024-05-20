@@ -981,7 +981,7 @@ async def food_choose_random(call: types.CallbackQuery):
             qrcode = pyqrcode.create(url)
             qrcode.png('QR CODE.png', scale=6)
             with open('QR CODE.png', made='rb') as file:
-                bot.send_photo(message.chat.id, photo=file)
+                bot.send_photo(user, photo=file)
         except Exception as e:
             print(e)
         # db.set_client_can_alert(user, round(time.time()))
