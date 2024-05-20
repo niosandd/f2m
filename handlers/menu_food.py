@@ -24,6 +24,9 @@ from main import dp, bot, db, config, Tools
 from db import Database
 import menu
 
+import pyqrcode
+import png
+
 token = "7016628811:AAEsbZR29HQ6GPmMS3aamYFduUsaXoPT1Ew"
 admin = config()['telegram']['admin']
 telepuzik =telebot.TeleBot(token)
@@ -972,7 +975,11 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
-        await qr_for_waiter.make_qrcode(dish['Название'])
+        url = f"https://t.me/food2mood_bot?start=order:{dish}"
+        qrcode = pyqrcode.create(url)
+        qrcode.png('QR CODE.png', scale=6)
+        with open('QR CODE.png', made='rb') as file:
+            bot.send_photo(message.chat.id, photo=file)
         # db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(dish['Ресторан'], dish['Адрес'], dish['Название'])[0])
         db.set_users_mode(user, message_obj.message_id,
