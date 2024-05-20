@@ -90,7 +90,7 @@ import handlers.menu_food as m_food
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
     user = message.from_user.id
-    if "order" in message:
+    if "order" in message.text:
         await w_start.get_order(message)
     elif db.check_users_user_exists(message.from_user.id):
         print(f"│ [{Tools.timenow()}] {message.from_user.first_name} → Меню")
@@ -186,7 +186,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
 async def bot_message(message):
     user = message.from_user.id
     mode = db.get_users_mode(user)
-    if message.text != '/start':
+    if message.text != '/start' and message.text != '/waiter':
 
         # Чёрный список продуктов
         if mode['key'] == 'client_register_blacklist':

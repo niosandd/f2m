@@ -2,6 +2,7 @@ import logging
 import random
 
 import datetime
+from urllib.parse import unquote
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
@@ -45,7 +46,8 @@ async def get_order(message: types.Message):
     user = message.from_user.id
     # Проверяем официанта:
     if db.check_waiter_exists(user):
-        order = message.split(":")[-1]
+        order = unquote(message.text).split("order")[-1]
+        print(unquote(message.text), order)
         text = f'\nНовый заказ:' \
                f'\n' \
                f'\n<b>{order}</b>' \
