@@ -28,9 +28,11 @@ async def client_register(call: types.CallbackQuery):
         check = True
         try:
             temp_rest = db.get_client_temp_rest(user)
-        except:
+            print(temp_rest)
+        except Exception as e:
             temp_rest = None
             check = False
+            print(e)
         db.del_client(user)
         if check:
             db.set_client_temp_rest(user, temp_rest)
