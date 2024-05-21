@@ -238,7 +238,7 @@ async def food_restaurant(call: types.CallbackQuery):
         return None
 
     # Действие:
-    db.set_client_temp_rest(user, None)
+    # db.set_client_temp_rest(user, None) Зачем это вообще надо?
 
     message_obj = await bot.edit_message_text(
         chat_id=user,
@@ -268,6 +268,8 @@ def buttons_food_02():
 async def request_qr_photo(call: types.CallbackQuery):
     user_id = call.from_user.id
     try:
+        temp = db.get_client_temp_rest(user_id).split(':')
+        print(temp, type(temp))
         rest_name, rest_address = db.get_client_temp_rest(user_id).split(':')
         # Установка данных о ресторане
         await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
