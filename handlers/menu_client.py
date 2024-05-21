@@ -20,28 +20,27 @@ admin = config()['telegram']['admin']
 async def client_register(call: types.CallbackQuery):
     user = call.from_user.id
     data = call.data.split('_')
+    temp_rest = None
     if db.get_users_ban(user):
         return None
 
     # Действие:
     if data[-1] == 'again':
-        check = True
         try:
             temp_rest = db.get_client_temp_rest(user)
-            print(temp_rest)
         except Exception as e:
-            temp_rest = None
-            check = False
             print(e)
         db.del_client(user)
-        if check:
-            db.set_client_temp_rest(user, temp_rest)
 
     if not db.check_client(user):
         try:
             db.add_client(user, call.from_user.username)
         except:
             pass
+        try:
+            db.set_client_temp_rest(user, temp_rest)
+        except Exception as e:
+            print(e)
 
     if len(data) > 2:
         if data[2] == 'sex':
