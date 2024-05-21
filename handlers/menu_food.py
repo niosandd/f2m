@@ -976,7 +976,7 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
-        url = await get_start_link("rest" + "Блан де Блан:Москва, ул. Люсиновская, 36/50", encode=True)
+        url = await get_start_link("rest" + "Блан де Блан", encode=True)
         qrcode = pyqrcode.create(url)
         qrcode.png('QR CODE.png', scale=5)
         with open('QR CODE.png', 'rb') as file:
