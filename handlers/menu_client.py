@@ -25,9 +25,15 @@ async def client_register(call: types.CallbackQuery):
 
     # Действие:
     if data[-1] == 'again':
-        temp_rest = db.get_client_temp_rest()
+        check = True
+        try:
+            temp_rest = db.get_client_temp_rest(user)
+        except:
+            temp_rest = None
+            check = False
         db.del_client(user)
-        db.set_client_temp_rest(temp_rest)
+        if check:
+            db.set_client_temp_rest(user, temp_rest)
 
     if not db.check_client(user):
         try:
