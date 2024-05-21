@@ -47,7 +47,10 @@ async def get_order(message: types.Message, order):
     user = message.from_user.id
     # Проверяем официанта:
     if db.check_waiter_exists(user):
-        waiter_score = db.get_waiter_score(user) + 1
+        if not db.get_waiter_score(user):
+            waiter_score = 1
+        else:
+            waiter_score = int(db.get_waiter_score(user)) + 1
         db.set_waiter_score(user, waiter_score)
         name = db.get_users_user_first_name(order) + " " + db.get_users_user_last_name(order)
         text = f'\nНовый заказ от:' \
