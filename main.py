@@ -97,9 +97,9 @@ async def start(message: types.Message):
     if db.check_users_user_exists(message.from_user.id):
         print(f"│ [{Tools.timenow()}] {message.from_user.first_name} → Меню")
         if not db.get_users_ban(message.from_user.id):
+            print(db.restaurants_find_address(message.get_args())[4:])
             if "rest" in decode_payload(message.get_args()):
-                print("Ваша локация: " + decode_payload(message.get_args())[4:])
-                await db.set_client_temp_rest(user, decode_payload(message.get_args())[4:])
+                db.set_client_temp_rest(user, decode_payload(message.get_args())[4:])
             await m_start.start(message)
         else:
             await bot.send_message(

@@ -453,6 +453,12 @@ class Database:
                     rest.append([row[1], row[2]])
             return all_posts
 
+    def restaurants_find_address(self, rest_name):
+        with self.connection:
+            result = self.connection.execute(
+                f"SELECT rest_address FROM restaurants WHERE rest_name LIKE '%{rest_name}%'").fetchone()
+            return result
+
     def restaurants_find_dish(self, rest_name, keyword):
         with self.connection:
             self.connection.execute("DROP TABLE IF EXISTS dish_fts")
