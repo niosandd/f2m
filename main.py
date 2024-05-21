@@ -15,6 +15,8 @@ from aiogram.utils import executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
     ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle
+from aiogram.utils.deep_linking import decode_payload
+from aiogram.filters import CommandStart, CommandObject
 from pytz import timezone
 import ccxt.async_support as ccxt
 import json
@@ -85,6 +87,13 @@ import handlers.menu_start as m_start
 import handlers.waiter_start as w_start
 import handlers.menu_client as m_settings
 import handlers.menu_food as m_food
+
+
+@router.message(CommandStart(deep_link=True))
+async def handler(message: types.Message, command: CommandObject):
+    args = command.args
+    payload = decode_payload(args)
+    await message.answer(f"Your payload: {payload}")
 
 
 @dp.message_handler(commands=['start'])
