@@ -269,16 +269,23 @@ async def request_qr_photo(call: types.CallbackQuery):
     user_id = call.from_user.id
     try:
         temp = db.get_client_temp_rest(user_id).split(':')
-        print(temp, type(temp))
-        rest_name, rest_address = db.get_client_temp_rest(user_id).split(':')
-        # Установка данных о ресторане
-        await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
+        if len(temp) == 1:
+            await bot.send_message(user_id,
+                                   text="🔍 Друг, скорей <b>сканируй</b> QR-код своего заведения! \n\n"
+                                        "Ты найдешь его на буклете food2mood непосредственно в заведении🔖",
+                                   reply_markup=qr_scanned_none())
+        else:
+            rest_name, rest_address = db.get_client_temp_rest(user_id).split(':')
+            # Установка данных о ресторане
+            await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
 
-        # Извлечение установленных данных
-        user_data = await dp.storage.get_data(user=user_id)
-        await bot.send_message(user_id,
-                               f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}?",
-                               reply_markup=qr_scanned_keyboard())
+            # Извлечение установленных данных
+            user_data = await dp.storage.get_data(user=user_id)
+            await bot.send_message(user_id,
+                                   f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}? \n\n"
+                                   f"Если нет, то отсканируй QR-код на буклете food2mood непосредственно в заведении"
+                                   f"и попробуй снова",
+                                   reply_markup=qr_scanned())
     except Exception as e:
         print(e)
 
@@ -371,10 +378,29 @@ def qr_scanned_keyboard():
     return keyboard
 
 
+def qr_scanned():
+    keyboard = InlineKeyboardMarkup(row_width=3)
+    choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'apply_')
+    change_restaurant_button = InlineKeyboardButton(text="Отсканирую и попробую снова", callback_data="scanned_qrcode")
+    change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
+    keyboard.row(choose_category_button)
+    keyboard.row(change_restaurant_button)
+    keyboard.row(change_mood_button)
+    return keyboard
+
+
 def qr_scanned_keyboard_none():
     keyboard = InlineKeyboardMarkup(row_width=3)
     change_restaurant_button = InlineKeyboardButton(text="Отсканировать заново", callback_data="scan_qrcode")
     change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="scan_qrcode")
+    keyboard.add(change_restaurant_button, change_mood_button)
+    return keyboard
+
+
+def qr_scanned_none():
+    keyboard = InlineKeyboardMarkup(row_width=3)
+    change_restaurant_button = InlineKeyboardButton(text="Я отсканировал QR-код", callback_data="scanned_qrcode")
+    change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
     keyboard.add(change_restaurant_button, change_mood_button)
     return keyboard
 
