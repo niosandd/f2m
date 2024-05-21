@@ -823,13 +823,16 @@ async def create_qr(call: types.CallbackQuery):
     url = await get_start_link(f"or{user}", encode=True)
     qrcode = pyqrcode.create(url)
     qrcode.png('QR CODE.png', scale=5)
-    with open('QR CODE.png', 'rb') as file:
-        await bot.send_photo(user, photo=file)
-    await bot.send_message(use,
-                           text="🔍 Покажи QR-код отправленный выше своему официанту, "
-                                "чтобы он принял заказ! \n\n",
-                           reply_markup=create_qr_keyboard(),
-                           parse_mode='HTML')
+    try:
+        with open('QR CODE.png', 'rb') as file:
+            await bot.send_photo(user, photo=file)
+        await bot.send_message(use,
+                               text="🔍 Покажи QR-код отправленный выше своему официанту, "
+                                    "чтобы он принял заказ! \n\n",
+                               reply_markup=create_qr_keyboard(),
+                               parse_mode='HTML')
+    except Exception as e:
+        print(e)
 
 
 @dp.callback_query_handler(text_contains=f"bon_appetite")
