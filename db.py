@@ -457,7 +457,7 @@ class Database:
         with self.connection:
             result = self.connection.execute(
                 f"SELECT rest_address FROM restaurants WHERE rest_name LIKE '%{rest_name}%'").fetchone()
-            return result
+            return result[0]
 
     def restaurants_find_dish(self, rest_name, keyword):
         with self.connection:
