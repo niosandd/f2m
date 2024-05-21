@@ -269,18 +269,16 @@ async def request_qr_photo(call: types.CallbackQuery):
     user = call.from_user.id
     try:
         rest_name, rest_address = db.get_client_temp_rest(user).split(':')
+        # Установка данных о ресторане
+        await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
+
+        # Извлечение установленных данных
+        user_data = await dp.storage.get_data(user=user_id)
+        await bot.send_message(user_id,
+                               f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}?",
+                               reply_markup=qr_scanned_keyboard())
     except Exception as e:
         print(e)
-        rest_name = "1"
-        rest_address = "1"
-    # Установка данных о ресторане
-    await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
-
-    # Извлечение установленных данных
-    user_data = await dp.storage.get_data(user=user_id)
-    await bot.send_message(user_id,
-                           f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}?",
-                           reply_markup=qr_scanned_keyboard())
 
 
 @dp.callback_query_handler(lambda call: call.data == "scan_qrcode")
@@ -995,11 +993,11 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
-        url = await get_start_link("rest" + "Блан де Блан", encode=True)
-        qrcode = pyqrcode.create(url)
-        qrcode.png('QR CODE.png', scale=5)
-        with open('QR CODE.png', 'rb') as file:
-            await bot.send_photo(user, photo=file)
+        # url = await get_start_link("rest" + "Блан де Блан", encode=True)
+        # qrcode = pyqrcode.create(url)
+        # qrcode.png('QR CODE.png', scale=5)
+        # with open('QR CODE.png', 'rb') as file:
+        #     await bot.send_photo(user, photo=file)
         db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(dish['Ресторан'], dish['Адрес'], dish['Название'])[0])
         db.set_users_mode(user, message_obj.message_id,
