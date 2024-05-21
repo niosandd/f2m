@@ -976,12 +976,12 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
-        url = await get_start_link("or" + dish['Название'], encode=True)
+        url = await get_start_link("rest" + "Блан де Блан:Москва, ул. Люсиновская, 36/50", encode=True)
         qrcode = pyqrcode.create(url)
         qrcode.png('QR CODE.png', scale=5)
         with open('QR CODE.png', 'rb') as file:
             await bot.send_photo(user, photo=file)
-        # db.set_client_can_alert(user, round(time.time()))
+        db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(dish['Ресторан'], dish['Адрес'], dish['Название'])[0])
         db.set_users_mode(user, message_obj.message_id,
                           'food_choose_random')
