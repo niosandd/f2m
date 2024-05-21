@@ -266,9 +266,9 @@ def buttons_food_02():
 
 @dp.callback_query_handler(lambda call: call.data == "scanned_qrcode")
 async def request_qr_photo(call: types.CallbackQuery):
-    user = call.from_user.id
+    user_id = call.from_user.id
     try:
-        rest_name, rest_address = db.get_client_temp_rest(user).split(':')
+        rest_name, rest_address = db.get_client_temp_rest(user_id).split(':')
         # Установка данных о ресторане
         await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
 
