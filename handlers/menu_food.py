@@ -17,7 +17,6 @@ import sqlite3
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
     ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle
-from aiogram.utils.deep_linking import create_start_link
 
 from main import dp, bot, db, config, Tools
 
@@ -976,8 +975,7 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
-        url = await create_start_link(bot, dish['Название'], encode=True)
-        print(url)
+        url = "https://t.me/food2mood_bot?start={0}".format("order" + quote(dish['Название']))
         qrcode = pyqrcode.create(url)
         qrcode.png('QR CODE.png', scale=5)
         with open('QR CODE.png', 'rb') as file:
