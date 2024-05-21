@@ -92,8 +92,8 @@ import handlers.menu_food as m_food
 async def start(message: types.Message):
     print(message.text)
     user = message.from_user.id
-    if "order" in message.text:
-        await w_start.get_order(message)
+    if "or" in decode_payload(message.get_args()):
+        await w_start.get_order(message, decode_payload(message.get_args())[2:])
     elif db.check_users_user_exists(message.from_user.id):
         print(f"│ [{Tools.timenow()}] {message.from_user.first_name} → Меню")
         if not db.get_users_ban(message.from_user.id):

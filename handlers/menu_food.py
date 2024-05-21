@@ -976,9 +976,7 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n",
             reply_markup=buttons_food_06(True, len_dish)
         )
-        url = "https://t.me/food2mood_bot?start={0}".format("order1")
-        url = await get_start_link(bot, dish['Название'], encode=True)
-        print(url)
+        url = await get_start_link("or" + dish['Название'], encode=True)
         qrcode = pyqrcode.create(url)
         qrcode.png('QR CODE.png', scale=5)
         with open('QR CODE.png', 'rb') as file:
