@@ -35,12 +35,14 @@ async def client_register(call: types.CallbackQuery):
     if not db.check_client(user):
         try:
             db.add_client(user, call.from_user.username)
+            print("Успешно")
+            try:
+                db.set_client_temp_rest(user, temp_rest)
+                print(temp_rest)
+            except Exception as e:
+                print(e)
         except:
             pass
-        try:
-            db.set_client_temp_rest(user, temp_rest)
-        except Exception as e:
-            print(e)
 
     if len(data) > 2:
         if data[2] == 'sex':
