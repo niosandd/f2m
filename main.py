@@ -90,7 +90,6 @@ import handlers.menu_food as m_food
 
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
-    print(message.text)
     user = message.from_user.id
     # if "or" in decode_payload(message.get_args()):
     #     await w_start.get_order(message, decode_payload(message.get_args())[2:])

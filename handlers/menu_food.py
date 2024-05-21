@@ -180,7 +180,7 @@ async def food_choose_get(call: types.CallbackQuery):
     if len(data) > 2:
         db.set_client_temp_mood(user, data[-1])
 
-    db.set_client_temp_rest(user, None)
+    # db.set_client_temp_rest(user, None)  Зачем это вообще надо?
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
@@ -198,7 +198,8 @@ def buttons_food_01():
     menu = InlineKeyboardMarkup(row_width=3)
 
     btn1 = InlineKeyboardButton(text="Выбрать заведение 🍤", callback_data="food_restaurant")
-    btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scan_qrcode")
+    # btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scan_qrcode")
+    btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scanned_qrcode")
     btn2 = InlineKeyboardButton(text="Куда сходить? 💫", callback_data="food_choose_random")
     btn9 = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
     # menu.add(btn1)
@@ -262,6 +263,24 @@ def buttons_food_02():
 
     return menu
 
+
+@dp.callback_query_handler(lambda call: call.data == "scanned_qrcode")
+async def request_qr_photo(call: types.CallbackQuery):
+    user = call.from_user.id
+    try:
+        rest_name, rest_address = db.get_client_temp_rest(user).split(':')
+    except Exception as e:
+        print(e)
+        rest_name = "1"
+        rest_address = "1"
+    # Установка данных о ресторане
+    await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
+
+    # Извлечение установленных данных
+    user_data = await dp.storage.get_data(user=user_id)
+    await bot.send_message(user_id,
+                           f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}?",
+                           reply_markup=qr_scanned_keyboard())
 
 
 @dp.callback_query_handler(lambda call: call.data == "scan_qrcode")
