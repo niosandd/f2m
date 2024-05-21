@@ -11,7 +11,7 @@ from datetime import datetime
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
-from aiogram.dispatcher.filters import CommandStart, CommandObject
+from aiogram.dispatcher.filters import CommandStart
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
@@ -89,10 +89,9 @@ import handlers.menu_food as m_food
 
 
 @dp.message_handler(CommandStart(deep_link=True))
-async def handler(message: types.Message, command: CommandObject):
+async def handler(message: types.Message, command):
     args = command.args
-    payload = decode_payload(args)
-    await message.answer(f"Your payload: {payload}")
+    await message.answer(f"Your payload: {args }")
 
 
 @dp.message_handler(commands=['start'])
