@@ -616,11 +616,12 @@ class Database:
 
     # --- Добавить значение ---
 
-    def add_waiter(self, user_id, user_link, user_name=None, user_first_name=None, user_last_name=None):
+    def add_waiter(self, user_id, user_link, user_name=None, user_first_name=None, user_last_name=None, score=0):
         with self.connection:
             return self.cursor.execute(
-                "INSERT INTO waiters (waiter_id, waiter_link, waiter_name, waiter_first_name, waiter_last_name) VALUES (?, ?, ?, ?, ?)",
-                (user_id, user_link, user_name, user_first_name, user_last_name))
+                "INSERT INTO waiters (waiter_id, waiter_link, waiter_name, waiter_first_name, waiter_last_name, "
+                "waiter_score) VALUES (?, ?, ?, ?, ?, ?)",
+                (user_id, user_link, user_name, user_first_name, user_last_name, score))
 
     def del_waiter(self, user_id):
         with self.connection:
@@ -632,3 +633,14 @@ class Database:
         with self.connection:
             result = self.cursor.execute("SELECT * FROM waiters WHERE waiter_id=?", (user_id,)).fetchall()
             return bool(len(result))
+
+    def set_waiter_score(self, user_id: int, score: int):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE waiters SET waiter_score = ? WHERE waiter_id = ?",
+                (score, user_id))
+
+    def get_waiter_score(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT waiter_score FROM waiters WHERE waiter_id=?", (user_id,)).fetchall()
+            return result[0][0]
