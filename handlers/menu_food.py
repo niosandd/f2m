@@ -28,7 +28,7 @@ import pyqrcode
 import png
 from urllib.parse import quote
 
-token = "7016628811:AAEsbZR29HQ6GPmMS3aamYFduUsaXoPT1Ew"
+token = "6016753377:AAFeYnZwgw34zgi84Rdr7HdvXhaqcccx8t4"
 admin = config()['telegram']['admin']
 telepuzik =telebot.TeleBot(token)
 
@@ -313,7 +313,7 @@ def get_back():
     keyboard.add(btn1)
     return keyboard
 
-token = "7016628811:AAEsbZR29HQ6GPmMS3aamYFduUsaXoPT1Ew"
+token = "6016753377:AAFeYnZwgw34zgi84Rdr7HdvXhaqcccx8t4"
 
 
 @dp.message_handler(content_types=['photo'])
@@ -724,10 +724,10 @@ async def food_category(call: types.CallbackQuery):
                  f"\n"
                  f"<b>Кажется, в этом заведении нет блюд, подходящих под ваши критерии</b> 🤔\n"
                  f"\n"
-                 f"Попробуйте поменять категорию блюд, настроение или список продуктов, которые вы НЕ едите 😉\n"
-                 f"\n {dish} {length} {numb}"
+                 f"Попробуйте поменять категорию блюд, настроение или список продуктов, которые вы НЕ едите 😉\n\n"
+
                  f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
-            # reply_markup=buttons_food_05(None, None, None)
+            reply_markup=buttons_food_05(None, None, None)
         )
     db.set_users_mode(user, message_obj.message_id, 'food_category')
 
@@ -833,8 +833,9 @@ async def bon_appetite(call: types.CallbackQuery):
 
 async def send_reminder_message(user_id):
 
-    user_name = db.get_users_user_name(user_id)
+    user_first_name = db.get_users_user_name(user_id)
     cafe = db.get_client_temp_rest(user_id)
+    cafe = cafe.split(":")[0]
 
     keyboard = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton(text="Оставить отзыв о блюде", callback_data="search_dish")
@@ -843,7 +844,7 @@ async def send_reminder_message(user_id):
 
     await bot.send_message(
         chat_id=user_id,
-        text=f"<b>{user_name}</b>, хочешь проконсультироваться по вопросам питания у нашего нутрициолога <strike>5000 руб/час</strike> совершенно бесплатно? 🤫🆓\n\nТогда оставь отзыв о кафе <b>{cafe}</b>!\n\nЗа эту активность мы начислим тебе f2m coin 🪙\n\n"
+        text=f"<b>{user_first_name}</b>, хочешь проконсультироваться по вопросам питания у нашего нутрициолога <strike>5000 руб/час</strike> совершенно бесплатно? 🤫🆓\n\nТогда оставь отзыв о кафе <b>{cafe}</b>!\n\nЗа эту активность мы начислим тебе f2m coin 🪙\n\n"
              f"Накопив определенное количество f2m coin, ты сможешь обменять их на консультацию у нашего нутрициолога 🧑‍⚕️🩺🥙",
         reply_markup=keyboard
     )
@@ -1037,6 +1038,7 @@ def buttons_food_06(full: bool = True, len_dish: int = 0):
         btn1 = InlineKeyboardButton(text="Поменять рекомендацию 💫",
                                     callback_data="food_choose_random")
         menu.add(btn1)
+
 
     btn2 = InlineKeyboardButton(text="« Вернуться назад",
                                 callback_data="food_choose_get")
