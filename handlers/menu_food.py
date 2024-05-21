@@ -273,7 +273,7 @@ async def request_qr_photo(call: types.CallbackQuery):
             await bot.send_message(user_id,
                                    text="🔍 Друг, скорей <b>сканируй</b> QR-код своего заведения! \n\n"
                                         "Ты найдешь его на буклете food2mood непосредственно в заведении🔖",
-                                   reply_markup=qr_scanned_none())
+                                   reply_markup=get_back())
         else:
             rest_name, rest_address = db.get_client_temp_rest(user_id).split(':')
             # Установка данных о ресторане
@@ -381,8 +381,7 @@ def qr_scanned_keyboard():
 def qr_scanned():
     keyboard = InlineKeyboardMarkup(row_width=3)
     choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'apply_')
-    change_restaurant_button = InlineKeyboardButton(text="Отсканирую и попробую снова", callback_data="scanned_qrcode")
-    change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
+    change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
     keyboard.row(choose_category_button)
     keyboard.row(change_restaurant_button)
     keyboard.row(change_mood_button)
@@ -393,14 +392,6 @@ def qr_scanned_keyboard_none():
     keyboard = InlineKeyboardMarkup(row_width=3)
     change_restaurant_button = InlineKeyboardButton(text="Отсканировать заново", callback_data="scan_qrcode")
     change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="scan_qrcode")
-    keyboard.add(change_restaurant_button, change_mood_button)
-    return keyboard
-
-
-def qr_scanned_none():
-    keyboard = InlineKeyboardMarkup(row_width=3)
-    change_restaurant_button = InlineKeyboardButton(text="Я отсканировал QR-код", callback_data="scanned_qrcode")
-    change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
     keyboard.add(change_restaurant_button, change_mood_button)
     return keyboard
 
