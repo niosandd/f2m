@@ -7,6 +7,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 
 from main import dp, bot, db, config, Tools
+
 admin = config()['telegram']['admin']
 
 """
@@ -16,6 +17,7 @@ admin = config()['telegram']['admin']
 
 def waiter_action(first_name, location):
     print(f"│ [{Tools.timenow()}] {first_name} → {location}")
+
 
 async def start(message: types.Message):
     user = message.from_user.id
@@ -45,9 +47,16 @@ async def get_order(message: types.Message, order):
     user = message.from_user.id
     # Проверяем официанта:
     if db.check_waiter_exists(user):
-        text = f'\nНовый заказ:' \
+        waiter_score = db.get_waiter_score(user) + 1
+        db.set_waiter_score(user, waiter_score)
+        name = db.get_users_user_first_name(order) + " " + db.get_users_user_last_name(order)
+        text = f'\nНовый заказ от:' \
                f'\n' \
-               f'\n<b>{order}</b>' \
+               f'\n<b>{name}</b>' \
+               f'\n' \
+               f'\n Ваше количество принятых заказов:' \
+               f'\n' \
+               f'\n<b>{waiter_score}</b>' \
                f'\n'
         await bot.send_message(user, text)
 
@@ -55,4 +64,3 @@ async def get_order(message: types.Message, order):
 """
 Обработка команды /waiter
 """
-
