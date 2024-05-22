@@ -1,46 +1,8 @@
-[2024-05-22 12:32:51] INFO
+[2024-05-22 14:16:21] INFO
 Bot: food2mood - \u0435\u0434\u0430 \u043f\u043e\u0434 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 [@food2mood_bot]
-[2024-05-22 12:32:51] INFO
+[2024-05-22 14:16:21] INFO
 Start polling.
-[2024-05-22 12:38:43] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-25' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=OperationalError('database is locked')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 256, in process_update
-    return await self.message_handlers.notify(update.message)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\main.py", line 99, in start
-    await m_start.start(message)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_start.py", line 54, in start
-    db.set_users_first_message(user, 0)
-  File "C:\Users\Administrator\Desktop\food2mood\db.py", line 68, in set_users_first_message
-    return self.cursor.execute("UPDATE users SET first_message = ? WHERE user_id = ?", (id, user_id))
-sqlite3.OperationalError: database is locked
-[2024-05-22 12:38:54] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-28' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=OperationalError('database is locked')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 256, in process_update
-    return await self.message_handlers.notify(update.message)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\main.py", line 99, in start
-    await m_start.start(message)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_start.py", line 54, in start
-    db.set_users_first_message(user, 0)
-  File "C:\Users\Administrator\Desktop\food2mood\db.py", line 68, in set_users_first_message
-    return self.cursor.execute("UPDATE users SET first_message = ? WHERE user_id = ?", (id, user_id))
-sqlite3.OperationalError: database is locked
+[2024-05-22 14:33:01] INFO
+Stop polling...
+[2024-05-22 14:33:01] WARNING
+Goodbye!

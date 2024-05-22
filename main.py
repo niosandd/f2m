@@ -271,7 +271,7 @@ async def bot_message(message):
 
 async def client_register_blacklist(user, message: types.Message):
     message_obj = await message.answer(
-
+        text=f"Одну секунду... ⏳"
     )
     products = str(chat_gpt.send_message(message.text)).strip('"')
     db.set_client_blacklist(user, products)
