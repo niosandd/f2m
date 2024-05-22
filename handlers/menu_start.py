@@ -17,8 +17,7 @@ admin = config()['telegram']['admin']
 def user_action(first_name, location):
     print(f"│ [{Tools.timenow()}] {first_name} → {location}")
 
-
-async def start(message: types.Message, rest_name: str):
+async def start(message: types.Message):
     user = message.from_user.id
 
     # Новый пользователь:
@@ -44,15 +43,6 @@ async def start(message: types.Message, rest_name: str):
 
         await bot.send_message(admin, text)
         db.set_users_mode(user, 0, 'start')
-
-    try:
-        if not db.check_client(user):
-            db.add_client(user, message.from_user.username)
-        rest_address = db.restaurants_find_address(rest_name)
-        if "rest" in decode_payload(message.get_args()):
-            db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
-    except Exception as e:
-        print(e)
 
     # Данные чата:
     try:
