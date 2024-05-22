@@ -844,8 +844,11 @@ async def create_qr(call: types.CallbackQuery):
 async def bon_appetite(call: types.CallbackQuery):
     user = call.from_user.id
     mode = db.get_users_mode(user)['id']
-    message_id = call.message.text.split("bon_appetite")[-1]
-    await bot.delete_message(user, int(message_id))
+    message_id = call.data.split("bon_appetite")[-1]
+    try:
+        await bot.delete_message(user, int(message_id))
+    except Exception as e:
+        print(e)
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
