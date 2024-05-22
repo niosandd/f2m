@@ -98,14 +98,18 @@ async def start(message: types.Message):
         if not db.get_users_ban(message.from_user.id):
             try:
                 await m_start.start(message)
-                try:
-                    rest_name = decode_payload(message.get_args())[4:]
-                    rest_address = db.restaurants_find_address(rest_name)
-                    print(rest_name, rest_address)
-                    if "rest" in decode_payload(message.get_args()):
-                        db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
-                except Exception as e:
-                    print(e)
+                if not db.check_client(user):
+                    try:
+                        db.add_client(user, message.from_user.username)
+                        try:
+                            rest_name = decode_payload(message.get_args())[4:]
+                            rest_address = db.restaurants_find_address(rest_name)
+                            if "rest" in decode_payload(message.get_args()):
+                                db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
+                        except Exception as e:
+                            print(e)
+                    except:
+                        pass
             except Exception as e:
                 print(e)
         else:
