@@ -830,11 +830,11 @@ async def create_qr(call: types.CallbackQuery):
     qrcode = pyqrcode.create(url)
     qrcode.png('QR CODE.png', scale=5)
     with open('QR CODE.png', 'rb') as file:
-        await bot.send_photo(user, photo=file)
+        msg = await bot.send_photo(user, photo=file)
     await bot.send_message(user,
                            text="🔍 Покажи QR-код отправленный выше своему официанту, "
                                 "чтобы он принял заказ! \n\n",
-                           reply_markup=create_qr_keyboard(),
+                           reply_markup=create_qr_keyboard(msg["message_id"]),
                            parse_mode='HTML')
 
 
@@ -844,7 +844,8 @@ async def create_qr(call: types.CallbackQuery):
 async def bon_appetite(call: types.CallbackQuery):
     user = call.from_user.id
     mode = db.get_users_mode(user)['id']
-
+    message_id = call.message.text.split("bon_appetite")[-1]
+    await bot.delete_message(user, int(message_id))
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
@@ -898,11 +899,11 @@ def bon_appetite_keyboard():
     return keyboard
 
 
-def create_qr_keyboard():
+def create_qr_keyboard(message_id):
     keyboard = InlineKeyboardMarkup(row_width=1)
 
     btn1 = InlineKeyboardButton(text="Я показал QR-код официанту!",
-                                callback_data="bon_appetite")
+                                callback_data=f"bon_appetite{message_id}")
 
     keyboard.row(btn1)
     return keyboard
