@@ -265,9 +265,9 @@ def buttons_food_02():
 
 @dp.callback_query_handler(lambda call: call.data == "scanned_qrcode")
 async def request_qr_photo(call: types.CallbackQuery):
-    user_id = call.from_user.id
+    user = call.from_user.id
     try:
-        temp = db.get_client_temp_rest(user_id).split(':')
+        temp = db.get_client_temp_rest(user).split(':')
         if len(temp) == 1:
             await bot.edit_message_text(
                 chat_id=user,
@@ -276,12 +276,12 @@ async def request_qr_photo(call: types.CallbackQuery):
                      "Ты найдешь его на буклете food2mood непосредственно в заведении🔖",
                 reply_markup=get_back())
         else:
-            rest_name, rest_address = db.get_client_temp_rest(user_id).split(':')
+            rest_name, rest_address = db.get_client_temp_rest(user).split(':')
             # Установка данных о ресторане
-            await dp.storage.set_data(user=user_id, data={'rest_name': rest_name, 'rest_address': rest_address})
+            await dp.storage.set_data(user=user, data={'rest_name': rest_name, 'rest_address': rest_address})
 
             # Извлечение установленных данных
-            user_data = await dp.storage.get_data(user=user_id)
+            user_data = await dp.storage.get_data(user=user)
             await bot.edit_message_text(
                 chat_id=user,
                 message_id=call.message.message_id,

@@ -99,16 +99,12 @@ async def start(message: types.Message):
             try:
                 await m_start.start(message)
                 try:
-                    print(decode_payload(message.get_args())[4:])
                     if not db.check_client(user):
-                        print("Проверка")
                         db.add_client(user, message.from_user.username)
-                        print(db.check_client(user))
                     rest_name = decode_payload(message.get_args())[4:]
                     rest_address = db.restaurants_find_address(rest_name)
                     if "rest" in decode_payload(message.get_args()):
                         db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
-                        print(db.get_client_temp_rest(user))
                 except Exception as e:
                     print(e)
             except Exception as e:
