@@ -96,12 +96,15 @@ async def start(message: types.Message):
     elif db.check_users_user_exists(message.from_user.id):
         print(f"│ [{Tools.timenow()}] {message.from_user.first_name} → Меню")
         if not db.get_users_ban(message.from_user.id):
-            await m_start.start(message)
             try:
-                rest_name = decode_payload(message.get_args())[4:]
-                rest_address = db.restaurants_find_address(rest_name)
-                if "rest" in decode_payload(message.get_args()):
-                    db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
+                await m_start.start(message)
+                try:
+                    rest_name = decode_payload(message.get_args())[4:]
+                    rest_address = db.restaurants_find_address(rest_name)
+                    if "rest" in decode_payload(message.get_args()):
+                        db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
+                except Exception as e:
+                    print(e)
             except Exception as e:
                 print(e)
         else:
