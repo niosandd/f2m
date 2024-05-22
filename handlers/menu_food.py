@@ -184,8 +184,8 @@ async def food_choose_get(call: types.CallbackQuery):
         chat_id=user,
         message_id=call.message.message_id,
         text=f"<b>Отлично! Мы учли твоё настроение!</b> 🤝\n\n"
-             # f"Не знаешь, куда сходить под выбранное настроение? Жми кнопку <b>«Куда сходить? 💫»</b>\n"
-             # f"<blockquote>Мы с удовольствием порекомендуем место, где тебе будет хорошо💆‍♂️💆‍♀️</blockquote>\n\n"
+        # f"Не знаешь, куда сходить под выбранное настроение? Жми кнопку <b>«Куда сходить? 💫»</b>\n"
+        # f"<blockquote>Мы с удовольствием порекомендуем место, где тебе будет хорошо💆‍♂️💆‍♀️</blockquote>\n\n"
              f"➡️ Если ты уже находишься в заведении - жми <b>«Уже в заведении»</b>"
              f"\n",
         reply_markup=buttons_food_01()
@@ -269,10 +269,12 @@ async def request_qr_photo(call: types.CallbackQuery):
     try:
         temp = db.get_client_temp_rest(user_id).split(':')
         if len(temp) == 1:
-            await bot.send_message(user_id,
-                                   text="🔍 Друг, скорей <b>сканируй</b> QR-код своего заведения! \n\n"
-                                        "Ты найдешь его на буклете food2mood непосредственно в заведении🔖",
-                                   reply_markup=get_back())
+            await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text="🔍 Друг, скорей <b>сканируй</b> QR-код своего заведения! \n\n"
+                     "Ты найдешь его на буклете food2mood непосредственно в заведении🔖",
+                reply_markup=get_back())
         else:
             rest_name, rest_address = db.get_client_temp_rest(user_id).split(':')
             # Установка данных о ресторане
@@ -280,11 +282,13 @@ async def request_qr_photo(call: types.CallbackQuery):
 
             # Извлечение установленных данных
             user_data = await dp.storage.get_data(user=user_id)
-            await bot.send_message(user_id,
-                                   f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}? \n\n"
-                                   f"Если нет, то отсканируй QR-код на буклете food2mood непосредственно в заведении"
-                                   f"и попробуй снова",
-                                   reply_markup=qr_scanned())
+            await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text=f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}? \n\n"
+                f"Если нет, то отсканируй QR-код на буклете food2mood непосредственно в заведении"
+                f"и попробуй снова",
+                reply_markup=qr_scanned())
     except Exception as e:
         print(e)
 
@@ -683,13 +687,12 @@ async def food_category(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-
     loading_message = await bot.send_message(
         chat_id=user,
         text=f"Одну секунду... ⏳"
     )
 
-        # Действие:
+    # Действие:
     category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
     if category:  # Проверка на наличие категории
         db.set_client_temp_category(user, category)
@@ -773,8 +776,8 @@ async def send_dish(call: types.CallbackQuery):
              f"\n"
              f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
              f"\n"
-             # f"🧾 <b>Ингредиенты:</b>\n"
-             # f"<code>{ingredients}</code>\n"
+        # f"🧾 <b>Ингредиенты:</b>\n"
+        # f"<code>{ingredients}</code>\n"
              f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
              f"\n"
              f"🗣️: <i>{dish['Описание']}</i>\n"
@@ -838,8 +841,6 @@ async def create_qr(call: types.CallbackQuery):
                            parse_mode='HTML')
 
 
-
-
 @dp.callback_query_handler(text_contains=f"bon_appetite")
 async def bon_appetite(call: types.CallbackQuery):
     user = call.from_user.id
@@ -861,13 +862,12 @@ async def bon_appetite(call: types.CallbackQuery):
     db.set_users_mode(user, mode, 'wrire_review')
 
     await asyncio.sleep(3)  # Подождать 2 минуты 3600
-    await bot.delete_message(chat_id=user,message_id=message_obj.message_id)
+    await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
 
     await send_reminder_message(user)  # Отправить напоминалку
 
 
 async def send_reminder_message(user_id):
-
     user_first_name = db.get_users_user_first_name(user_id)
     cafe = db.get_client_temp_rest(user_id)
     cafe = cafe.split(":")[0]
@@ -1058,8 +1058,8 @@ async def food_choose_random(call: types.CallbackQuery):
                  f"\n"
                  f"💫 <i>«{dish['Название']}»</i>\n"
                  f"\n"
-                 # f"🧾 <b>Ингредиенты:</b>\n"
-                 # f"<code>{ingredients}</code>\n"
+            # f"🧾 <b>Ингредиенты:</b>\n"
+            # f"<code>{ingredients}</code>\n"
                  f"——— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ———\n"
                  f"\n"
                  f"🗣️: <i>{dish['Описание']}</i> \n"
