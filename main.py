@@ -263,7 +263,7 @@ async def bot_message(message):
 
 async def client_register_blacklist(user, message: types.Message):
     message_obj = await message.answer(
-        text=f"Одну секунду... ⏳"
+
     )
     products = str(chat_gpt.send_message(message.text)).strip('"')
     db.set_client_blacklist(user, products)
@@ -353,7 +353,7 @@ async def coin_status(call: types.CallbackQuery):
 async def coin_exchange(call: types.CallbackQuery):
     user = call.from_user.id
     mode = db.get_users_mode(user)['id']
-    await bot.send_message(chat_id=user, text=f"Тут описание, как обменять коины на консультацию", reply_markup=get_to_menu())
+    await bot.send_message(chat_id=user, text=f"<a href='https://t.me/food_2_mood/58'>Тут описание, как обменять коины на консультацию</a>", reply_markup=get_to_menu())
     db.set_users_mode(user, mode, "coin_exchange")
     # Удаление сообщения из coin_status
     await bot.delete_message(chat_id=user, message_id=call.message.message_id)
@@ -362,7 +362,7 @@ async def coin_exchange(call: types.CallbackQuery):
 def consult_coin_keyboard():
     keyboard = InlineKeyboardMarkup(row_width=2)
 
-    btn1 = InlineKeyboardButton(text="Обменять на бесплатную консультацию", callback_data="coin_exchange")
+    btn1 = InlineKeyboardButton(text="Обменять на бесплатную консультацию", url="https://t.me/food_2_mood/58")
     btn2 = InlineKeyboardButton(text="« Вернуться на главную", callback_data="menu_start")
     keyboard.row(btn1)
     keyboard.row(btn2)

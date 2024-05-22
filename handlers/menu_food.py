@@ -184,8 +184,8 @@ async def food_choose_get(call: types.CallbackQuery):
         chat_id=user,
         message_id=call.message.message_id,
         text=f"<b>Отлично! Мы учли твоё настроение!</b> 🤝\n\n"
-             f"Не знаешь, куда сходить под выбранное настроение? Жми кнопку <b>«Куда сходить? 💫»</b>\n"
-             f"<blockquote>Мы с удовольствием порекомендуем место, где тебе будет хорошо💆‍♂️💆‍♀️</blockquote>\n\n"
+             # f"Не знаешь, куда сходить под выбранное настроение? Жми кнопку <b>«Куда сходить? 💫»</b>\n"
+             # f"<blockquote>Мы с удовольствием порекомендуем место, где тебе будет хорошо💆‍♂️💆‍♀️</blockquote>\n\n"
              f"➡️ Если ты уже находишься в заведении - жми <b>«Уже в заведении»</b>"
              f"\n",
         reply_markup=buttons_food_01()
@@ -199,10 +199,10 @@ def buttons_food_01():
     btn1 = InlineKeyboardButton(text="Выбрать заведение 🍤", callback_data="food_restaurant")
     # btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scan_qrcode")
     btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scanned_qrcode")
-    btn2 = InlineKeyboardButton(text="Куда сходить? 💫", callback_data="food_choose_random")
+    # btn2 = InlineKeyboardButton(text="Куда сходить? 💫", callback_data="food_choose_random")
     btn9 = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
     # menu.add(btn1)
-    menu.add(btn2)
+    # menu.add(btn2)
     menu.add(btn3)
     menu.add(btn9)
 
@@ -683,6 +683,12 @@ async def food_category(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
+
+    loading_message = await bot.send_message(
+        chat_id=user,
+        text=f"Одну секунду... ⏳"
+    )
+
         # Действие:
     category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
     if category:  # Проверка на наличие категории
@@ -698,7 +704,7 @@ async def food_category(call: types.CallbackQuery):
             ingredients += f"• {str(ing).strip()}\n"
         message_obj = await bot.edit_message_text(
             chat_id=user,
-            message_id=call.message.message_id,
+            message_id=loading_message.message_id,
             text=f"🍤 <b>Кафе:</b>\n"
                  f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
                  f"\n"
@@ -720,7 +726,7 @@ async def food_category(call: types.CallbackQuery):
     else:
         message_obj = await bot.edit_message_text(
             chat_id=user,
-            message_id=call.message.message_id,
+            message_id=loading_message.message_id,
             text=f"🍤 <b>Кафе:</b>\n"
                  f"<i>«{rest[0]}», {rest[1]}</i>\n"
                  f"\n"
@@ -832,6 +838,8 @@ async def create_qr(call: types.CallbackQuery):
                            parse_mode='HTML')
 
 
+
+
 @dp.callback_query_handler(text_contains=f"bon_appetite")
 async def bon_appetite(call: types.CallbackQuery):
     user = call.from_user.id
@@ -848,14 +856,17 @@ async def bon_appetite(call: types.CallbackQuery):
     db.set_client_can_alert(user, 0)
     db.set_users_mode(user, mode, 'wrire_review')
 
-    await asyncio.sleep(3600)  # Подождать 2 минуты
+    await asyncio.sleep(3)  # Подождать 2 минуты 3600
+    await bot.delete_message(chat_id=user,message_id=message_obj.message_id)
+
     await send_reminder_message(user)  # Отправить напоминалку
 
 
 async def send_reminder_message(user_id):
 
-    user_first_name = db.get_users_user_name(user_id)
+    user_first_name = db.get_users_user_first_name(user_id)
     cafe = db.get_client_temp_rest(user_id)
+    cafe = cafe.split(":")[0]
 
     keyboard = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton(text="Оставить отзыв о блюде", callback_data="search_dish")

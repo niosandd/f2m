@@ -1,4 +1,91 @@
-[2024-05-21 16:32:47] INFO
+[2024-05-22 07:48:54] INFO
 Bot: food2mood - \u0435\u0434\u0430 \u043f\u043e\u0434 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 [@food2mood_bot]
-[2024-05-21 16:32:47] INFO
+[2024-05-22 07:48:54] INFO
 Start polling.
+[2024-05-22 07:48:59] ERROR
+Task exception was never retrieved
+future: <Task finished name='Task-12' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=NameError("name 'message' is not defined")>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
+    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
+    return await asyncio.gather(*tasks)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
+    return await self.callback_query_handlers.notify(update.callback_query)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 840, in create_qr
+    asyncio.create_task(delete_file_after_delay(user, message.message_id, 5))
+NameError: name 'message' is not defined
+[2024-05-22 07:56:56] ERROR
+Task exception was never retrieved
+future: <Task finished name='Task-69' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=TypeError("object NoneType can't be used in 'await' expression")>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
+    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
+    return await asyncio.gather(*tasks)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
+    return await self.callback_query_handlers.notify(update.callback_query)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\main.py", line 497, in review_end
+    await db.add_food_to_mood_coin(user, coin_counter)
+TypeError: object NoneType can't be used in 'await' expression
+[2024-05-22 08:07:14] ERROR
+Task exception was never retrieved
+future: <Task finished name='Task-161' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=NameError("name 'message' is not defined")>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
+    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
+    return await asyncio.gather(*tasks)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
+    return await self.callback_query_handlers.notify(update.callback_query)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 840, in create_qr
+NameError: name 'message' is not defined
+[2024-05-22 08:07:43] ERROR
+Task exception was never retrieved
+future: <Task finished name='Task-196' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=NameError("name 'message' is not defined")>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
+    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
+    return await asyncio.gather(*tasks)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
+    return await self.callback_query_handlers.notify(update.callback_query)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 840, in create_qr
+NameError: name 'message' is not defined
+[2024-05-22 08:08:34] ERROR
+Task exception was never retrieved
+future: <Task finished name='Task-228' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=TypeError("object NoneType can't be used in 'await' expression")>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
+    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
+    return await asyncio.gather(*tasks)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 256, in process_update
+    return await self.message_handlers.notify(update.message)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\main.py", line 253, in bot_message
+    await db.add_food_to_mood_coin(user, coin_counter)
+TypeError: object NoneType can't be used in 'await' expression
+[2024-05-22 08:57:10] INFO
+Stop polling...
+[2024-05-22 08:57:10] WARNING
+Goodbye!
