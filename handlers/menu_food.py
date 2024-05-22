@@ -499,7 +499,7 @@ async def food_rec_get3(call: types.CallbackQuery):
     mode = db.get_users_mode(user)
 
     user_data = await dp.storage.get_data(user=user)
-    await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+    # await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id) Более не актуально
 
     rest_name = user_data.get('rest_name')
     rest_address = user_data.get('rest_address')
@@ -510,7 +510,8 @@ async def food_rec_get3(call: types.CallbackQuery):
     rest = db.get_client_temp_rest(user).split(':')
     message_obj = await bot.edit_message_text(
         chat_id=user,
-        message_id=mode['id'],
+        # message_id=mode['id'],
+        message_id=call.message.message_id,
         text=f"Выберите, кто будет рекомендовать вам блюда 👇🏻",
         reply_markup=buttons_food_03(rest[0])
     )
