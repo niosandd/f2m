@@ -101,6 +101,7 @@ async def start(message: types.Message):
                 try:
                     rest_name = decode_payload(message.get_args())[4:]
                     rest_address = db.restaurants_find_address(rest_name)
+                    print(rest_name, rest_address)
                     if "rest" in decode_payload(message.get_args()):
                         db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
                 except Exception as e:
