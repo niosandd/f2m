@@ -720,7 +720,8 @@ async def food_category(call: types.CallbackQuery):
             # f"<code>{ingredients}</code>\n"
                  f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                  f"\n"
-                 f"🗣️: <i>{dish['Описание']}</i>\n"
+                 f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
+                 f"📝На 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                  f"\n"
                  f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻",
             reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb)
@@ -781,7 +782,8 @@ async def send_dish(call: types.CallbackQuery):
         # f"<code>{ingredients}</code>\n"
              f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
              f"\n"
-             f"🗣️: <i>{dish['Описание']}</i>\n"
+             f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
+             f"📝На 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
              f"\n"
              f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻",
         reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb)
