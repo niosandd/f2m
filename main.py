@@ -552,7 +552,7 @@ async def review_star(call: types.CallbackQuery):
              f"Спасибо!",
         reply_markup=buttons_05()
     )
-    db.set_users_mode(user, mode['id'], 'type_review')
+    db.set_users_mode(user, call.message.message_id, 'type_review')
 
 
 def buttons_05():
