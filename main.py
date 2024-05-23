@@ -504,7 +504,7 @@ async def review_end(call: types.CallbackQuery):
     mode = db.get_users_mode(user)
     await bot.edit_message_text(
         chat_id=user,
-        message_id=call.message.message_id,
+        message_id=mode['id'],
         text=f"<b>Спасибо за отзыв! 🤜🤛</b>\n\n Проверь количество <code>f2m coin</code> у себя в личном кабинете!\n"
              f"<blockquote>Мы будем ждать тебя на консультации у нашего нутрициолога 🧑‍⚕️🩺🍏</blockquote>️",
         reply_markup=buttons_02()
