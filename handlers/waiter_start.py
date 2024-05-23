@@ -48,19 +48,25 @@ async def get_order(message: types.Message, order):
     # Проверяем официанта:
     if db.check_waiter_exists(user):
         name = db.get_users_user_first_name(order) + " " + db.get_users_user_last_name(order)
-        if not db.get_waiter_score(user):
-            temp_list = [order]
-        else:
-            temp_list = list(db.get_waiter_score(user)).append(order)
-        db.set_waiter_score(user, temp_list)
-        text = f'\nНовый заказ от:' \
-               f'\n' \
-               f'\n<b>{name}</b>' \
-               f'\n' \
-               f'\n Ваше количество принятых заказов:' \
-               f'\n' \
-               f'\n<b>{len(temp_list)}</b>' \
-               f'\n'
+        try:
+            if not db.get_waiter_score(user):
+                temp_list = [order]
+            else:
+                temp_list = list(db.get_waiter_score(user)).append(order)
+            db.set_waiter_score(user, temp_list)
+        except Exception as e:
+            print(e)
+        try:
+            text = f'\nНовый заказ от:' \
+                   f'\n' \
+                   f'\n<b>{name}</b>' \
+                   f'\n' \
+                   f'\n Ваше количество принятых заказов:' \
+                   f'\n' \
+                   f'\n<b>{len(temp_list)}</b>' \
+                   f'\n'
+        except Exception as e:
+            print(e)
         await bot.send_message(user, text)
 
 
