@@ -643,4 +643,5 @@ class Database:
     def get_waiter_score(self, user_id):
         with self.connection:
             result = self.cursor.execute("SELECT waiter_score FROM waiters WHERE waiter_id=?", (user_id,)).fetchall()
+            print(result)
             return result[0][0]

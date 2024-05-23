@@ -57,17 +57,14 @@ async def get_order(message: types.Message, order):
             db.set_waiter_score(user, str(temp_list))
         except Exception as e:
             print(e)
-        try:
-            text = f'\nНовый заказ от:' \
-                   f'\n' \
-                   f'\n<b>{name}</b>' \
-                   f'\n' \
-                   f'\n Ваше количество принятых заказов:' \
-                   f'\n' \
-                   f'\n<b>{len(set(temp_list))}</b>' \
-                   f'\n'
-        except Exception as e:
-            print(e)
+        text = f'\nНовый заказ от:' \
+               f'\n' \
+               f'\n<b>{name}</b>' \
+               f'\n' \
+               f'\n Ваше количество принятых заказов:' \
+               f'\n' \
+               f'\n<b>{len(set(temp_list))}</b>' \
+               f'\n'
         await bot.send_message(user, text)
 
 
