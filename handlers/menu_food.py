@@ -661,8 +661,8 @@ def buttons_food_04(available_categories):
                              callback_data="food_category_Десерты") if "Десерты" in available_categories else None,
         InlineKeyboardButton(text=f"Напитки {icons['Напитки']}",
                              callback_data="food_category_Напитки") if "Напитки" in available_categories else None,
-        InlineKeyboardButton(text=f"Хлеб {icons['Хлеб']}",
-                             callback_data="food_category_Хлеб") if "Хлеб" in available_categories else None,
+        # InlineKeyboardButton(text=f"Хлеб {icons['Хлеб']}",
+        #                      callback_data="food_category_Хлеб") if "Хлеб" in available_categories else None,
         InlineKeyboardButton(text="« Поменять автора рекомендаций", callback_data="food_rec_get2")
     ]
 
