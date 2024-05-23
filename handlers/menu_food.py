@@ -688,11 +688,11 @@ async def food_category(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-    loading_message = await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text=f"Одну секунду... ⏳"
-    )
+    # loading_message = await bot.edit_message_text(
+    #     chat_id=user,
+    #     message_id=call.message.message_id,
+    #     text=f"Одну секунду... ⏳"
+    # )
 
     # Действие:
     category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
@@ -709,7 +709,7 @@ async def food_category(call: types.CallbackQuery):
             ingredients += f"• {str(ing).strip()}\n"
         message_obj = await bot.edit_message_text(
             chat_id=user,
-            message_id=loading_message.message_id,
+            message_id=call.message.message_id,
             text=f"🍤 <b>Кафе:</b>\n"
                  f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
                  f"\n"
@@ -732,7 +732,7 @@ async def food_category(call: types.CallbackQuery):
     else:
         message_obj = await bot.edit_message_text(
             chat_id=user,
-            message_id=loading_message.message_id,
+            message_id=call.message.message_id,
             text=f"🍤 <b>Кафе:</b>\n"
                  f"<i>«{rest[0]}», {rest[1]}</i>\n"
                  f"\n"
