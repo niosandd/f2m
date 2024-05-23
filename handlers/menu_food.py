@@ -688,10 +688,11 @@ async def food_category(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-    # loading_message = await bot.send_message(
-    #     chat_id=user,
-    #     text=f"Одну секунду... ⏳"
-    # )
+    loading_message = await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text=f"Одну секунду... ⏳"
+    )
 
     # Действие:
     category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
