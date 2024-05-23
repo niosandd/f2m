@@ -325,11 +325,12 @@ def buttons_02():
     btn1 = InlineKeyboardButton(text="« Вернуться на главную",
                                 callback_data="menu_start")
 
-    btn2 = InlineKeyboardButton(text="Оставить отзыв о блюде", callback_data="search_dish")
+    btn2 = InlineKeyboardButton(text="Оставить ещё один отзыв", callback_data="search_dish")
 
     btn3 = InlineKeyboardButton(text="Мои f2m coin 🪙", callback_data="food_to_mood_coin_status")
 
-    menu.add(btn1, btn2)
+    menu.add(btn1)
+    menu.add(btn2)
     menu.add(btn3)
 
     return menu
