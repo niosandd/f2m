@@ -535,9 +535,11 @@ async def review_star(call: types.CallbackQuery):
         'restaurant_name': dish[1]
     })
 
-    message_obj = await bot.edit_message_text(
+    # Удаление предыдущего сообщения
+    await call.message.delete()
+
+    message_obj = await bot.send_message(
         chat_id=user,
-        message_id=mode['id'],
         text=f"🍤 <b>Кафе:</b>\n"
              f"<i>«{dish[1]}», {dish[2]}</i>\n"
              f"\n"
