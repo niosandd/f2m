@@ -634,7 +634,7 @@ class Database:
             result = self.cursor.execute("SELECT * FROM waiters WHERE waiter_id=?", (user_id,)).fetchall()
             return bool(len(result))
 
-    def set_waiter_score(self, user_id: int, score: int):
+    def set_waiter_score(self, user_id: int, score: list):
         with self.connection:
             self.cursor.execute(
                 "UPDATE waiters SET waiter_score = ? WHERE waiter_id = ?",

@@ -88,9 +88,9 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
 
         # Проверка через AI
         if check_blacklist_with_ai(blacklist, dish_ingredients):
-            print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
-            print("Запрещенные ингредиенты:", blacklist)
-            print("Ингредиенты блюда:", dish_ingredients)
+            # print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
+            # print("Запрещенные ингредиенты:", blacklist)
+            # print("Ингредиенты блюда:", dish_ingredients)
             continue
 
         # Проверка через difflib
