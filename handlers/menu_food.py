@@ -605,12 +605,13 @@ async def food_rec(call: types.CallbackQuery):
         return None
 
     # Отправка стикера
-    sticker_message = await bot.send_sticker(
-        chat_id=user,
-        sticker='CAACAgIAAxkBAAEFcOlmRG4AAaLHIqgW8CtAOWHhGN6y4XgAAkRYAAJCaghK0Zngs-8IqK81BA'
-    )
-    await asyncio.sleep(3)
-    await bot.delete_message(chat_id=user, message_id=sticker_message.message_id)
+    if call.data == "food_rec_Нутрициолог":
+        sticker_message = await bot.send_sticker(
+            chat_id=user,
+            sticker='CAACAgIAAxkBAAEFcOlmRG4AAaLHIqgW8CtAOWHhGN6y4XgAAkRYAAJCaghK0Zngs-8IqK81BA'
+        )
+        await asyncio.sleep(3)
+        await bot.delete_message(chat_id=user, message_id=sticker_message.message_id)
 
     # Действие:
     db.set_client_temp_category(user, None)
