@@ -843,6 +843,10 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None):
 @dp.callback_query_handler(text_contains=f"create_qr")
 async def create_qr(call: types.CallbackQuery):
     user = call.from_user.id
+
+    # Удаление предыдущего сообщения
+    await call.message.delete()
+
     url = await get_start_link(f"or{user}", encode=True)
     qrcode = pyqrcode.create(url)
     qrcode.png('QR CODE.png', scale=5)
