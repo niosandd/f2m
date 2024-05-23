@@ -53,7 +53,8 @@ async def get_order(message: types.Message, order):
                 temp_list = [order]
             else:
                 temp_list = list(db.get_waiter_score(user)).append(order)
-            db.set_waiter_score(user, temp_list)
+            print(temp_list)
+            db.set_waiter_score(user, str(temp_list))
         except Exception as e:
             print(e)
         try:
@@ -63,7 +64,7 @@ async def get_order(message: types.Message, order):
                    f'\n' \
                    f'\n Ваше количество принятых заказов:' \
                    f'\n' \
-                   f'\n<b>{len(temp_list)}</b>' \
+                   f'\n<b>{len(set(temp_list))}</b>' \
                    f'\n'
         except Exception as e:
             print(e)
