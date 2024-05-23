@@ -877,7 +877,7 @@ async def bon_appetite(call: types.CallbackQuery):
     )
 
     db.set_client_can_alert(user, 0)
-    db.set_users_mode(user, mode, 'wrire_review')
+    db.set_users_mode(user, mode, 'write_review')
 
     await asyncio.sleep(3)  # Подождать 2 минуты 3600
     await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
@@ -891,7 +891,7 @@ async def send_reminder_message(user_id):
     cafe = cafe.split(":")[0]
 
     keyboard = InlineKeyboardMarkup()
-    btn1 = InlineKeyboardButton(text="Оставь отзыв", callback_data="search_dish")
+    btn1 = InlineKeyboardButton(text="Оставить отзыв", callback_data="search_dish")
     btn2 = InlineKeyboardButton(text="Не интересно", callback_data="menu_start")
     keyboard.add(btn1, btn2)
 
@@ -954,7 +954,7 @@ async def search_dish_global(call: types.CallbackQuery):
     )
 
     db.set_client_can_alert(user, 0)
-    db.set_users_mode(user, mode, 'wrire_review')
+    db.set_users_mode(user, mode, 'write_review')
 
     # Запуск задачи по удалению сообщения через 5 секунд
     await schedule_message_deletion(message)

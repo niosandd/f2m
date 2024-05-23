@@ -173,7 +173,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
         await inline_query.answer(results, cache_time=1)
 
     # Поиск блюда
-    elif mode['key'] == 'wrire_review':
+    elif mode['key'] == 'write_review':
         rest_name = db.get_client_temp_rest(user).split(':')[0]
         if len(str(inline_query.query)) > 0:
             print(f'│ [{Tools.timenow()}] Пользователь ищет блюдо... {str(inline_query.query)}')
@@ -208,6 +208,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
 async def bot_message(message):
     user = message.from_user.id
     mode = db.get_users_mode(user)
+
     if message.text != '/start' and message.text != '/waiter':
 
         # Чёрный список продуктов
@@ -227,7 +228,7 @@ async def bot_message(message):
             await m_food.food_rec_get(user, message)
 
         # Выбор блюда из поиска
-        if mode['key'] == 'wrire_review':
+        if mode['key'] == 'write_review':
             dish = message.text.split(':')
             dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]
             db.set_client_temp_dish_id(user, dish_id)
@@ -417,7 +418,7 @@ async def checker():
                         reply_markup=buttons_03()
                     )
                     db.set_client_can_alert(client_id, 0)
-                    db.set_users_mode(client_id, message_obj.message_id, 'wrire_review')
+                    db.set_users_mode(client_id, message_obj.message_id, 'write_review')
             except BaseException as ex:
                 print(f"│ Не получилось попросить отзыв: {ex}")
 
@@ -431,9 +432,8 @@ async def choose_dish(dish_id, message: types.Message):
     mode = db.get_users_mode(user)
     dish = db.restaurants_get_by_id(dish_id)
 
-    message_obj = await bot.edit_message_text(
+    message_obj = await bot.send_message(
         chat_id=user,
-        message_id=mode['id'],
         text=f"🍤 <b>Кафе:</b>\n"
              f"<i>«{dish[1]}», {dish[2]}</i>\n"
              f"\n"
