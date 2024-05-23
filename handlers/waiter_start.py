@@ -53,7 +53,6 @@ async def get_order(message: types.Message, order):
                 temp_list = [order]
             else:
                 temp_list = list(db.get_waiter_score(user)).append(order)
-            print(temp_list)
             db.set_waiter_score(user, str(temp_list))
         except Exception as e:
             print(e)
