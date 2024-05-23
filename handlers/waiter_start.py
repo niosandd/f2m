@@ -51,7 +51,8 @@ async def get_order(message: types.Message, order):
         if not db.get_waiter_score(user):
             temp_list = [order]
         else:
-            temp_list = eval(db.get_waiter_score(user)).append(order)
+            temp_list = eval(db.get_waiter_score(user))
+            temp_list.append(order)
         db.set_waiter_score(user, str(temp_list))
         text = f'\nНовый заказ от:' \
                f'\n' \
