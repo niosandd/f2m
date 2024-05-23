@@ -756,6 +756,14 @@ async def send_dish(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
+    try:
+        message_id = call.data.split("send_dish")[-1]
+        await bot.delete_message(user, int(message_id))
+    except TypeError:
+        pass
+    except Exception as e:
+        print(e)
+
     # Действие:
 
     if data[-1] == 'next':
@@ -914,7 +922,7 @@ def create_qr_keyboard(message_id):
                                 callback_data=f"bon_appetite{message_id}")
 
     btn2 = InlineKeyboardButton(text="« Вернуться к рекомендациям",
-                                callback_data=f"bon_appetite{message_id}")
+                                callback_data=f"send_dish{message_id}")
 
     keyboard.row(btn1)
     keyboard.row(btn2)
