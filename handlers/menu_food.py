@@ -688,10 +688,10 @@ async def food_category(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-    loading_message = await bot.send_message(
-        chat_id=user,
-        text=f"Одну секунду... ⏳"
-    )
+    # loading_message = await bot.send_message(
+    #     chat_id=user,
+    #     text=f"Одну секунду... ⏳"
+    # )
 
     # Действие:
     category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
@@ -911,7 +911,11 @@ def create_qr_keyboard(message_id):
     btn1 = InlineKeyboardButton(text="Я показал QR-код официанту!",
                                 callback_data=f"bon_appetite{message_id}")
 
+    btn2 = InlineKeyboardButton(text="« Вернуться к рекомендациям",
+                                callback_data=f"bon_appetite{message_id}")
+
     keyboard.row(btn1)
+    keyboard.row(btn2)
     return keyboard
 
 
