@@ -891,7 +891,7 @@ async def send_reminder_message(user_id):
     cafe = cafe.split(":")[0]
 
     keyboard = InlineKeyboardMarkup()
-    btn1 = InlineKeyboardButton(text="Оставить отзыв о блюде", callback_data="search_dish")
+    btn1 = InlineKeyboardButton(text="Ещё отзыв", callback_data="search_dish")
     btn2 = InlineKeyboardButton(text="Не интересно", callback_data="menu_start")
     keyboard.add(btn1, btn2)
 
