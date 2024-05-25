@@ -43,6 +43,7 @@ icons = {
     "Японская кухня": "🍣",
     "Поке": "🥢",
     "Холодные закуски": "😋🧊",
+    "Закуски": "😋",
     "Салаты": "🥗",
     "Супы": "🍲",
     "Паста": "🍝",
@@ -639,6 +640,8 @@ def buttons_food_04(available_categories):
                              callback_data="food_category_Салаты") if "Салаты" in available_categories else None,
         InlineKeyboardButton(text=f"Горячие закуски {icons['Горячие закуски']}",
                              callback_data="food_category_Горячие закуски") if "Горячие закуски" in available_categories else None,
+        InlineKeyboardButton(text=f"Закуски {icons['Закуски']}",
+                             callback_data="food_category_Закуски") if "Закуски" in available_categories else None,
         InlineKeyboardButton(text=f"Горячие блюда {icons['Горячие блюда']}",
                              callback_data="food_category_Горячие блюда") if "Горячие блюда" in available_categories else None,
         InlineKeyboardButton(text=f"Супы {icons['Супы']}",
@@ -879,7 +882,7 @@ async def bon_appetite(call: types.CallbackQuery):
     db.set_client_can_alert(user, 0)
     db.set_users_mode(user, mode, 'write_review')
 
-    await asyncio.sleep(3)  # Подождать 2 минуты 3600
+    await asyncio.sleep(3600)  # Подождать 2 минуты 3600
     await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
 
     await send_reminder_message(user)  # Отправить напоминалку

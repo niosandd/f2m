@@ -48,6 +48,7 @@ icons = {
     "Холодные закуски": "😋🧊",
     "Салаты": "🥗",
     "Супы": "🍲",
+    "Закуски": "😋",
     "Горячие закуски": "😋🔥",
     "Десерты": "🍰",
     "Хлеб": "🍞",
@@ -378,7 +379,7 @@ async def coin_exchange(call: types.CallbackQuery):
 def consult_coin_keyboard():
     keyboard = InlineKeyboardMarkup(row_width=2)
 
-    btn1 = InlineKeyboardButton(text="Обменять на бесплатную консультацию", url="https://t.me/food_2_mood/58")
+    btn1 = InlineKeyboardButton(text="Обменять на бесплатную консультацию", url="https://t.me/food_2_mood/61")
     btn2 = InlineKeyboardButton(text="« Вернуться на главную", callback_data="menu_start")
     keyboard.row(btn1)
     keyboard.row(btn2)
