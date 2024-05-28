@@ -142,23 +142,16 @@ async def mldzh(message: types.Message):
     user = message.from_user.id
     if db.get_users_ban(user):
         return None
-    if not db.get_client_temp_mood(user):
-        await bot.send_message(
-            chat_id=user,
-            text=f"Пожалуйста, сперва выбери своё текущее настроение",
-            reply_markup=get_to_menu()
-        )
-    else:
-        db.set_client_temp_rest(user, None)
-        message_obj = await bot.send_message(
-            chat_id=user,
-            text=f"Пожалуйста, выберите в 🔎 <b>поиске</b> ваше любимое кафе, "
-                 f"и мы с удовольствием подберём для вас меню этого заведения 👇🏻\n"
-                 f"\n"
-                 f"Готовы посоветовать что-то вкусненькое! 😉",
-            reply_markup=buttons_food_x()
-        )
-        db.set_users_mode(user, message_obj.message_id, 'food_inline_handler')
+    db.set_client_temp_rest(user, None)
+    message_obj = await bot.send_message(
+        chat_id=user,
+        text=f"Пожалуйста, выберите в 🔎 <b>поиске</b> ваше любимое кафе, "
+             f"и мы с удовольствием подберём для вас меню этого заведения 👇🏻\n"
+             f"\n"
+             f"Готовы посоветовать что-то вкусненькое! 😉",
+        reply_markup=buttons_food_x()
+    )
+    db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_x')
 
 
 def buttons_food_x():
@@ -175,7 +168,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
     mode = db.get_users_mode(user)
 
     # Поиск ресторана
-    if mode['key'] == 'food_inline_handler':
+    if 'food_inline_handler' in mode['key']:
         if len(str(inline_query.query)) > 0:
             print(f'│ [{Tools.timenow()}] Пользователь ищет кафе... {str(inline_query.query)}')
             posts = db.restaurants_find_all(str(inline_query.query).lower().capitalize())
@@ -259,6 +252,13 @@ async def bot_message(message):
         # Выбор ресторана из поиска
         if mode['key'] == 'food_inline_handler':
             await m_food.food_rec_get(user, message)
+
+        if mode['key'] == 'food_inline_handler_x':
+            await bot.send_message(
+                chat_id=user,
+                text=f"Ресторан успешно установлен",
+                reply_markup=get_to_menu()
+            )
 
         # Выбор блюда из поиска
         if mode['key'] == 'write_review':
