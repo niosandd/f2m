@@ -254,11 +254,9 @@ async def bot_message(message):
             await m_food.food_rec_get(user, message)
 
         if mode['key'] == 'food_inline_handler_x':
-            user_data = await dp.storage.get_data(user=user)
-            rest_name = user_data.get('rest_name')
-            rest_address = user_data.get('rest_address')
+            data = message.text.split(':')
+            db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
             db.set_client_temp_recommendation(user, None)
-            db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
             await bot.send_message(
                 chat_id=user,
                 text=f"Ресторан успешно установлен",
