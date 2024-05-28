@@ -139,8 +139,7 @@ async def waiter(message: types.Message):
 
 @dp.message_handler(commands=['mldzh'])
 async def mldzh(message: types.Message):
-    user = call.from_user.id
-    data = call.data.split('_')
+    user = message.from_user.id
     if db.get_users_ban(user):
         return None
     db.set_client_temp_rest(user, None)
