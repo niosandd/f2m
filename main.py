@@ -142,17 +142,23 @@ async def mldzh(message: types.Message):
     user = message.from_user.id
     if db.get_users_ban(user):
         return None
-    db.set_client_temp_rest(user, None)
-
-    message_obj = await bot.send_message(
-        chat_id=user,
-        text=f"Пожалуйста, выберите в 🔎 <b>поиске</b> ваше любимое кафе, "
-             f"и мы с удовольствием подберём для вас меню этого заведения 👇🏻\n"
-             f"\n"
-             f"Готовы посоветовать что-то вкусненькое! 😉",
-        reply_markup=buttons_food_x()
-    )
-    db.set_users_mode(user, message_obj.message_id, 'food_inline_handler')
+    if not db.get_client_temp_mood(user):
+        await bot.send_message(
+            chat_id=user,
+            text=f"Пожалуйста, сперва выбери своё текущее настроение",
+            reply_markup=get_to_menu()
+        )
+    else:
+        db.set_client_temp_rest(user, None)
+        message_obj = await bot.send_message(
+            chat_id=user,
+            text=f"Пожалуйста, выберите в 🔎 <b>поиске</b> ваше любимое кафе, "
+                 f"и мы с удовольствием подберём для вас меню этого заведения 👇🏻\n"
+                 f"\n"
+                 f"Готовы посоветовать что-то вкусненькое! 😉",
+            reply_markup=buttons_food_x()
+        )
+        db.set_users_mode(user, message_obj.message_id, 'food_inline_handler')
 
 
 def buttons_food_x():
