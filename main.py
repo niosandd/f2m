@@ -194,7 +194,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
                     input_message_content=InputTextMessageContent(f'{post[1]}:{post[2]}'),
                 )
                 results.append(result)
-            db.set_users_mode(user, db.get_users_mode(user)['id'], 'food_inline_handler')
+            db.set_users_mode(user, db.get_users_mode(user)['id'], mode['key'])
 
         await inline_query.answer(results, cache_time=1)
 
