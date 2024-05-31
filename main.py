@@ -8,7 +8,6 @@ import time
 import logging
 from datetime import datetime
 
-
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 from aiogram.utils.deep_linking import decode_payload
@@ -137,6 +136,17 @@ async def waiter(message: types.Message):
     await w_start.start(message)
 
 
+@dp.message_handler(commands=['admin'])
+async def admin(message: types.Message):
+    user = message.from_user.id
+    if user == 375565156:
+        text = ("🗣: Как? Ты еще не был в «Молодежи»??? \n\n"
+                "Уверены, что это вскоре изменится!) На этой неделе <b>мы запустились в кафе \"Молодежь\" по адресу "
+                "Москва, Сущевская ул., 21, стр.8</b>⚡️ \n\n"
+                "Ждем тебя, чтобы <u>улучшить настроение</u> с помощью блюд, подобранных <b>сервисом food2mood</b>🌚")
+        await bot.send_message(chat_id=user, text=text)
+
+
 @dp.message_handler(commands=['mldzh'])
 async def mldzh(message: types.Message):
     user = message.from_user.id
@@ -235,7 +245,7 @@ async def bot_message(message):
     user = message.from_user.id
     mode = db.get_users_mode(user)
 
-    if message.text != '/start' and message.text != '/waiter':
+    if message.text not in ['/start', '/waiter', '/admin', '/mldzh']:
 
         # Чёрный список продуктов
         if mode['key'] == 'client_register_blacklist':
@@ -394,18 +404,21 @@ async def coin_status(call: types.CallbackQuery):
     username = db.get_users_user_first_name(user)
     coin_counter = db.get_users_food_to_mood_coin(user)
     await bot.edit_message_text(
-                chat_id=user,
-                message_id=call.message.message_id,
-                text=f"{username}, количество твоих <code>f2m coin</code> составляет: <b>{coin_counter}</b> \n\n <b>Спасибо за активность! Так держать! 🚀🔥</b>\n\n <i>Проверь, можешь обменять такое количество на бесплатную консультацию от нутрициолога по кнопке внизу👇🧑‍⚕️🆓</i>",
-                reply_markup=consult_coin_keyboard()
-            )
+        chat_id=user,
+        message_id=call.message.message_id,
+        text=f"{username}, количество твоих <code>f2m coin</code> составляет: <b>{coin_counter}</b> \n\n <b>Спасибо за активность! Так держать! 🚀🔥</b>\n\n <i>Проверь, можешь обменять такое количество на бесплатную консультацию от нутрициолога по кнопке внизу👇🧑‍⚕️🆓</i>",
+        reply_markup=consult_coin_keyboard()
+    )
     db.set_users_mode(user, mode, "food_to_mood_status")
+
 
 @dp.callback_query_handler(text_contains=f"coin_exchange")
 async def coin_exchange(call: types.CallbackQuery):
     user = call.from_user.id
     mode = db.get_users_mode(user)['id']
-    await bot.send_message(chat_id=user, text=f"<a href='https://t.me/food_2_mood/58'>Тут описание, как обменять коины на консультацию</a>", reply_markup=get_to_menu())
+    await bot.send_message(chat_id=user,
+                           text=f"<a href='https://t.me/food_2_mood/58'>Тут описание, как обменять коины на консультацию</a>",
+                           reply_markup=get_to_menu())
     db.set_users_mode(user, mode, "coin_exchange")
     # Удаление сообщения из coin_status
     await bot.delete_message(chat_id=user, message_id=call.message.message_id)
@@ -419,7 +432,6 @@ def consult_coin_keyboard():
     keyboard.row(btn1)
     keyboard.row(btn2)
     return keyboard
-
 
 
 @dp.callback_query_handler(text_contains=f"temp_del")
