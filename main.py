@@ -159,6 +159,10 @@ async def mldzh(message: types.Message):
     if db.get_users_ban(user):
         return None
     db.set_client_temp_rest(user, None)
+    try:
+        await bot.delete_message(user, message.message_id)
+    except Exception as e:
+        print(e)
     message_obj = await bot.send_message(
         chat_id=user,
         text=f"Пожалуйста, выберите в 🔎 <b>поиске</b> ваше любимое кафе, "
