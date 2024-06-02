@@ -708,9 +708,9 @@ async def food_category(call: types.CallbackQuery):
     dish, length, numb = menu.get_dish(user)
 
     if dish is not None:
-        ingredients = ""
-        for ing in dish['Ингредиенты']:
-            ingredients += f"• {str(ing).strip()}\n"
+        # ingredients = ""
+        # for ing in dish['Ингредиенты']:
+        #     ingredients += f"• {str(ing).strip()}\n"
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=loading_message.message_id,
@@ -778,9 +778,9 @@ async def send_dish(call: types.CallbackQuery):
     rest = db.get_client_temp_rest(user).split(':')
     dish, length, numb = menu.get_dish(user)
 
-    ingredients = ""
-    for ing in dish['Ингредиенты']:
-        ingredients += f"• {str(ing).strip()}\n"
+    # ingredients = ""
+    # for ing in dish['Ингредиенты']:
+    #     ingredients += f"• {str(ing).strip()}\n"
 
     message_obj = await bot.edit_message_text(
         chat_id=user,
@@ -826,7 +826,7 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None):
             btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
                                         callback_data="send_dish_next")
             menu.add(btn2)
-    food_rec
+    # food_rec
     # menu_start
     btn1 = InlineKeyboardButton(text="« Поменять категорию",
                                 callback_data="food_rec")
@@ -977,7 +977,7 @@ def search_dish_keyboard():
     return keyboard
 
 
-def buttons_food_05(dish: int | None, length: int | None, last: int | None):
+def buttons_food_05(dish: int | None, length: int | None, last: int | None):  # ПОЧЕМУ ПОВТОРЯЕТСЯ ФУНКЦИЯ?
     menu = InlineKeyboardMarkup(row_width=3)
 
     if dish is not None and length != 1:
@@ -1064,9 +1064,9 @@ async def food_choose_random(call: types.CallbackQuery):
     dish, len_dish = menu.get_recommendation(user)
 
     if dish is not None:
-        ingredients = ""
-        for ing in dish['Ингредиенты'].split(','):
-            ingredients += f"• {str(ing).strip()}\n"
+        # ingredients = ""
+        # for ing in dish['Ингредиенты'].split(','):
+        #     ingredients += f"• {str(ing).strip()}\n"
 
         message_obj = await bot.edit_message_text(
             chat_id=user,
