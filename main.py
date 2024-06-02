@@ -273,6 +273,10 @@ async def bot_message(message):
             data = message.text.split(':')
             db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
             db.set_client_temp_recommendation(user, None)
+            try:
+                await bot.delete_message(user, mode['id'])
+            except Exception as e:
+                print(e)
             await bot.send_message(
                 chat_id=user,
                 text=f"Ресторан успешно установлен",
