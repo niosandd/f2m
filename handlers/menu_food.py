@@ -711,11 +711,23 @@ async def food_category(call: types.CallbackQuery):
         # ingredients = ""
         # for ing in dish['Ингредиенты']:
         #     ingredients += f"• {str(ing).strip()}\n"
-        print(dish['Ресторан'])
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=loading_message.message_id,
-            text=f"🍤 <b>Кафе:</b>\n"
+        if dish['Ресторан'] == "Блан де Блан":
+            text = (f"🍤 <b>Кафе:</b>\n"
+                 f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                 f"\n"
+                 f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+                 f"\n"
+                 f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
+                 f"\n"
+            # f"🧾 <b>Ингредиенты:</b>\n"
+            # f"<code>{ingredients}</code>\n"
+                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+                 f"\n"
+                 f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
+                 f"\n"
+                 f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
+        else:
+            text = (f"🍤 <b>Кафе:</b>\n"
                  f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
                  f"\n"
                  f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
@@ -729,7 +741,11 @@ async def food_category(call: types.CallbackQuery):
                  f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
                  f"📝На 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                  f"\n"
-                 f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻",
+                 f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
+        message_obj = await bot.edit_message_text(
+            chat_id=user,
+            message_id=loading_message.message_id,
+            text=text,
             reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb)
         )
         db.set_client_can_alert(user, round(time.time()))
@@ -782,25 +798,41 @@ async def send_dish(call: types.CallbackQuery):
     # ingredients = ""
     # for ing in dish['Ингредиенты']:
     #     ingredients += f"• {str(ing).strip()}\n"
-
+    if dish['Ресторан'] == "Блан де Блан":
+        text = (f"🍤 <b>Кафе:</b>\n"
+                f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                f"\n"
+                f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+                f"\n"
+                f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
+                f"\n"
+                # f"🧾 <b>Ингредиенты:</b>\n"
+                # f"<code>{ingredients}</code>\n"
+                f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+                f"\n"
+                f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
+                f"\n"
+                f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
+    else:
+        text = (f"🍤 <b>Кафе:</b>\n"
+                f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                f"\n"
+                f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+                f"\n"
+                f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
+                f"\n"
+                # f"🧾 <b>Ингредиенты:</b>\n"
+                # f"<code>{ingredients}</code>\n"
+                f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+                f"\n"
+                f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
+                f"📝На 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                f"\n"
+                f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
-        text=f"🍤 <b>Кафе:</b>\n"
-             f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-             f"\n"
-             f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
-             f"\n"
-             f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
-             f"\n"
-        # f"🧾 <b>Ингредиенты:</b>\n"
-        # f"<code>{ingredients}</code>\n"
-             f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
-             f"\n"
-             f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
-             f"📝На 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
-             f"\n"
-             f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻",
+        text=text,
         reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb)
     )
     db.set_users_mode(user, message_obj.message_id, 'send_dish')
