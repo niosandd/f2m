@@ -711,6 +711,7 @@ async def food_category(call: types.CallbackQuery):
         # ingredients = ""
         # for ing in dish['Ингредиенты']:
         #     ingredients += f"• {str(ing).strip()}\n"
+        print(dish['Ресторан'])
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=loading_message.message_id,
