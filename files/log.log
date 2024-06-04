@@ -1,10 +1,10 @@
-[2024-05-31 04:15:29] INFO
+[2024-06-02 15:44:12] INFO
 Bot: food2mood - \u0435\u0434\u0430 \u043f\u043e\u0434 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 [@food2mood_bot]
-[2024-05-31 04:15:29] INFO
+[2024-06-02 15:44:12] INFO
 Start polling.
-[2024-05-31 05:13:09] ERROR
+[2024-06-02 16:25:48] ERROR
 Task exception was never retrieved
-future: <Task finished name='Task-449' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
+future: <Task finished name='Task-362' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
 Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
     for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
@@ -16,8 +16,8 @@ Traceback (most recent call last):
     return await self.callback_query_handlers.notify(update.callback_query)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
     response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 75, in client_register
-    message_obj = await bot.edit_message_text(
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 695, in food_category
+    loading_message = await bot.edit_message_text(
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
     result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
@@ -29,9 +29,23 @@ Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
     raise err(cls.text or description)
 aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 05:14:55] ERROR
+[2024-06-02 18:11:36] ERROR
+Cause exception while getting updates.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
+    updates = await self.bot.get_updates(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
+    result = await self.request(api.Methods.GET_UPDATES, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
+    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
+    raise exceptions.TelegramAPIError(description)
+aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
+[2024-06-03 23:46:31] ERROR
 Task exception was never retrieved
-future: <Task finished name='Task-488' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
+future: <Task finished name='Task-6273' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=TypeError("object NoneType can't be used in 'await' expression")>
 Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
     for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
@@ -43,22 +57,12 @@ Traceback (most recent call last):
     return await self.callback_query_handlers.notify(update.callback_query)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
     response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 75, in client_register
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 05:15:02] ERROR
+  File "C:\Users\Administrator\Desktop\food2mood\main.py", line 574, in review_end
+    await db.add_food_to_mood_coin(user, coin_counter)
+TypeError: object NoneType can't be used in 'await' expression
+[2024-06-04 13:06:38] ERROR
 Task exception was never retrieved
-future: <Task finished name='Task-493' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
+future: <Task finished name='Task-8778' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=IndexError('list index out of range')>
 Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
     for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
@@ -70,182 +74,6 @@ Traceback (most recent call last):
     return await self.callback_query_handlers.notify(update.callback_query)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
     response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 75, in client_register
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 05:15:07] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-498' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 75, in client_register
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 05:15:48] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-515' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 136, in client_register
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 05:16:06] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-524' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 125, in client_register
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 05:16:21] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-532' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 130, in food_mood
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 05:16:34] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-545' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 184, in food_choose_get
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-05-31 06:46:15] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-807' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageCantBeDeleted("Message can't be deleted for everyone")>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 886, in bon_appetite
-    await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3300, in delete_message
-    return await self.request(api.Methods.DELETE_MESSAGE, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageCantBeDeleted: Message can't be deleted for everyone
-[2024-06-02 14:54:49] INFO
-Stop polling...
-[2024-06-02 14:54:49] WARNING
-Goodbye!
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 729, in food_category
+    f"\U0001f4dd\u041d\u0430 100 \u0433\u0440: <tg-spoiler><i>{dish['\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435'].split(';')[1]}</i></tg-spoiler>\n"
+IndexError: list index out of range
