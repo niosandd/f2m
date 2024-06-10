@@ -75,11 +75,11 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
-            text=f"<b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b>\n"
+            text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
                     f"▶ Вопрос 1/4:\n"
                     f"\n"
-                    f"<b>Какой ваш пол?</b>",
+                    f"<b>Выбери свой пол:</b>",
             reply_markup=buttons_client_00('sex')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_sex')
@@ -88,11 +88,11 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
-            text=f"<b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b>\n"
+            text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
                     f"▶ Вопрос 2/4:\n"
                     f"\n"
-                    f"<b>Выберите свой возраст?</b>",
+                    f"<b>Выбери свой возраст:</b>",
             reply_markup=buttons_client_00('age')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_age')
@@ -101,11 +101,11 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
-            text=f"<b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b>\n"
+            text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
                     f"▶ Вопрос 3/4:\n"
                     f"\n"
-                    f"<b>Какой вы предпочитаете стиль питания?</b>",
+                    f"<b>Какой стиль питания ты предпочитаешь?</b>",
             reply_markup=buttons_client_00('style')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_style')
@@ -114,9 +114,9 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=int(db.get_users_mode(user)['id']),
-            text=f"<b>Благодарим за регистрацию!</b>\n"
+            text=f"<b>Спасибо за регистрацию!🤗</b>\n"
                     f"\n"
-                    f"✅ Анкета заполнена! Теперь ты можешь получить персональные рекомендации по еде!",
+                    f"Анкета заполнена, теперь ты можешь получить персональные рекомендации🔥\n\n",
             reply_markup=buttons_client_00('ready')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_ready')
@@ -125,9 +125,9 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=int(db.get_users_mode(user)['id']),
-            text=f"<b>Благодарим за регистрацию!</b>\n"
+            text=f"<b>Спасибо за регистрацию!🤗</b>\n"
                     f"\n"
-                    f"✅ Анкета заполнена! Теперь ты можешь получить персональные рекомендации по еде!",
+                    f"Анкета заполнена, теперь ты можешь получить персональные рекомендации🔥\n\n",
             reply_markup=buttons_client_00('ready')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_e_ready')
@@ -136,11 +136,11 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
-            text=f"<b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b>\n"
+            text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
                     f"▶ Вопрос 4/4:\n"
                     f"\n"
-                    f"<b>Что вы НЕ едите?</b>\n"
+                    f"<b>Что ты не ешь?</b>\n"
                     f"\n"
                     f"<i>Напишите ответ одним сообщением в чат. А наш искусственный интеллект food2mood "
                  f"проанализирует запрос и пришлёт список продуктов для уточнения 😉✌️</i>",

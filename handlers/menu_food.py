@@ -130,7 +130,7 @@ async def food_mood(call: types.CallbackQuery):
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
-        text=f"Пожалуйста, выбери своё текущее настроение, чтобы мы порекомендовали блюда специально для тебя! 👇🏻",
+        text=f"<b>Пожалуйста, выбери своё настроение👇</b>",
         reply_markup=buttons_food_00()
     )
     db.set_users_mode(user, message_obj.message_id, 'food_mood')
@@ -287,8 +287,7 @@ async def request_qr_photo(call: types.CallbackQuery):
                 chat_id=user,
                 message_id=call.message.message_id,
                 text=f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}? \n\n"
-                f"Если нет, то отсканируй QR-код на буклете food2mood непосредственно в заведении"
-                f"и попробуй снова",
+                f"<i>Если нет, отсканируй QR-код на флаере в заведении и попробуй снова</i>",
                 reply_markup=qr_scanned())
     except Exception as e:
         print(e)
@@ -444,7 +443,7 @@ async def food_rec_get(user, message):
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=mode['id'],
-        text=f"Выберите, кто будет рекомендовать вам блюда 👇🏻",
+        text=f"Выбери, чьи рекомендации хочешь получить👇",
         reply_markup=buttons_food_03(rest[0])
     )
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
@@ -589,7 +588,7 @@ async def back_to_categories(call: types.CallbackQuery):
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
-        text=f"Выберите категорию блюд 👇🏻\n",
+        text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n <i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
         reply_markup=buttons_food_04(available_categories)
     )
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
@@ -622,7 +621,7 @@ async def food_rec(call: types.CallbackQuery):
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
-        text=f"Выберите категорию блюд 👇🏻\n",
+        text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n <i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
         reply_markup=buttons_food_04(available_categories)
     )
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
@@ -717,31 +716,31 @@ async def food_category(call: types.CallbackQuery):
                  f"\n"
                  f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
                  f"\n"
-                 f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
+                 f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
                  f"\n"
             # f"🧾 <b>Ингредиенты:</b>\n"
             # f"<code>{ingredients}</code>\n"
                  f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                  f"\n"
-                 f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
+                 f"📝КБЖУ на 100 гр: <i>{dish['Описание'].split(';')[0]}</i>\n"
                  f"\n"
-                 f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
+                 f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
         else:
-            text = (f"🍤 <b>Кафе:</b>\n"
-                 f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-                 f"\n"
+            text = (#f"🍤 <b>Кафе:</b>\n"
+                 # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                 # f"\n"
                  f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
                  f"\n"
-                 f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
+                 f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
                  f"\n"
             # f"🧾 <b>Ингредиенты:</b>\n"
             # f"<code>{ingredients}</code>\n"
                  f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                  f"\n"
-                 f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
-                 f"📝На 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                 f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
+                 f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                  f"\n"
-                 f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
+                 f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=loading_message.message_id,
@@ -804,31 +803,31 @@ async def send_dish(call: types.CallbackQuery):
                 f"\n"
                 f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
                 f"\n"
-                f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
+                f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
                 f"\n"
                 # f"🧾 <b>Ингредиенты:</b>\n"
                 # f"<code>{ingredients}</code>\n"
                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                 f"\n"
-                f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
+                f"📝КБЖУ на 100 гр: <i>{dish['Описание'].split(';')[0]}</i>\n"
                 f"\n"
-                f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
+                f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
     else:
-        text = (f"🍤 <b>Кафе:</b>\n"
-                f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-                f"\n"
+        text = (#f"🍤 <b>Кафе:</b>\n"
+                # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                # f"\n"
                 f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
                 f"\n"
-                f"{icons[length - numb]} <i>«{dish['Название']}»</i>\n"
+                f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
                 f"\n"
                 # f"🧾 <b>Ингредиенты:</b>\n"
                 # f"<code>{ingredients}</code>\n"
                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                 f"\n"
-                f"🗣️: <i>{dish['Описание'].split(';')[0]}</i>\n"
-                f"📝На 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
+                f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                 f"\n"
-                f"<i>Листайте блюда кнопками '«' и '»'</i>👇🏻")
+                f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
@@ -889,8 +888,7 @@ async def create_qr(call: types.CallbackQuery):
     with open('QR CODE.png', 'rb') as file:
         msg = await bot.send_photo(user, photo=file)
     await bot.send_message(user,
-                           text="🔍 Покажи QR-код отправленный выше своему официанту, "
-                                "чтобы он принял заказ! \n\n",
+                           text="Покажи этот QR-код официанту, чтобы он принял заказ 👀\n\n",
                            reply_markup=create_qr_keyboard(msg["message_id"]),
                            parse_mode='HTML')
 
@@ -907,7 +905,7 @@ async def bon_appetite(call: types.CallbackQuery):
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
-        text=f"<blockquote>Приятного аппетита! ☺️🙏</blockquote>\nСпасибо, что воспользовался сервисом персональных рекомендаций блюд под настроение от <a href='https://t.me/food_2_mood'>food2mood</a>! 😃🤌",
+        text=f"Спасибо, что воспользовался сервисом <a href='https://t.me/food_2_mood'>food2mood</a>!❤️\n\n <i>Приятного аппетита!</i>",
         reply_markup=bon_appetite_keyboard(),
         parse_mode='HTML'
     )
@@ -959,7 +957,7 @@ def bon_appetite_keyboard():
 def create_qr_keyboard(message_id):
     keyboard = InlineKeyboardMarkup(row_width=1)
 
-    btn1 = InlineKeyboardButton(text="Я показал QR-код официанту!",
+    btn1 = InlineKeyboardButton(text="Готово!",
                                 callback_data=f"bon_appetite{message_id}")
 
     btn2 = InlineKeyboardButton(text="« Вернуться к рекомендациям",
