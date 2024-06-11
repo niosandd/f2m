@@ -907,17 +907,19 @@ async def change_basket(call: types.CallbackQuery):
         if basket_mode == "add":
             new_basket = eval(basket)
             new_basket.append(dish)
+            in_basket = True
         else:
             new_basket = eval(basket)
             try:
                 new_basket.remove(dish)
             except ValueError:
                 pass
+            in_basket = False
         db.set_basket(user, str(new_basket))
         await bot.edit_message_reply_markup(
             chat_id=user,
             message_id=call.message.message_id,
-            reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, True))
+            reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket))
     except Exception as e:
         print("basket error", e)
 
