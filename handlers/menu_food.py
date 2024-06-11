@@ -914,7 +914,7 @@ async def change_basket(call: types.CallbackQuery):
             except ValueError:
                 pass
         db.set_basket(user, str(new_basket))
-        await call.message.edit_message_reply_markup(
+        await bot.edit_message_reply_markup(
             reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, True))
     except Exception as e:
         print("basket error", e)
