@@ -649,7 +649,7 @@ class Database:
     # ===== ТАБЛИЦА: baskets =================================================================================================
     # ======================================================================================================================
 
-    def create_basket(self, user_id, basket=None):
+    def create_basket(self, user_id, basket="[]"):
         with self.connection:
             return self.cursor.execute(
                 "INSERT INTO baskets (user_id, basket) VALUES (?, ?)",
