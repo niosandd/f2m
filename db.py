@@ -644,3 +644,37 @@ class Database:
         with self.connection:
             result = self.cursor.execute("SELECT waiter_score FROM waiters WHERE waiter_id=?", (user_id,)).fetchall()
             return result[0][0]
+
+    # ======================================================================================================================
+    # ===== ТАБЛИЦА: baskets =================================================================================================
+    # ======================================================================================================================
+
+    def create_basket(self, user_id, basket=None):
+        with self.connection:
+            return self.cursor.execute(
+                "INSERT INTO baskets (user_id, basket) VALUES (?, ?)",
+                (user_id, basket))
+
+    def check_basket_exists(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM baskets WHERE basket_id=?", (user_id,)).fetchall()
+            return bool(len(result))
+
+    def set_basket(self, user_id, basket):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE baskets SET basket = ? WHERE user_id = ?",
+                (basket, user_id))
+
+    def get_basket(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT basket FROM baskets WHERE user_id=?", (user_id,)).fetchall()
+            return result[0][0]
+
+    def del_basket(self, user_id):
+        with self.connection:
+            return self.cursor.execute(
+                "DELETE FROM baskets WHERE user_id = ?",
+                (user_id,))
+
+

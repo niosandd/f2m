@@ -839,41 +839,40 @@ async def send_dish(call: types.CallbackQuery):
     db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
 
 
-def buttons_food_05(dish: int | None, length: int | None, last: int | None):
-    menu = InlineKeyboardMarkup(row_width=3)
-
-    if dish is not None and length != 1:
-        if dish > 0:
-            btn1 = InlineKeyboardButton(text=f"« {length - last - 1}",
-                                        callback_data="send_dish_back")
-
-            if last == 0:
-                menu.row(btn1)
-            else:
-                btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
-                                            callback_data="send_dish_next")
-                menu.row(btn1, btn2)
-
-        else:
-            btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
-                                        callback_data="send_dish_next")
-            menu.add(btn2)
-    # food_rec
-    # menu_start
-    btn1 = InlineKeyboardButton(text="« Поменять категорию",
-                                callback_data="food_rec")
-
-    btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
-                                callback_data="menu_start")
-
-    btn3 = InlineKeyboardButton(text="Я выбрал(а) блюдо ‼️",
-                                callback_data="search_dish")
-    menu.add(btn1)
-    menu.add(btn2)
-    menu.add(btn3)
-
-    return menu
-
+# def buttons_food_05(dish: int | None, length: int | None, last: int | None): # ПОЧЕМУ ПОВТОРЯЕТСЯ ФУНКЦИЯ?
+#     menu = InlineKeyboardMarkup(row_width=3)
+#
+#     if dish is not None and length != 1:
+#         if dish > 0:
+#             btn1 = InlineKeyboardButton(text=f"« {length - last - 1}",
+#                                         callback_data="send_dish_back")
+#
+#             if last == 0:
+#                 menu.row(btn1)
+#             else:
+#                 btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
+#                                             callback_data="send_dish_next")
+#                 menu.row(btn1, btn2)
+#
+#         else:
+#             btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
+#                                         callback_data="send_dish_next")
+#             menu.add(btn2)
+#     # food_rec
+#     # menu_start
+#     btn1 = InlineKeyboardButton(text="« Поменять категорию",
+#                                 callback_data="food_rec")
+#
+#     btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
+#                                 callback_data="menu_start")
+#
+#     btn3 = InlineKeyboardButton(text="Я выбрал(а) блюдо ‼️",
+#                                 callback_data="search_dish")
+#     menu.add(btn1)
+#     menu.add(btn2)
+#     menu.add(btn3)
+#
+#     return menu
 
 @dp.callback_query_handler(text_contains=f"create_qr")
 async def create_qr(call: types.CallbackQuery):
@@ -891,6 +890,29 @@ async def create_qr(call: types.CallbackQuery):
                            text="Покажи этот QR-код официанту, чтобы он принял заказ 👀\n\n",
                            reply_markup=create_qr_keyboard(msg["message_id"]),
                            parse_mode='HTML')
+
+
+@dp.callback_query_handler(text_contains=f"basket")
+async def change_basket(call: types.CallbackQuery):
+    try:
+        user = call.from_user.id
+        if not db.check_basket_exists(user):
+            db.create_basket(user)
+        basket_mode = call.data.split("basket_")[-1]
+        dish, length, numb = menu.get_dish(user)
+        dish_id = db.get_client_temp_dish_id(user)
+        dish = db.restaurants_get_by_id(dish_id)
+        basket = db.get_basket(user)
+        if basket_mode == "add":
+            new_basket = eval(basket).append(dish)
+        else:
+            new_basket = eval(basket)
+            new_basket.remove(dish)
+        db.set_basket(user, new_basket)
+        await call.message.edit_message_reply_markup(
+            reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, True))
+    except Exception as e:
+        print("basket error", e)
 
 
 @dp.callback_query_handler(text_contains=f"bon_appetite")
@@ -1008,9 +1030,8 @@ def search_dish_keyboard():
     return keyboard
 
 
-def buttons_food_05(dish: int | None, length: int | None, last: int | None):  # ПОЧЕМУ ПОВТОРЯЕТСЯ ФУНКЦИЯ?
+def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_basket: bool | None = None):
     menu = InlineKeyboardMarkup(row_width=3)
-
     if dish is not None and length != 1:
         if dish > 0:
             btn1 = InlineKeyboardButton(text=f"« {length - last - 1}",
@@ -1027,7 +1048,13 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None):  # 
             btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
                                         callback_data="send_dish_next")
             menu.add(btn2)
-    food_rec
+        if in_basket:
+            btn0 = InlineKeyboardButton(text="Убрать блюдо из корзины",
+                                        callback_data=f"basket_add")
+        else:
+            btn0 = InlineKeyboardButton(text="Добавить блюдо в корзину",
+                                        callback_data=f"basket_remove")
+        menu.add(btn0)
     # menu_start
     btn1 = InlineKeyboardButton(text="« Поменять категорию",
                                 callback_data="food_rec")
@@ -1037,12 +1064,11 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None):  # 
 
     # btn3 = InlineKeyboardButton(text="Я выбрал(а) блюдо ‼️",
     #                             callback_data="bon_appetite")
-    btn3 = InlineKeyboardButton(text="Я выбрал(а) блюдо ‼️",
+    btn3 = InlineKeyboardButton(text="Я готов сделать заказ ‼️",
                                 callback_data="create_qr")
     menu.add(btn1)
     menu.add(btn2)
     menu.add(btn3)
-
     return menu
 
 
