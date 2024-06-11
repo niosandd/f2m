@@ -287,7 +287,7 @@ async def request_qr_photo(call: types.CallbackQuery):
                 chat_id=user,
                 message_id=call.message.message_id,
                 text=f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}? \n\n"
-                f"<i>Если нет, отсканируй QR-код на флаере в заведении и попробуй снова</i>",
+                     f"<i>Если нет, отсканируй QR-код на флаере в заведении и попробуй снова</i>",
                 reply_markup=qr_scanned())
     except Exception as e:
         print(e)
@@ -712,35 +712,35 @@ async def food_category(call: types.CallbackQuery):
         #     ingredients += f"• {str(ing).strip()}\n"
         if dish['Ресторан'] == "Блан де Блан":
             text = (f"🍤 <b>Кафе:</b>\n"
-                 f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-                 f"\n"
-                 f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
-                 f"\n"
-                 f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
-                 f"\n"
-            # f"🧾 <b>Ингредиенты:</b>\n"
-            # f"<code>{ingredients}</code>\n"
-                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
-                 f"\n"
-                 f"📝КБЖУ на 100 гр: <i>{dish['Описание'].split(';')[0]}</i>\n"
-                 f"\n"
-                 f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
+                    f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                    f"\n"
+                    f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+                    f"\n"
+                    f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
+                    f"\n"
+                    # f"🧾 <b>Ингредиенты:</b>\n"
+                    # f"<code>{ingredients}</code>\n"
+                    f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+                    f"\n"
+                    f"📝КБЖУ на 100 гр: <i>{dish['Описание'].split(';')[0]}</i>\n"
+                    f"\n"
+                    f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
         else:
-            text = (#f"🍤 <b>Кафе:</b>\n"
-                 # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-                 # f"\n"
-                 f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
-                 f"\n"
-                 f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
-                 f"\n"
-            # f"🧾 <b>Ингредиенты:</b>\n"
-            # f"<code>{ingredients}</code>\n"
-                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
-                 f"\n"
-                 f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                 f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
-                 f"\n"
-                 f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
+            text = (  #f"🍤 <b>Кафе:</b>\n"
+                # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                # f"\n"
+                f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+                f"\n"
+                f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
+                f"\n"
+                # f"🧾 <b>Ингредиенты:</b>\n"
+                # f"<code>{ingredients}</code>\n"
+                f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+                f"\n"
+                f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
+                f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                f"\n"
+                f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
         if db.check_basket_exists(user):
             basket = eval(db.get_basket(user))
             if dish['Название'] in basket:
@@ -821,21 +821,21 @@ async def send_dish(call: types.CallbackQuery):
                 f"\n"
                 f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
     else:
-        text = (#f"🍤 <b>Кафе:</b>\n"
-                # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-                # f"\n"
-                f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
-                f"\n"
-                f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
-                f"\n"
-                # f"🧾 <b>Ингредиенты:</b>\n"
-                # f"<code>{ingredients}</code>\n"
-                f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
-                f"\n"
-                f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
-                f"\n"
-                f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
+        text = (  #f"🍤 <b>Кафе:</b>\n"
+            # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+            # f"\n"
+            f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+            f"\n"
+            f"{icons[length - numb]} <i>{dish['Название']}</i>\n"
+            f"\n"
+            # f"🧾 <b>Ингредиенты:</b>\n"
+            # f"<code>{ingredients}</code>\n"
+            f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+            f"\n"
+            f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
+            f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+            f"\n"
+            f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
     if db.check_basket_exists(user):
         basket = eval(db.get_basket(user))
         if dish['Название'] in basket:
@@ -853,6 +853,19 @@ async def send_dish(call: types.CallbackQuery):
     db.set_users_mode(user, message_obj.message_id, 'send_dish')
     db.set_client_can_alert(user, round(time.time()))
     db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
+
+
+@dp.callback_query_handler(text_contains=f"check_order")
+async def check_order(call: types.CallbackQuery):
+    user = call.from_user.id
+    basket = eval(db.get_basket(user))
+    text = "❗️Проверь корзину, перед тем как сделать заказ ❗️"
+    await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text=text,
+        reply_markup=generate_basket(basket)
+    )
 
 
 @dp.callback_query_handler(text_contains=f"create_qr")
@@ -883,23 +896,40 @@ async def change_basket(call: types.CallbackQuery):
         dish, length, numb = menu.get_dish(user)
         dish_id = db.get_client_temp_dish_id(user)
         dish = db.restaurants_get_by_id(dish_id)[4]
-        basket = db.get_basket(user)
+        basket = eval(db.get_basket(user))
         if basket_mode == "add":
-            new_basket = eval(basket)
-            new_basket.append(dish)
+            basket.append(dish)
             in_basket = True
         else:
-            new_basket = eval(basket)
             try:
-                new_basket.remove(dish)
+                basket.remove(dish)
             except ValueError:
                 pass
             in_basket = False
-        db.set_basket(user, str(new_basket))
+        db.set_basket(user, str(basket))
         await bot.edit_message_reply_markup(
             chat_id=user,
             message_id=call.message.message_id,
             reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket))
+    except Exception as e:
+        print("basket error", e)
+
+
+@dp.callback_query_handler(text_contains=f"delete")
+async def change_basket(call: types.CallbackQuery):
+    try:
+        user = call.from_user.id
+        item_for_delete = call.data.split("delete_")[-1]
+        basket = eval(db.get_basket(user))
+        try:
+            basket.remove(item_for_delete)
+        except ValueError:
+            pass
+        db.set_basket(user, str(basket))
+        await bot.edit_message_reply_markup(
+            chat_id=user,
+            message_id=call.message.message_id,
+            reply_markup=generate_basket(basket))
     except Exception as e:
         print("basket error", e)
 
@@ -979,6 +1009,22 @@ def create_qr_keyboard(message_id):
     return keyboard
 
 
+def generate_basket(basket):
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    for item in basket:
+        btn = InlineKeyboardButton(text=str(item),
+                                   callback_data=f"delete_{item}")
+        keyboard.row(btn)
+    btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям",
+                                callback_data=f"send_dish_del{message_id}")
+    btn2 = InlineKeyboardButton(text="Оформить заказ ‼️",
+                                callback_data="create_qr")
+
+    keyboard.row(btn1)
+    keyboard.row(btn2)
+    return keyboard
+
+
 import asyncio
 from aiogram import types
 
@@ -1051,10 +1097,8 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_b
     btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
                                 callback_data="menu_start")
 
-    # btn3 = InlineKeyboardButton(text="Я выбрал(а) блюдо ‼️",
-    #                             callback_data="bon_appetite")
     btn3 = InlineKeyboardButton(text="Я готов сделать заказ ‼️",
-                                callback_data="create_qr")
+                                callback_data="check_order")
     menu.add(btn1)
     menu.add(btn2)
     menu.add(btn3)
