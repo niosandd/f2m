@@ -657,7 +657,7 @@ class Database:
 
     def check_basket_exists(self, user_id):
         with self.connection:
-            result = self.cursor.execute("SELECT * FROM baskets WHERE basket_id=?", (user_id,)).fetchall()
+            result = self.cursor.execute("SELECT * FROM baskets WHERE user_id=?", (user_id,)).fetchall()
             return bool(len(result))
 
     def set_basket(self, user_id, basket):
