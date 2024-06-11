@@ -857,15 +857,21 @@ async def send_dish(call: types.CallbackQuery):
 
 @dp.callback_query_handler(text_contains=f"check_order")
 async def check_order(call: types.CallbackQuery):
-    user = call.from_user.id
-    basket = eval(db.get_basket(user))
-    text = "❗️Проверь корзину, перед тем как сделать заказ ❗️"
-    await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text=text,
-        reply_markup=generate_basket(basket)
-    )
+    try:
+        user = call.from_user.id
+        if db.check_basket_exists(user):
+            basket = eval(db.get_basket(user))
+        else:
+            basket = []
+        text = "❗️Проверь корзину, перед тем как сделать заказ ❗️"
+        await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=text,
+            reply_markup=generate_basket(basket)
+        )
+    except Exception as e:
+        print("order error", e)
 
 
 @dp.callback_query_handler(text_contains=f"create_qr")
@@ -1011,17 +1017,21 @@ def create_qr_keyboard(message_id):
 
 def generate_basket(basket):
     keyboard = InlineKeyboardMarkup(row_width=1)
-    for item in basket:
-        btn = InlineKeyboardButton(text=str(item),
-                                   callback_data=f"delete_{item}")
-        keyboard.row(btn)
-    btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям",
-                                callback_data=f"send_dish_del{message_id}")
-    btn2 = InlineKeyboardButton(text="Оформить заказ ‼️",
-                                callback_data="create_qr")
-
-    keyboard.row(btn1)
-    keyboard.row(btn2)
+    if basket:
+        for item in basket:
+            btn = InlineKeyboardButton(text=str(item),
+                                       callback_data=f"delete_{item}")
+            keyboard.row(btn)
+        btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям",
+                                    callback_data=f"send_dish_del{message_id}")
+        btn2 = InlineKeyboardButton(text="Оформить заказ ‼️",
+                                    callback_data="create_qr")
+        keyboard.row(btn1)
+        keyboard.row(btn2)
+    else:
+        btn0 = InlineKeyboardButton(text="« Ваша корзина пуста. Нажмите, чтобы вернуться к рекомендациям",
+                                    callback_data=f"send_dish_del{message_id}")
+        keyboard.row(btn0)
     return keyboard
 
 
