@@ -915,6 +915,8 @@ async def change_basket(call: types.CallbackQuery):
                 pass
         db.set_basket(user, str(new_basket))
         await bot.edit_message_reply_markup(
+            chat_id=user,
+            message_id=call.message.message_id,
             reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, True))
     except Exception as e:
         print("basket error", e)
