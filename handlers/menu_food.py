@@ -741,11 +741,19 @@ async def food_category(call: types.CallbackQuery):
                  f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                  f"\n"
                  f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
+        if db.check_basket_exists(user):
+            basket = eval(db.get_basket(user))
+            if dish['Название'] in basket:
+                in_basket = True
+            else:
+                in_basket = False
+        else:
+            in_basket = False
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=loading_message.message_id,
             text=text,
-            reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb)
+            reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
         )
         db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
@@ -763,7 +771,7 @@ async def food_category(call: types.CallbackQuery):
                  f"Попробуйте поменять категорию блюд, настроение или список продуктов, которые вы НЕ едите 😉\n"
 
                  f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
-            reply_markup=buttons_food_05(None, None, None)
+            reply_markup=buttons_food_05(None, None, None, None)
         )
     db.set_users_mode(user, message_obj.message_id, 'food_category')
 
@@ -828,51 +836,24 @@ async def send_dish(call: types.CallbackQuery):
                 f"📝КБЖУ на 100 гр: <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                 f"\n"
                 f"<i>Листай с помощью кнопок '«' и '»'</i>👇🏻")
+    if db.check_basket_exists(user):
+        basket = eval(db.get_basket(user))
+        if dish['Название'] in basket:
+            in_basket = True
+        else:
+            in_basket = False
+    else:
+        in_basket = False
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
         text=text,
-        reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb)
+        reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
     )
     db.set_users_mode(user, message_obj.message_id, 'send_dish')
     db.set_client_can_alert(user, round(time.time()))
     db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
 
-
-# def buttons_food_05(dish: int | None, length: int | None, last: int | None): # ПОЧЕМУ ПОВТОРЯЕТСЯ ФУНКЦИЯ?
-#     menu = InlineKeyboardMarkup(row_width=3)
-#
-#     if dish is not None and length != 1:
-#         if dish > 0:
-#             btn1 = InlineKeyboardButton(text=f"« {length - last - 1}",
-#                                         callback_data="send_dish_back")
-#
-#             if last == 0:
-#                 menu.row(btn1)
-#             else:
-#                 btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
-#                                             callback_data="send_dish_next")
-#                 menu.row(btn1, btn2)
-#
-#         else:
-#             btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
-#                                         callback_data="send_dish_next")
-#             menu.add(btn2)
-#     # food_rec
-#     # menu_start
-#     btn1 = InlineKeyboardButton(text="« Поменять категорию",
-#                                 callback_data="food_rec")
-#
-#     btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
-#                                 callback_data="menu_start")
-#
-#     btn3 = InlineKeyboardButton(text="Я выбрал(а) блюдо ‼️",
-#                                 callback_data="search_dish")
-#     menu.add(btn1)
-#     menu.add(btn2)
-#     menu.add(btn3)
-#
-#     return menu
 
 @dp.callback_query_handler(text_contains=f"create_qr")
 async def create_qr(call: types.CallbackQuery):
@@ -903,7 +884,6 @@ async def change_basket(call: types.CallbackQuery):
         dish_id = db.get_client_temp_dish_id(user)
         dish = db.restaurants_get_by_id(dish_id)[4]
         basket = db.get_basket(user)
-        print(type(basket), basket)
         if basket_mode == "add":
             new_basket = eval(basket)
             new_basket.append(dish)
