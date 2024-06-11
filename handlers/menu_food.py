@@ -1059,10 +1059,10 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_b
             menu.add(btn2)
         if in_basket:
             btn0 = InlineKeyboardButton(text="Убрать блюдо из корзины",
-                                        callback_data=f"basket_add")
+                                        callback_data=f"basket_remove")
         else:
             btn0 = InlineKeyboardButton(text="Добавить блюдо в корзину",
-                                        callback_data=f"basket_remove")
+                                        callback_data=f"basket_add")
         menu.add(btn0)
     # menu_start
     btn1 = InlineKeyboardButton(text="« Поменять категорию",
