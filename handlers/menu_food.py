@@ -901,7 +901,7 @@ async def change_basket(call: types.CallbackQuery):
         basket_mode = call.data.split("basket_")[-1]
         dish, length, numb = menu.get_dish(user)
         dish_id = db.get_client_temp_dish_id(user)
-        dish = db.restaurants_get_by_id(dish_id)
+        dish = db.restaurants_get_by_id(dish_id)[4]
         basket = db.get_basket(user)
         print(type(basket), basket)
         if basket_mode == "add":
