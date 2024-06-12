@@ -1020,7 +1020,7 @@ def generate_basket(user):
         keyboard = InlineKeyboardMarkup(row_width=1)
         if len(basket) > 0:
             for dish in basket:
-                btn = InlineKeyboardButton(text=str(item),
+                btn = InlineKeyboardButton(text=str(dish),
                                            callback_data=f"delete_{basket[dish]}")
                 keyboard.row(btn)
             btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
