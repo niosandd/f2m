@@ -900,11 +900,11 @@ async def change_basket(call: types.CallbackQuery):
         dish = db.restaurants_get_by_id(dish_id)[4]
         basket = eval(db.get_basket(user))
         if basket_mode == "add":
-            basket.append(dish)
+            basket[dish] = dish_id
             in_basket = True
         else:
             try:
-                basket.remove(dish)
+                basket.pop(dish, None)
             except ValueError:
                 pass
             in_basket = False
@@ -924,7 +924,7 @@ async def change_basket(call: types.CallbackQuery):
         item_for_delete = call.data.split("delete_")[-1]
         basket = eval(db.get_basket(user))
         try:
-            basket.remove(item_for_delete)
+            basket.pop(item_for_delete, None)
         except ValueError:
             pass
         db.set_basket(user, str(basket))
@@ -1016,12 +1016,12 @@ def generate_basket(user):
         if db.check_basket_exists(user):
             basket = eval(db.get_basket(user))
         else:
-            basket = []
+            basket = {}
         keyboard = InlineKeyboardMarkup(row_width=1)
         if len(basket) > 0:
-            for item in basket:
+            for dish in basket:
                 btn = InlineKeyboardButton(text=str(item),
-                                           callback_data=f"delete_{item}")
+                                           callback_data=f"delete_{basket[dish]}")
                 keyboard.row(btn)
             btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
             btn2 = InlineKeyboardButton(text="Оформить заказ ‼️",
@@ -1029,8 +1029,7 @@ def generate_basket(user):
             keyboard.row(btn1)
             keyboard.row(btn2)
         else:
-            btn0 = InlineKeyboardButton(text="« Ваша корзина пуста. Нажмите, чтобы вернуться к рекомендациям",
-                                        callback_data="send_dish")
+            btn0 = InlineKeyboardButton(text="« Ваша корзина пуста", callback_data="send_dish")
             keyboard.row(btn0)
         return keyboard
     except Exception as e:

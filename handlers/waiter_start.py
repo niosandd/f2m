@@ -54,15 +54,26 @@ async def get_order(message: types.Message, order):
             temp_list = eval(db.get_waiter_score(user))
             temp_list.append(order)
         db.set_waiter_score(user, str(temp_list))
+        try:
+            basket = list(eval(db.get_basket(order)).keys())
+        except Exception as e:
+            print("waiter error", e)
+            basket = []
+        order_text = ""
+        for item in basket:
+            order_text += f"{item}\n"
         text = f'\nНовый заказ от:' \
                f'\n' \
                f'\n<b>{name}</b>' \
+               f'\n' \
+               f'{order_text}' \
                f'\n' \
                f'\n Ваше количество принятых заказов:' \
                f'\n' \
                f'\n<b>{len(set(temp_list))}</b>' \
                f'\n'
         await bot.send_message(user, text)
+        db.set_basket(order, "{}")
 
 
 """
