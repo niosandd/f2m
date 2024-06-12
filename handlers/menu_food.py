@@ -863,6 +863,8 @@ async def check_order(call: types.CallbackQuery):
             basket = eval(db.get_basket(user))
         else:
             basket = []
+        print(basket)
+        print(call.message.message_id)
         text = "❗️Проверь корзину, перед тем как сделать заказ ❗️"
         await bot.edit_message_text(
             chat_id=user,
