@@ -864,7 +864,7 @@ async def check_order(call: types.CallbackQuery):
             chat_id=user,
             message_id=call.message.message_id,
             text=text,
-            reply_markup=generate_basket()
+            reply_markup=generate_basket(user)
         )
     except Exception as e:
         print("order error", e)
@@ -931,7 +931,7 @@ async def change_basket(call: types.CallbackQuery):
         await bot.edit_message_reply_markup(
             chat_id=user,
             message_id=call.message.message_id,
-            reply_markup=generate_basket())
+            reply_markup=generate_basket(user))
     except Exception as e:
         print("basket error", e)
 
@@ -1011,7 +1011,7 @@ def create_qr_keyboard(message_id):
     return keyboard
 
 
-def generate_basket():
+def generate_basket(user):
     try:
         if db.check_basket_exists(user):
             basket = eval(db.get_basket(user))
