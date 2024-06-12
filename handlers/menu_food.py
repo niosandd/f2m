@@ -1016,27 +1016,22 @@ def create_qr_keyboard(message_id):
 
 
 def generate_basket(basket):
-    try:
-        keyboard = InlineKeyboardMarkup(row_width=1)
-        if len(basket) > 0:
-            for item in basket:
-                btn = InlineKeyboardButton(text=str(item),
-                                           callback_data=f"delete_{item}")
-                keyboard.row(btn)
-            btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям",
-                                        callback_data=f"send_dish_del{message_id}")
-            btn2 = InlineKeyboardButton(text="Оформить заказ ‼️",
-                                        callback_data="create_qr")
-            keyboard.row(btn1)
-            keyboard.row(btn2)
-        else:
-            btn0 = InlineKeyboardButton(text="« Ваша корзина пуста. Нажмите, чтобы вернуться к рекомендациям",
-                                        callback_data=f"send_dish_del{message_id}")
-            keyboard.row(btn0)
-        return keyboard
-    except Exception as e:
-        print("generate error", e)
-        return 0
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    if len(basket) > 0:
+        for item in basket:
+            btn = InlineKeyboardButton(text=str(item),
+                                       callback_data=f"delete_{item}")
+            keyboard.row(btn)
+        btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
+        btn2 = InlineKeyboardButton(text="Оформить заказ ‼️",
+                                    callback_data="create_qr")
+        keyboard.row(btn1)
+        keyboard.row(btn2)
+    else:
+        btn0 = InlineKeyboardButton(text="« Ваша корзина пуста. Нажмите, чтобы вернуться к рекомендациям",
+                                    callback_data="send_dish")
+        keyboard.row(btn0)
+    return keyboard
 
 
 import asyncio
