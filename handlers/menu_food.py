@@ -921,10 +921,11 @@ async def change_basket(call: types.CallbackQuery):
 async def change_basket(call: types.CallbackQuery):
     try:
         user = call.from_user.id
-        item_for_delete = call.data.split("delete_")[-1]
+        dish_id = call.data.split("delete_")[-1]
+        dish = db.restaurants_get_by_id(dish_id)[4]
         basket = eval(db.get_basket(user))
         try:
-            basket.pop(item_for_delete, None)
+            basket.pop(dish, None)
         except ValueError:
             pass
         db.set_basket(user, str(basket))

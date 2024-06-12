@@ -68,7 +68,7 @@ async def get_order(message: types.Message, order):
                f'\n' \
                f'{order_text}' \
                f'\n' \
-               f'\n Ваше количество принятых заказов:' \
+               f'\n Ваше количество уникальных заказов:' \
                f'\n' \
                f'\n<b>{len(set(temp_list))}</b>' \
                f'\n'
