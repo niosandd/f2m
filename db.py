@@ -423,6 +423,20 @@ class Database:
                 (user_id,)).fetchall()
             return int(result[0][0])
 
+    def get_dish_price(self, user_id) -> str:
+        with self.connection:
+            result = self.cursor.execute(
+                "SELECT dish_price FROM restaurants WHERE id = ?",
+                (user_id,)).fetchall()
+            return result
+
+    def get_g(self, user_id) -> str:
+        with self.connection:
+            result = self.cursor.execute(
+                "SELECT dish_g FROM restaurants WHERE id = ?",
+                (user_id,)).fetchall()
+            return result
+
     # ======================================================================================================================
     # ===== ТАБЛИЦА: restaurants =================================================================================================
     # ======================================================================================================================

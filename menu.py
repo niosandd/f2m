@@ -7,7 +7,7 @@ import random
 import pandas as pd
 
 def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
-               blacklist: str, numb: int):
+               blacklist: str, numb: int, price: int, g: int):
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.restaurants_get(restaurant), columns=[
         'id',
@@ -22,11 +22,13 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
         'Рекомендации нутрициолога',
         'Рекомендации сообщества',
         'Рекомендации Обломова',
-        'Рекомендации Евлеева',
+        'Ивлев',
         'Отзывы',
         'Рейтинг',
-        'Картинки',
-        'Ссылка'
+        'Коины',
+        'Ссылка',
+        'Цена',
+        'Граммы'
     ])
 
     # Выделяем только то меню, что сейчас запрашивает клиент
@@ -113,7 +115,10 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
             "Ингредиенты": dish_ingredients,
             "Стиль питания": dish[7],
             "Настроение": mood,
-            "Ссылка": dish[9]
+            "Ссылка": dish[9],
+            "Рейтинг": dish[14],
+            "Цена": dish[17],
+            "Грамм": dish[18]
         })
 
     # Возвращаем результат
@@ -134,8 +139,10 @@ def get_dish(user: int):
     rec = db.get_client_temp_recommendation(user)
     blacklist = db.get_client_blacklist(user)
     numb = db.get_client_temp_dish(user)
+    price = db.get_dish_price(user)
+    g = db.get_g(user)
 
-    return read_table(restaurant[0], category, mood, style, rec, blacklist, numb)
+    return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g)
 
 
 def check_blacklist_with_ai(blacklist, dish_ingredients):

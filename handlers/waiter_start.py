@@ -39,7 +39,7 @@ async def start(message: types.Message):
                f'\n'
         await bot.send_message(user, text)
     else:
-        text = f'\nВы уже зарегистрировались как официант'
+        text = f'\nТы уже зарегистрировался(ась) как официант'
         await bot.send_message(user, text)
 
 
