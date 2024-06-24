@@ -37,6 +37,8 @@ async def client_register(call: types.CallbackQuery):
             db.add_client(user, call.from_user.username)
             try:
                 db.set_client_temp_rest(user, temp_rest)
+                if db.check_basket_exists(user):
+                    db.set_basket(user, "{}")
             except Exception as e:
                 print(e)
         except:

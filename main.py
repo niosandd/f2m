@@ -105,6 +105,8 @@ async def start(message: types.Message):
                     rest_address = db.restaurants_find_address(rest_name)
                     if "rest" in decode_payload(message.get_args()):
                         db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
+                        if db.check_basket_exists(user):
+                            db.set_basket(user, "{}")
                 except Exception as e:
                     print(e)
             except Exception as e:
@@ -127,6 +129,8 @@ async def start(message: types.Message):
             rest_address = db.restaurants_find_address(rest_name)
             if "rest" in decode_payload(message.get_args()):
                 db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
+                if db.check_basket_exists(user):
+                    db.set_basket(user, "{}")
         except Exception as e:
             print(e)
 
@@ -159,6 +163,8 @@ async def mldzh(message: types.Message):
     if db.get_users_ban(user):
         return None
     db.set_client_temp_rest(user, None)
+    if db.check_basket_exists(user):
+        db.set_basket(user, "{}")
     try:
         await bot.delete_message(user, message.message_id)
     except Exception as e:
@@ -274,6 +280,8 @@ async def bot_message(message):
             data = message.text.split(':')
             db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
             db.set_client_temp_recommendation(user, None)
+            if db.check_basket_exists(user):
+                db.set_basket(user, "{}")
             try:
                 await bot.delete_message(user, mode['id'])
             except Exception as e:

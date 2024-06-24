@@ -438,6 +438,8 @@ async def food_rec_get(user, message):
     # Действие:
     db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
     db.set_client_temp_recommendation(user, None)
+    if db.check_basket_exists(user):
+        db.set_basket(user, "{}")
 
     rest = db.get_client_temp_rest(user).split(':')
     message_obj = await bot.edit_message_text(
@@ -506,6 +508,8 @@ async def food_rec_get3(call: types.CallbackQuery):
 
     db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
     db.set_client_temp_recommendation(user, None)
+    if db.check_basket_exists(user):
+        db.set_basket(user, "{}")
 
     rest = db.get_client_temp_rest(user).split(':')
     message_obj = await bot.edit_message_text(
@@ -910,7 +914,7 @@ async def create_qr(call: types.CallbackQuery):
                            text="Покажи этот QR-код <b>официанту</b>, чтобы он принял заказ 📥\n\n",
                            reply_markup=create_qr_keyboard(msg["message_id"]),
                            parse_mode='HTML')
-    # db.set_basket(user, "{}")
+    db.set_basket(user, "{}")
 
 
 @dp.callback_query_handler(text_contains=f"basket")
