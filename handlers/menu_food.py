@@ -687,102 +687,105 @@ def buttons_food_04(available_categories):
 
 @dp.callback_query_handler(text_contains=f"food_category")
 async def food_category(call: types.CallbackQuery):
-    user = call.from_user.id
+    try:
+        user = call.from_user.id
 
-    data = call.data.split('_')
-    if db.get_users_ban(user):
-        return None
+        data = call.data.split('_')
+        if db.get_users_ban(user):
+            return None
 
-    loading_message = await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text=f"Одну секунду... ⏳"
-    )
+        loading_message = await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=f"Одну секунду... ⏳"
+        )
 
-    # Действие:
-    category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
-    if category:  # Проверка на наличие категории
-        db.set_client_temp_category(user, category)
+        # Действие:
+        category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
+        if category:  # Проверка на наличие категории
+            db.set_client_temp_category(user, category)
 
-    rest = db.get_client_temp_rest(user).split(':')
-    db.set_client_temp_dish(user, 0)
-    dish, length, numb = menu.get_dish(user)
+        rest = db.get_client_temp_rest(user).split(':')
+        db.set_client_temp_dish(user, 0)
+        dish, length, numb = menu.get_dish(user)
 
-    if dish is not None:
-        # ingredients = ""
-        # for ing in dish['Ингредиенты']:
-        #     ingredients += f"• {str(ing).strip()}\n"
-        if dish['Ресторан'] == "Блан де Блан":
-            text = (  # f"🍤 <b>Кафе:</b>\n"
-                # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-                # f"\n"
-                f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
-                f"\n"
-                f"{icons[length - numb]} <i>{dish['Название']}</i>\n\n"
-                f"💰 <i>Цена: {dish['Цена']} руб.</i>\n"
-                f"⚖️ <i>Вес: {str(dish['Грамм'])} г.</i>"
-                f"\n\n"
-                # f"🧾 <b>Ингредиенты:</b>\n"
-                # f"<code>{ingredients}</code>\n"
-                f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
-                f"\n"
-                f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
-                f"\n"
-                f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
-                f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
-        else:
-            text = (  # f"🍤 <b>Кафе:</b>\n"
-                # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
-                # f"\n"
-                f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
-                f"\n"
-                f"{icons[length - numb]} <i>{dish['Название']}</i>\n\n"
-                f"💰 <i>Цена: {dish['Цена']} руб.</i>\n"
-                f"⚖️ <i>Вес: {str(dish['Грамм'])} г.</i>"
-                f"\n\n"
-                # f"🧾 <b>Ингредиенты:</b>\n"
-                # f"<code>{ingredients}</code>\n"
-                f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
-                f"\n"
-                f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
-                f"\n"
-                f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
+        if dish is not None:
+            # ingredients = ""
+            # for ing in dish['Ингредиенты']:
+            #     ingredients += f"• {str(ing).strip()}\n"
+            if dish['Ресторан'] == "Блан де Блан":
+                text = (  # f"🍤 <b>Кафе:</b>\n"
+                    # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                    # f"\n"
+                    f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+                    f"\n"
+                    f"{icons[length - numb]} <i>{dish['Название']}</i>\n\n"
+                    f"💰 <i>Цена: {dish['Цена']} руб.</i>\n"
+                    f"⚖️ <i>Вес: {str(dish['Грамм'])} г.</i>"
+                    f"\n\n"
+                    # f"🧾 <b>Ингредиенты:</b>\n"
+                    # f"<code>{ingredients}</code>\n"
+                    f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+                    f"\n"
+                    f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
+                    f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                    f"\n"
+                    f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                     f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
-        if db.check_basket_exists(user):
-            basket = eval(db.get_basket(user))
-            if dish['Название'] in basket:
-                in_basket = True
+            else:
+                text = (  # f"🍤 <b>Кафе:</b>\n"
+                    # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
+                    # f"\n"
+                    f"—— {icons[dish['Категория']]} <b>{dish['Категория']}</b> ——\n"
+                    f"\n"
+                    f"{icons[length - numb]} <i>{dish['Название']}</i>\n\n"
+                    f"💰 <i>Цена: {dish['Цена']} руб.</i>\n"
+                    f"⚖️ <i>Вес: {str(dish['Грамм'])} г.</i>"
+                    f"\n\n"
+                    # f"🧾 <b>Ингредиенты:</b>\n"
+                    # f"<code>{ingredients}</code>\n"
+                    f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
+                    f"\n"
+                    f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
+                    f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                    f"\n"
+                    f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
+                        f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
+            if db.check_basket_exists(user):
+                basket = eval(db.get_basket(user))
+                if dish['Название'] in basket:
+                    in_basket = True
+                else:
+                    in_basket = False
             else:
                 in_basket = False
+            message_obj = await bot.edit_message_text(
+                chat_id=user,
+                message_id=loading_message.message_id,
+                text=text,
+                reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
+            )
+            db.set_client_can_alert(user, round(time.time()))
+            db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
         else:
-            in_basket = False
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=loading_message.message_id,
-            text=text,
-            reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
-        )
-        db.set_client_can_alert(user, round(time.time()))
-        db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
-    else:
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=loading_message.message_id,
-            text=f"🍤 <b>Кафе:</b>\n"
-                 f"<i>«{rest[0]}», {rest[1]}</i>\n"
-                 f"\n"
-                 f"——— {icons[db.get_client_temp_category(user)]} <b>{db.get_client_temp_category(user)}</b> ———\n"
-                 f"\n"
-                 f"<b>Кажется, в этом заведении нет блюд, подходящих под ваши критерии</b> 🤔\n"
-                 f"\n"
-                 f"Попробуй поменять категорию блюд, настроение или список продуктов, которые ты не употребляешь в пищу 😉\n"
-
-                 f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
-            reply_markup=buttons_food_05(None, None, None, None)
-        )
-    db.set_users_mode(user, message_obj.message_id, 'food_category')
+            message_obj = await bot.edit_message_text(
+                chat_id=user,
+                message_id=loading_message.message_id,
+                text=f"🍤 <b>Кафе:</b>\n"
+                     f"<i>«{rest[0]}», {rest[1]}</i>\n"
+                     f"\n"
+                     f"——— {icons[db.get_client_temp_category(user)]} <b>{db.get_client_temp_category(user)}</b> ———\n"
+                     f"\n"
+                     f"<b>Кажется, в этом заведении нет блюд, подходящих под ваши критерии</b> 🤔\n"
+                     f"\n"
+                     f"Попробуй поменять категорию блюд, настроение или список продуктов, которые ты не употребляешь в пищу 😉\n"
+    
+                     f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
+                reply_markup=buttons_food_05(None, None, None, None)
+            )
+        db.set_users_mode(user, message_obj.message_id, 'food_category')
+    except Exception as e:
+        print(e)
 
 
 @dp.callback_query_handler(text_contains=f"send_dish")
