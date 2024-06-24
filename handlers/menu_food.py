@@ -904,6 +904,7 @@ async def create_qr(call: types.CallbackQuery):
                            text="Покажи этот QR-код <b>официанту</b>, чтобы он принял заказ 📥\n\n",
                            reply_markup=create_qr_keyboard(msg["message_id"]),
                            parse_mode='HTML')
+    db.set_basket(user, "{}")
 
 
 @dp.callback_query_handler(text_contains=f"basket")

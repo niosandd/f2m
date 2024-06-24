@@ -73,7 +73,6 @@ async def get_order(message: types.Message, order):
                f'\n<b>{len(set(temp_list))}</b>' \
                f'\n'
         await bot.send_message(user, text)
-        db.set_basket(order, "{}")
 
 
 """
