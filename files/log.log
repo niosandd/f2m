@@ -1,27 +1,10 @@
-[2024-06-18 07:19:26] INFO
+[2024-06-23 02:46:58] INFO
 Bot: food2mood - \u0435\u0434\u0430 \u043f\u043e\u0434 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 [@food2mood_bot]
-[2024-06-18 07:19:27] INFO
+[2024-06-23 02:46:58] INFO
 Start polling.
-[2024-06-18 08:16:52] ERROR
+[2024-06-23 03:47:20] ERROR
 Task exception was never retrieved
-future: <Task finished name='Task-296' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=AttributeError("'NoneType' object has no attribute 'split'")>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 256, in process_update
-    return await self.message_handlers.notify(update.message)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\main.py", line 292, in bot_message
-    dish = message.text.split(':')
-AttributeError: 'NoneType' object has no attribute 'split'
-[2024-06-20 00:23:05] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-9066' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
+future: <Task finished name='Task-35' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageToDeleteNotFound('Message to delete not found')>
 Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
     for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
@@ -33,7 +16,34 @@ Traceback (most recent call last):
     return await self.callback_query_handlers.notify(update.callback_query)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
     response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 535, in food_rec_get2
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 980, in bon_appetite
+    await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3300, in delete_message
+    return await self.request(api.Methods.DELETE_MESSAGE, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
+    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
+    exceptions.BadRequest.detect(description)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
+    raise err(cls.text or description)
+aiogram.utils.exceptions.MessageToDeleteNotFound: Message to delete not found
+[2024-06-23 11:08:44] ERROR
+Task exception was never retrieved
+future: <Task finished name='Task-1732' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
+    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
+    return await asyncio.gather(*tasks)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
+    return await self.callback_query_handlers.notify(update.callback_query)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
+    response = await handler_obj.handler(*args, **partial_data)
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 863, in send_dish
     message_obj = await bot.edit_message_text(
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
     result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
@@ -46,9 +56,9 @@ Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
     raise err(cls.text or description)
 aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-06-20 09:12:25] ERROR
+[2024-06-23 15:39:36] ERROR
 Task exception was never retrieved
-future: <Task finished name='Task-11399' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=TypeError("'NoneType' object is not subscriptable")>
+future: <Task finished name='Task-2578' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageToDeleteNotFound('Message to delete not found')>
 Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
     for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
@@ -60,12 +70,22 @@ Traceback (most recent call last):
     return await self.callback_query_handlers.notify(update.callback_query)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
     response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 815, in send_dish
-    if dish['\u0420\u0435\u0441\u0442\u043e\u0440\u0430\u043d'] == "\u0411\u043b\u0430\u043d \u0434\u0435 \u0411\u043b\u0430\u043d":
-TypeError: 'NoneType' object is not subscriptable
-[2024-06-20 09:25:46] ERROR
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 980, in bon_appetite
+    await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3300, in delete_message
+    return await self.request(api.Methods.DELETE_MESSAGE, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
+    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
+    exceptions.BadRequest.detect(description)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
+    raise err(cls.text or description)
+aiogram.utils.exceptions.MessageToDeleteNotFound: Message to delete not found
+[2024-06-24 06:12:02] ERROR
 Task exception was never retrieved
-future: <Task finished name='Task-11606' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=KeyError('get')>
+future: <Task finished name='Task-5565' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=KeyError('get')>
 Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
     for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
@@ -77,6 +97,6 @@ Traceback (most recent call last):
     return await self.callback_query_handlers.notify(update.callback_query)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
     response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 780, in food_category
+  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 782, in food_category
     f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
 KeyError: 'get'
