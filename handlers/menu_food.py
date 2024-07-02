@@ -732,7 +732,7 @@ async def food_category(call: types.CallbackQuery):
                     f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                     f"\n"
                     f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                    f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                    f"📝КБЖУ блюда :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                     f"\n"
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                     f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -837,7 +837,7 @@ async def send_dish(call: types.CallbackQuery):
                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                 f"\n"
                 f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                f"📝КБЖУ блюда :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                 f"\n"
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                         f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")

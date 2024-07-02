@@ -88,7 +88,7 @@ import handlers.menu_client as m_settings
 import handlers.menu_food as m_food
 
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands=['start', 'restart'])
 async def start(message: types.Message):
     user = message.from_user.id
     if "or" in decode_payload(message.get_args()):
