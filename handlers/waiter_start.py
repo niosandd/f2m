@@ -19,6 +19,14 @@ def waiter_action(first_name, location):
     print(f"│ [{Tools.timenow()}] {first_name} → {location}")
 
 
+def ind_to_number(ind):
+    numbers = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
+    result = ""
+    for char in str(ind):
+        result += numbers[int(char)]
+    return result
+
+
 async def start(message: types.Message):
     user = message.from_user.id
     # Новый официант:
@@ -60,18 +68,12 @@ async def get_order(message: types.Message, order):
             print("waiter error", e)
             basket = []
         order_text = ""
-        for item in basket:
-            order_text += f"{item}\n"
-        text = f'\nНовый заказ от:' \
-               f'\n' \
-               f'\n<b>{name}</b>' \
-               f'\n' \
+        for i in range(len(basket)):
+            order_text += ind_to_number(i + 1) + " " + basket[i] + "\n"
+        text = f'\n<b>Новый заказ:</b>' \
+               f'\n\n' \
                f'{order_text}' \
-               f'\n' \
-               f'\n Ваше количество уникальных заказов:' \
-               f'\n' \
-               f'\n<b>{len(set(temp_list))}</b>' \
-               f'\n'
+               f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
         await bot.send_message(user, text)
 
 
