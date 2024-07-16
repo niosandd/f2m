@@ -1,12 +1,12 @@
 {
     "telegram": {
         "api": "",
-        "admin": "-4184785738",
-        "reviews": "-4196076114"
+        "admin": "",
+        "reviews": ""
     },
     "chatgpt": "",
     "mode": {
-        "id": "6896659622",
+        "id": "",
         "key": ""
     }
 }
