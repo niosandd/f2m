@@ -27,7 +27,7 @@ import menu
 import pyqrcode
 import png
 
-token = "7016628811:AAEsbZR29HQ6GPmMS3aamYFduUsaXoPT1Ew"
+token = ""
 admin = config()['telegram']['admin']
 telepuzik = telebot.TeleBot(token)
 
