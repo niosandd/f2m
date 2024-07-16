@@ -317,7 +317,7 @@ def get_back():
     return keyboard
 
 
-token = "7016628811:AAEsbZR29HQ6GPmMS3aamYFduUsaXoPT1Ew"
+token = ""
 
 
 @dp.message_handler(content_types=['photo'])
