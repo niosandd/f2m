@@ -254,7 +254,7 @@ async def food_choose_get(call: types.CallbackQuery):
             text=message_text,
             reply_markup=buttons_food_001()
         )
-        db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_x')
+        db.set_users_mode(user, message_obj.message_id, 'food_inline_handler')
 
 
 def buttons_food_001():
