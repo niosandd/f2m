@@ -254,7 +254,7 @@ async def food_choose_get(call: types.CallbackQuery):
             text=message_text,
             reply_markup=buttons_food_001()
         )
-        db.set_users_mode(user, message_obj.message_id, 'food_inline_handler')
+        db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
 
 
 def buttons_food_001():
@@ -712,6 +712,28 @@ async def food_rec(call: types.CallbackQuery):
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
+        text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
+             f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
+        reply_markup=buttons_food_04(available_categories)
+    )
+    db.set_users_mode(user, message_obj.message_id, 'food_rec')
+
+
+async def food_rec2(user, data):
+    mode = db.get_users_mode(user)
+    rest_name = db.get_client_temp_rest(user).split(':')[0]
+    available_categories = db.restaurants_get_all_categories(rest_name)
+    if db.get_users_ban(user):
+        return None
+
+    # Действие:
+    db.set_client_temp_category(user, None)
+    if len(data) > 2:
+        db.set_client_temp_recommendation(user, data[-1])
+
+    message_obj = await bot.edit_message_text(
+        chat_id=user,
+        message_id=mode['id'],
         text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
              f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
         reply_markup=buttons_food_04(available_categories)
