@@ -299,10 +299,6 @@ async def bot_message(message):
             db.set_client_temp_recommendation(user, None)
             if db.check_basket_exists(user):
                 db.set_basket(user, "{}")
-            try:
-                await bot.delete_message(user, mode['id'])
-            except Exception as e:
-                print(e)
             await m_food.food_rec2(user, "food_rec_Нутрициолог".split('_'))
 
         # Выбор блюда из поиска
