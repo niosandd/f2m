@@ -105,6 +105,7 @@ async def start(message: types.Message):
                     rest_address = db.restaurants_find_address(rest_name)
                     if "rest" in decode_payload(message.get_args()):
                         db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
+                        db.set_client_last_qr_time(user, round(time.time()))
                         if db.check_basket_exists(user):
                             db.set_basket(user, "{}")
                 except Exception as e:

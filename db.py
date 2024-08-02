@@ -423,6 +423,19 @@ class Database:
                 (user_id,)).fetchall()
             return int(result[0][0])
 
+    def set_client_last_qr_time(self, user_id: int, last_qr_time: int):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE clients SET last_qr_time = ? WHERE id = ?",
+                (last_qr_time, user_id))
+
+    def get_client_last_qr_time(self, user_id) -> int:
+        with self.connection:
+            result = self.connection.execute(
+                "SELECT last_qr_time FROM clients WHERE id = ?",
+                (user_id,)).fetchall()
+            return int(result[0][0])
+
     def get_dish_price(self, user_id) -> str:
         with self.connection:
             result = self.cursor.execute(
