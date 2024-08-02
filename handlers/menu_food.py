@@ -27,7 +27,7 @@ import menu
 import pyqrcode
 import png
 
-token = ""
+token = "6016753377:AAFeYnZwgw34zgi84Rdr7HdvXhaqcccx8t4"
 admin = config()['telegram']['admin']
 telepuzik = telebot.TeleBot(token)
 
@@ -169,6 +169,58 @@ def buttons_food_00():
 """
 
 
+# @dp.callback_query_handler(text_contains=f"food_choose_get")
+# async def food_choose_get(call: types.CallbackQuery):
+#     user = call.from_user.id
+#     data = call.data.split('_')
+#     if db.get_users_ban(user):
+#         return None
+#
+#         # Действие:
+#     if len(data) > 2:
+#         db.set_client_temp_mood(user, data[-1])
+#
+#     # db.set_client_temp_rest(user, None)  Зачем это вообще надо?
+#     message_obj = await bot.edit_message_text(
+#         chat_id=user,
+#         message_id=call.message.message_id,
+#         text=f"<b>Отлично! Мы учли твоё настроение!</b> 🤝\n\n"
+#         # f"Не знаешь, куда сходить под выбранное настроение? Жми кнопку <b>«Куда сходить? 💫»</b>\n"
+#         # f"<blockquote>Мы с удовольствием порекомендуем место, где тебе будет хорошо💆‍♂️💆‍♀️</blockquote>\n\n"
+#              f"<i>Уже в заведении?</i> Если нет, мы поможем его подобрать! 🔍"
+#              f"\n",
+#         reply_markup=buttons_food_01()
+#     )
+#     db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+
+def get_user_profile_text(user_id):
+    # Извлекаем данные из базы данных с использованием соответствующих функций
+    sex = db.get_client_sex(user_id)
+    age = db.get_client_age(user_id)
+    style = db.get_client_style(user_id)
+    blacklist = db.get_client_blacklist(user_id)
+
+    # Устанавливаем значения по умолчанию, если данных нет или они равны None
+    sex = sex if sex and sex != 'None' else 'не определен 🤷'
+    age = age if age and age != 'None' else 'не определен 🤷'
+    style = style if style and style != 'None' else 'Стандартный 🥘'
+    blacklist = blacklist if blacklist and blacklist != 'None' else 'пусто ⭕️'
+
+    # Формируем текст сообщения
+    message_text = (
+        f"<b>Твоя анкета 📃</b>\n\n"
+        f"-----------Пол----------\n"
+        f"{sex}\n\n"
+        f"---------Возраст---------\n"
+        f"{age}\n\n"
+        f"-----Стиль питания-----\n"
+        f"{style}\n\n"
+        f"----------НЕ ЕШЬ----------\n"
+        f"{blacklist}"
+    )
+    return message_text
+
+
 @dp.callback_query_handler(text_contains=f"food_choose_get")
 async def food_choose_get(call: types.CallbackQuery):
     user = call.from_user.id
@@ -176,37 +228,44 @@ async def food_choose_get(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-        # Действие:
     if len(data) > 2:
         db.set_client_temp_mood(user, data[-1])
 
-    # db.set_client_temp_rest(user, None)  Зачем это вообще надо?
+    message_text = get_user_profile_text(user)
+
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
-        text=f"<b>Отлично! Мы учли твоё настроение!</b> 🤝\n\n"
-        # f"Не знаешь, куда сходить под выбранное настроение? Жми кнопку <b>«Куда сходить? 💫»</b>\n"
-        # f"<blockquote>Мы с удовольствием порекомендуем место, где тебе будет хорошо💆‍♂️💆‍♀️</blockquote>\n\n"
-             f"<i>Уже в заведении?</i> Если нет, мы поможем его подобрать! 🔍"
-             f"\n",
+        text=message_text,
         reply_markup=buttons_food_01()
     )
     db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
 
 
+@dp.message_handler(commands=['form'])
+async def send_profile(message: types.Message):
+    user = message.from_user.id
+    message_text = get_user_profile_text(user)
+    await message.answer(text=message_text, reply_markup=buttons_food_01())
+
+
 def buttons_food_01():
     menu = InlineKeyboardMarkup(row_width=3)
 
-    btn1 = InlineKeyboardButton(text="Подобрать заведение 🍽️", callback_data="food_restaurant")
-    # btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scan_qrcode")
-    btn3 = InlineKeyboardButton(text="Уже в заведении 🥘", callback_data="scanned_qrcode")
-    # btn2 = InlineKeyboardButton(text="Куда сходить? 💫", callback_data="food_choose_random")
-    btn9 = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
-    menu.add(btn3)
-    # menu.add(btn2)
-    menu.add(btn1)
-    menu.add(btn9)
+    # btn1 = InlineKeyboardButton(text="Подобрать заведение 🍽️", callback_data="food_restaurant")
+    # # btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scan_qrcode")
+    # btn3 = InlineKeyboardButton(text="Уже в заведении 🥘", callback_data="scanned_qrcode")
+    # # btn2 = InlineKeyboardButton(text="Куда сходить? 💫", callback_data="food_choose_random")
+    # btn9 = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
+    # menu.add(btn3)
+    # # menu.add(btn2)
+    # menu.add(btn1)
+    # menu.add(btn9)
+    btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="scanned_qrcode")
+    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
 
+    menu.add(btn1)
+    menu.add(btn2)
     return menu
 
 
@@ -270,9 +329,8 @@ async def request_qr_photo(call: types.CallbackQuery):
             await bot.edit_message_text(
                 chat_id=user,
                 message_id=call.message.message_id,
-                text="Специально для тебя мы открыли <b>доступ к меню</b> наших партнеров! 😉🤝\n\n"
-                     "Скорее смотри <u>подборки блюд под настроение</u> и приходи в заведения,"
-                     "где уже подключен food2mood. Будем там тебя ждать!",
+                text="Не знаешь куда сходить? 🧐\n\n"
+                     "<b>Искусственный интеллект food2mood подобрал заведения под твоё настроение!</b>",
                 reply_markup=get_back())
             db.set_users_mode(user, call.message.message_id, 'food_inline_handler')
         else:
@@ -313,11 +371,11 @@ def get_back():
                                 callback_data="food_choose_get")
 
     btn1 = InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')
-    keyboard.add(btn1,btn2)
+    keyboard.add(btn1, btn2)
     return keyboard
 
 
-token = ""
+token = "6016753377:AAFeYnZwgw34zgi84Rdr7HdvXhaqcccx8t4"
 
 
 @dp.message_handler(content_types=['photo'])
@@ -458,7 +516,7 @@ async def food_rec_get(user, message):
 #
 #     db.set_users_mode(user, call.message_obj.message_id, 'apply_restaurant')
 
-#КЛАСССС
+# КЛАСССС
 
 # @dp.callback_query_handler(lambda c: c.data == 'apply_restaurant_confirmed')
 # async def restaurant_confirmation(call: types.CallbackQuery):
@@ -754,7 +812,7 @@ async def food_category(call: types.CallbackQuery):
                     f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                     f"\n"
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
-                        f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
+                    f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
             if db.check_basket_exists(user):
                 basket = eval(db.get_basket(user))
                 if dish['Название'] in basket:
@@ -783,7 +841,7 @@ async def food_category(call: types.CallbackQuery):
                      f"<b>Кажется, в этом заведении нет блюд, подходящих под ваши критерии</b> 🤔\n"
                      f"\n"
                      f"Попробуй поменять категорию блюд, настроение или список продуктов, которые ты не употребляешь в пищу 😉\n"
-    
+
                      f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
                 reply_markup=buttons_food_05(None, None, None, None)
             )
@@ -839,8 +897,8 @@ async def send_dish(call: types.CallbackQuery):
                 f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
                 f"📝КБЖУ блюда :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                 f"\n"
-                    f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
-                        f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
+                f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
+                f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
         else:
             text = (  # f"🍤 <b>Кафе:</b>\n"
                 # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
@@ -858,8 +916,8 @@ async def send_dish(call: types.CallbackQuery):
                 f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
                 f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
                 f"\n"
-                    f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
-                        f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
+                f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
+                f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
         if db.check_basket_exists(user):
             basket = eval(db.get_basket(user))
             if dish['Название'] in basket:
