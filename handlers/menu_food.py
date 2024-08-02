@@ -244,6 +244,7 @@ async def food_choose_get(call: types.CallbackQuery):
         )
         db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
     else:
+
         message_text = "Не знаешь куда сходить? 🧐 \n\n"\
                        "<b>Искусственный интеллект food2mood  подобрал заведения под твоё настроение!</b>"
 
@@ -253,7 +254,7 @@ async def food_choose_get(call: types.CallbackQuery):
             text=message_text,
             reply_markup=buttons_food_001()
         )
-        db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+        db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_x')
 
 
 def buttons_food_001():
