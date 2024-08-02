@@ -444,7 +444,7 @@ def qr_scanned_keyboard():
 
 def qr_scanned():
     keyboard = InlineKeyboardMarkup(row_width=3)
-    choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'apply_')
+    choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'food_rec')
     change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
     keyboard.row(choose_category_button)
     keyboard.row(change_mood_button)
