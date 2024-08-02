@@ -141,7 +141,6 @@ def get_dish(user: int):
     numb = db.get_client_temp_dish(user)
     price = db.get_dish_price(user)
     g = db.get_g(user)
-    print(restaurant[0], category, mood, style, rec, blacklist, numb, price, g)
     return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g)
 
 

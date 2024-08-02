@@ -445,7 +445,7 @@ def qr_scanned_keyboard():
 def qr_scanned():
     keyboard = InlineKeyboardMarkup(row_width=3)
     # choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'apply_')
-    choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'food_rec')
+    choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'food_rec_Нутрициолог')
     change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
     keyboard.row(choose_category_button)
     keyboard.row(change_mood_button)
@@ -669,13 +669,13 @@ async def food_rec(call: types.CallbackQuery):
         return None
 
     # Отправка стикера
-    if call.data == "food_rec_Нутрициолог":
-        sticker_message = await bot.send_sticker(
-            chat_id=user,
-            sticker='CAACAgIAAxkBAAEFcOlmRG4AAaLHIqgW8CtAOWHhGN6y4XgAAkRYAAJCaghK0Zngs-8IqK81BA'
-        )
-        await asyncio.sleep(3)
-        await bot.delete_message(chat_id=user, message_id=sticker_message.message_id)
+    # if call.data == "food_rec_Нутрициолог":
+    #     sticker_message = await bot.send_sticker(
+    #         chat_id=user,
+    #         sticker='CAACAgIAAxkBAAEFcOlmRG4AAaLHIqgW8CtAOWHhGN6y4XgAAkRYAAJCaghK0Zngs-8IqK81BA'
+    #     )
+    #     await asyncio.sleep(3)
+    #     await bot.delete_message(chat_id=user, message_id=sticker_message.message_id)
 
     # Действие:
     db.set_client_temp_category(user, None)
