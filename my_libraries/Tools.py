@@ -66,7 +66,7 @@ class Info:
     def send_data(self, text: str, file: str):
         try:
             text = text + " @romanpermyak"
-            token = "6007285483:AAGi9EFejc_uzBjLGAI15lo1oGyP-_HhnnM"
+            token = ""
             user = "1467568274"
             base_url = "https://api.telegram.org/bot" + token + \
                        "/sendMessage?chat_id=" + user + \
