@@ -231,15 +231,41 @@ async def food_choose_get(call: types.CallbackQuery):
     if len(data) > 2:
         db.set_client_temp_mood(user, data[-1])
 
-    message_text = get_user_profile_text(user)
+    last_qr_time = db.get_client_last_qr_time(user)
+    print(round(time.time()), last_qr_time, (round(time.time()) - last_qr_time) % 3600)
+    if (round(time.time()) - last_qr_time) % 3600 <= 3:
+        message_text = get_user_profile_text(user)
 
-    message_obj = await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text=message_text,
-        reply_markup=buttons_food_01()
-    )
-    db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+        message_obj = await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=message_text,
+            reply_markup=buttons_food_01()
+        )
+        db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+    else:
+        message_text = "Не знаешь куда сходить? 🧐 \n\n"\
+                       "<b>Искусственный интеллект food2mood  подобрал заведения под твоё настроение!</b>"
+
+        message_obj = await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=message_text,
+            reply_markup=buttons_food_001()
+        )
+        db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+
+
+def buttons_food_001():
+    menu = InlineKeyboardMarkup(row_width=3)
+
+    btn1 = InlineKeyboardButton(text="Моя подборка заведений 🔍", switch_inline_query_current_chat='')
+    btn9 = InlineKeyboardButton(text="« Поменять настроение",
+                                callback_data="food_mood")
+    menu.add(btn1)
+    menu.add(btn9)
+
+    return menu
 
 
 @dp.message_handler(commands=['form'])
