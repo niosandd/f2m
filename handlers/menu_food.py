@@ -27,7 +27,7 @@ import menu
 import pyqrcode
 import png
 
-token = "6016753377:AAFeYnZwgw34zgi84Rdr7HdvXhaqcccx8t4"
+token = ""
 admin = config()['telegram']['admin']
 telepuzik = telebot.TeleBot(token)
 
@@ -375,7 +375,7 @@ def get_back():
     return keyboard
 
 
-token = "6016753377:AAFeYnZwgw34zgi84Rdr7HdvXhaqcccx8t4"
+token = ""
 
 
 @dp.message_handler(content_types=['photo'])
