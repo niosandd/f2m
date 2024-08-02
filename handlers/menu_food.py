@@ -444,6 +444,7 @@ def qr_scanned_keyboard():
 
 def qr_scanned():
     keyboard = InlineKeyboardMarkup(row_width=3)
+    # choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'apply_')
     choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'food_rec')
     change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
     keyboard.row(choose_category_button)
@@ -729,7 +730,8 @@ def buttons_food_04(available_categories):
                              callback_data="food_category_Напитки") if "Напитки" in available_categories else None,
         # InlineKeyboardButton(text=f"Хлеб {icons['Хлеб']}",
         #                      callback_data="food_category_Хлеб") if "Хлеб" in available_categories else None,
-        InlineKeyboardButton(text="« Поменять автора рекомендаций", callback_data="food_rec_get2")
+        # InlineKeyboardButton(text="« Поменять автора рекомендаций", callback_data="food_rec_get2")
+        InlineKeyboardButton(text="« Вернуться на главную", callback_data="menu_start")
     ]
 
     # Фильтрация None значений из списка кнопок и добавление их в меню
