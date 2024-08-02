@@ -30,7 +30,7 @@ def send_message(message: str) -> object:
         "settings": {
             "temperature": 0.7,
             "top_p": 0.5,
-            "model": "gpt-3.5-turbo-16k"
+            "model": "gpt-3.5-turbo"
         }
     })
 

@@ -1,96 +1,91 @@
-[2024-07-02 04:05:44] INFO
+[2024-07-22 08:58:08] INFO
 Bot: food2mood - \u0435\u0434\u0430 \u043f\u043e\u0434 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 [@food2mood_bot]
-[2024-07-02 04:05:44] INFO
+[2024-07-22 08:58:08] INFO
 Start polling.
-[2024-07-02 04:05:51] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-17' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageCantBeDeleted("Message can't be deleted for everyone")>
+[2024-07-26 18:12:11] ERROR
+Cause exception while getting updates.
 Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_food.py", line 906, in create_qr
-    await call.message.delete()
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\types\message.py", line 3096, in delete
-    return await self.bot.delete_message(self.chat.id, self.message_id)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3300, in delete_message
-    return await self.request(api.Methods.DELETE_MESSAGE, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
+    updates = await self.bot.get_updates(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
+    result = await self.request(api.Methods.GET_UPDATES, payload)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
     return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
     return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageCantBeDeleted: Message can't be deleted for everyone
-[2024-07-02 14:15:04] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-2132' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=TimeoutError()>
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
+    raise exceptions.TelegramAPIError(description)
+aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
+[2024-07-30 15:25:52] ERROR
+Cause exception while getting updates.
 Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 138, in client_register
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
+    updates = await self.bot.get_updates(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
+    result = await self.request(api.Methods.GET_UPDATES, payload)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
     return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 111, in check_result
+    raise exceptions.RetryAfter(parameters.retry_after)
+aiogram.utils.exceptions.RetryAfter: Flood control exceeded. Retry in 5 seconds.
+[2024-07-30 15:25:57] ERROR
+Cause exception while getting updates.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
+    updates = await self.bot.get_updates(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
+    result = await self.request(api.Methods.GET_UPDATES, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
+    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
+    raise exceptions.TelegramAPIError(description)
+aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
+[2024-08-02 00:33:59] ERROR
+Cause exception while getting updates.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\connector.py", line 980, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs)  # type: ignore[return-value]  # noqa
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1055, in create_connection
+    raise exceptions[0]
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1040, in create_connection
+    sock = await self._connect_sock(
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 954, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 704, in sock_connect
+    return await self._proactor.connect(sock, address)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 812, in _poll
+    value = callback(transferred, key, ov)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python310\lib\asyncio\windows_events.py", line 599, in finish_connect
+    ov.getresult()
+OSError: [WinError 121] The semaphore timeout period has expired
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 139, in make_request
     async with session.post(url, data=req, **kwargs) as response:
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\client.py", line 1167, in __aenter__
     self._resp = await self._coro
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\client.py", line 586, in _request
-    await resp.start(conn)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\client_reqrep.py", line 900, in start
-    with self._timer:
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\helpers.py", line 725, in __exit__
-    raise asyncio.TimeoutError from None
-asyncio.exceptions.TimeoutError
-[2024-07-02 14:15:04] ERROR
-Task exception was never retrieved
-future: <Task finished name='Task-2139' coro=<Dispatcher._process_polling_updates() done, defined at C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py:407> exception=MessageNotModified('Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message')>
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 415, in _process_polling_updates
-    for responses in itertools.chain.from_iterable(await self.process_updates(updates, fast)):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 235, in process_updates
-    return await asyncio.gather(*tasks)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 283, in process_update
-    return await self.callback_query_handlers.notify(update.callback_query)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\handler.py", line 117, in notify
-    response = await handler_obj.handler(*args, **partial_data)
-  File "C:\Users\Administrator\Desktop\food2mood\handlers\menu_client.py", line 138, in client_register
-    message_obj = await bot.edit_message_text(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 3122, in edit_message_text
-    result = await self.request(api.Methods.EDIT_MESSAGE_TEXT, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 115, in check_result
-    exceptions.BadRequest.detect(description)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\utils\exceptions.py", line 140, in detect
-    raise err(cls.text or description)
-aiogram.utils.exceptions.MessageNotModified: Message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message
-[2024-07-05 18:12:04] ERROR
-Cause exception while getting updates.
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\client.py", line 562, in _request
+    conn = await self._connector.connect(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\connector.py", line 540, in connect
+    proto = await self._create_connection(req, traces, timeout)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\connector.py", line 901, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\connector.py", line 1209, in _create_direct_connection
+    raise last_exc
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\connector.py", line 1178, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiohttp\connector.py", line 988, in _wrap_create_connection
+    raise client_error(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorError: Cannot connect to host api.telegram.org:443 ssl:default [The semaphore timeout period has expired]
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
     updates = await self.bot.get_updates(
@@ -98,50 +93,6 @@ Traceback (most recent call last):
     result = await self.request(api.Methods.GET_UPDATES, payload)
   File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
     return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 111, in check_result
-    raise exceptions.RetryAfter(parameters.retry_after)
-aiogram.utils.exceptions.RetryAfter: Flood control exceeded. Retry in 5 seconds.
-[2024-07-05 18:12:09] ERROR
-Cause exception while getting updates.
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
-    updates = await self.bot.get_updates(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
-    result = await self.request(api.Methods.GET_UPDATES, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
-    raise exceptions.TelegramAPIError(description)
-aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
-[2024-07-06 16:07:37] ERROR
-Cause exception while getting updates.
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
-    updates = await self.bot.get_updates(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
-    result = await self.request(api.Methods.GET_UPDATES, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 111, in check_result
-    raise exceptions.RetryAfter(parameters.retry_after)
-aiogram.utils.exceptions.RetryAfter: Flood control exceeded. Retry in 5 seconds.
-[2024-07-06 16:07:43] ERROR
-Cause exception while getting updates.
-Traceback (most recent call last):
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
-    updates = await self.bot.get_updates(
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
-    result = await self.request(api.Methods.GET_UPDATES, payload)
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
-    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
-    return check_result(method, response.content_type, response.status, await response.text())
-  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
-    raise exceptions.TelegramAPIError(description)
-aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 142, in make_request
+    raise exceptions.NetworkError(f"aiohttp client throws an error: {e.__class__.__name__}: {e}")
+aiogram.utils.exceptions.NetworkError: Aiohttp client throws an error: ClientConnectorError: Cannot connect to host api.telegram.org:443 ssl:default [The semaphore timeout period has expired]
