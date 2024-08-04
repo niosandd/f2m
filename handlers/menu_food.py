@@ -769,7 +769,6 @@ async def food_rec(call: types.CallbackQuery):
     recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
     try:
         recommendation = generate_recommendation(user)
-        print(recommendation)
         for dish in recommendation:
             recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
     except Exception as e:
@@ -801,7 +800,6 @@ async def food_rec2(user, data):
     recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
     try:
         recommendation = generate_recommendation(user)
-        print(recommendation)
         for dish in recommendation:
             recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
     except Exception as e:
