@@ -735,7 +735,7 @@ def generate_recommendation(user):
         for _ in range(10):
             dish = random.choice(dishes)
             if dish['Название'] not in banned_dishes and dish["Категория"] not in banned_categories:
-                recommendation.append((f"{dish["Категория"]} {icons[dish["Категория"]]}", dish["Название"]))
+                recommendation.append((f"{dish['Категория']} {icons[dish['Категория']]}", dish["Название"]))
                 banned_categories.append(dish["Категория"])
                 banned_dishes.append(dish["Название"])
             if len(recommendation) == 5:
