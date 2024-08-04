@@ -241,7 +241,7 @@ async def food_choose_get(call: types.CallbackQuery):
             chat_id=user,
             message_id=call.message.message_id,
             text=message_text,
-            reply_markup=buttons_food_01()
+            reply_markup=buttons_food_02()
         )
         db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
     else:
@@ -274,7 +274,7 @@ def buttons_food_001():
 async def send_profile(message: types.Message):
     user = message.from_user.id
     message_text = get_user_profile_text(user)
-    await message.answer(text=message_text, reply_markup=buttons_food_01())
+    await message.answer(text=message_text, reply_markup=buttons_food_02())
 
 
 def buttons_food_01():
