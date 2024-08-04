@@ -685,13 +685,73 @@ async def back_to_categories(call: types.CallbackQuery):
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
+def generate_recommendation(user):
+    mood = db.get_client_temp_mood(user)
+    style = db.get_client_style(user)
+    blacklist = db.get_client_blacklist(user)
+    # Загружаем таблицу с меню
+    df = pd.DataFrame(db.recommendations_get_all(), columns=[
+        'id',
+        'Название ресторана',
+        'Адрес ресторана',
+        'Категория',
+        'Название блюда',
+        'Описание блюда',
+        'Ингредиенты',
+        'Стиль питания',
+        'Настроение',
+        'Ссылка'
+    ])
+
+    # Выделяем только то меню, что сейчас запрашивает клиент
+    df = df[df['Настроение'].str.contains(mood)]
+    df = df[df['Стиль питания'].str.contains(style)]
+
+    if df.empty:
+        return None, None
+
+    dishes = []
+    for dish in df.values.tolist():
+        dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
+
+        if check_blacklist_with_ai(blacklist, dish_ingredients):
+            print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
+            print("Запрещенные ингредиенты:", blacklist)
+            print("Ингредиенты блюда:", dish_ingredients)
+            continue
+
+        dishes.append({
+            "Ресторан": dish[1],
+            "Адрес": dish[2],
+            "Категория": dish[3],
+            "Название": dish[4],
+            "Описание": dish[5],
+            "Ингредиенты": dish[6],
+            "Стиль питания": dish[7],
+            "Настроение": mood,
+            "Ссылка": dish[9]
+        })
+
+    if dishes:
+        recommendation = []
+        for _ in range(5):
+            dish = random.choice(dishes)
+            dish_id = db.restaurants_get_dish(
+                dish['Ресторан'],
+                dish['Адрес'],
+                dish['Название']
+            )[0]
+            if dish_id != db.get_client_temp_dish_id(user):
+                recommendation.append((dish["Категория"], dish["Название"]))
+        return recommendation
+    else:
+        return None
+
+
 @dp.callback_query_handler(text_contains=f"food_rec")
 async def food_rec(call: types.CallbackQuery):
     user = call.from_user.id
     data = call.data.split('_')
-
-    rest_name = db.get_client_temp_rest(user).split(':')[0]
-    available_categories = db.restaurants_get_all_categories(rest_name)
     if db.get_users_ban(user):
         return None
 
@@ -709,20 +769,25 @@ async def food_rec(call: types.CallbackQuery):
     if len(data) > 2:
         db.set_client_temp_recommendation(user, data[-1])
 
+    recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
+    recommendation = generate_recommendation(user)
+    for dish in recommendation:
+        recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
+    recommendation_text +=\
+        "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
+
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
-        text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
-             f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
-        reply_markup=buttons_food_04(available_categories)
+        text=recommendation_text,
+        reply_markup=menu_button()
     )
-    db.set_users_mode(user, message_obj.message_id, 'food_rec')
+    db.set_client_rec_message_id(user, call.message.message_id)
 
 
 async def food_rec2(user, data):
     mode = db.get_users_mode(user)
     rest_name = db.get_client_temp_rest(user).split(':')[0]
-    available_categories = db.restaurants_get_all_categories(rest_name)
     if db.get_users_ban(user):
         return None
 
@@ -731,9 +796,38 @@ async def food_rec2(user, data):
     if len(data) > 2:
         db.set_client_temp_recommendation(user, data[-1])
 
+    recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
+    recommendation = generate_recommendation(user)
+    for dish in recommendation:
+        recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
+    recommendation_text +=\
+        "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
+
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=mode['id'],
+        text=recommendation_text,
+        reply_markup=menu_button()
+    )
+    db.set_client_rec_message_id(user, mode['id'])
+
+
+def menu_button():
+    markup = InlineKeyboardMarkup(row_width=1)
+    markup.add(InlineKeyboardButton(text="Меню", callback_data="show_categories"))
+    return markup
+
+
+@dp.callback_query_handler(text_contains=f"show_categories")
+async def show_categories(call: types.CallbackQuery):
+    user = call.from_user.id
+    rest_name = db.get_client_temp_rest(user).split(':')[0]
+    available_categories = db.restaurants_get_all_categories(rest_name)
+    if db.get_users_ban(user):
+        return None
+
+    message_obj = await bot.send_message(
+        chat_id=user,
         text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
              f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
         reply_markup=buttons_food_04(available_categories)

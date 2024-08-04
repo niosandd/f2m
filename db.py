@@ -436,6 +436,19 @@ class Database:
                 (user_id,)).fetchall()
             return int(result[0][0])
 
+    def set_client_rec_message_id(self, user_id: int, rec_message_id: int):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE clients SET rec_message_id = ? WHERE id = ?",
+                (rec_message_id, user_id))
+
+    def get_client_rec_message_id(self, user_id) -> int:
+        with self.connection:
+            result = self.connection.execute(
+                "SELECT rec_message_id FROM clients WHERE id = ?",
+                (user_id,)).fetchall()
+            return int(result[0][0])
+
     def get_dish_price(self, user_id) -> str:
         with self.connection:
             result = self.cursor.execute(
