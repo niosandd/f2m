@@ -726,25 +726,18 @@ def generate_recommendation(user):
             "Адрес": dish[2],
             "Категория": dish[3],
             "Название": dish[4],
-            "Описание": dish[5],
-            "Ингредиенты": dish[6],
-            "Стиль питания": dish[7],
-            "Настроение": mood,
-            "Ссылка": dish[9]
         })
 
     if dishes:
         recommendation = []
+        banned_categories = []
+        banned_dishes = []
         for _ in range(5):
             dish = random.choice(dishes)
-            print(dish)
-            dish_id = db.restaurants_get_dish(
-                dish['Ресторан'],
-                dish['Адрес'],
-                dish['Название']
-            )[0]
-            if dish_id != db.get_client_temp_dish_id(user):
+            if dish['Название'] not in banned_dishes and dish["Категория"] not in banned_categories:
                 recommendation.append((dish["Категория"], dish["Название"]))
+                banned_categories.append(dish["Категория"])
+                banned_dishes.append(dish["Название"])
         return recommendation
     else:
         return None
