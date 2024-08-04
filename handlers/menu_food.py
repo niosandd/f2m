@@ -241,7 +241,7 @@ async def food_choose_get(call: types.CallbackQuery):
             chat_id=user,
             message_id=call.message.message_id,
             text=message_text,
-            reply_markup=buttons_food_02()
+            reply_markup=buttons_food_01()
         )
         db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
     else:
@@ -274,7 +274,7 @@ def buttons_food_001():
 async def send_profile(message: types.Message):
     user = message.from_user.id
     message_text = get_user_profile_text(user)
-    await message.answer(text=message_text, reply_markup=buttons_food_02())
+    await message.answer(text=message_text, reply_markup=buttons_food_01())
 
 
 def buttons_food_01():
@@ -360,7 +360,7 @@ async def request_qr_photo(call: types.CallbackQuery):
                 text="Не знаешь куда сходить? 🧐\n\n"
                      "<b>Искусственный интеллект food2mood подобрал заведения под твоё настроение!</b>",
                 reply_markup=get_back())
-            db.set_users_mode(user, call.message.message_id, 'food_inline_handler')
+            db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
         else:
             rest_name, rest_address = db.get_client_temp_rest(user).split(':')
             # Установка данных о ресторане
