@@ -715,7 +715,7 @@ def generate_recommendation(user):
     for dish in df.values.tolist():
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
 
-        if check_blacklist_with_ai(blacklist, dish_ingredients):
+        if menu.check_blacklist_with_ai(blacklist, dish_ingredients):
             print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
             print("Запрещенные ингредиенты:", blacklist)
             print("Ингредиенты блюда:", dish_ingredients)
