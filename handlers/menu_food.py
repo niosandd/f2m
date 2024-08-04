@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import random
+import pandas as pd
 import telebot
 import os
 
@@ -787,6 +788,7 @@ async def food_rec(call: types.CallbackQuery):
         reply_markup=menu_button()
     )
     db.set_client_rec_message_id(user, call.message.message_id)
+    db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
 async def food_rec2(user, data):
@@ -818,6 +820,7 @@ async def food_rec2(user, data):
         reply_markup=menu_button()
     )
     db.set_client_rec_message_id(user, mode['id'])
+    db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
 def menu_button():
