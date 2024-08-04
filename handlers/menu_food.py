@@ -777,13 +777,13 @@ async def food_rec(call: types.CallbackQuery):
     recommendation_text +=\
         "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
 
+    db.set_client_rec_message_id(user, call.message.message_id)
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=call.message.message_id,
         text=recommendation_text,
         reply_markup=menu_button()
     )
-    db.set_client_rec_message_id(user, call.message.message_id)
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
@@ -808,14 +808,13 @@ async def food_rec2(user, data):
         print(e)
     recommendation_text +=\
         "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
-
+    db.set_client_rec_message_id(user, mode['id'])
     message_obj = await bot.edit_message_text(
         chat_id=user,
         message_id=mode['id'],
         text=recommendation_text,
         reply_markup=menu_button()
     )
-    db.set_client_rec_message_id(user, mode['id'])
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
@@ -1182,6 +1181,10 @@ async def bon_appetite(call: types.CallbackQuery):
     message_id = call.data.split("bon_appetite")[-1]
     try:
         await bot.delete_message(user, int(message_id))
+    except Exception as e:
+        print(e)
+    try:
+        await bot.delete_message(user, db.get_client_rec_message_id(user))
     except Exception as e:
         print(e)
     message_obj = await bot.edit_message_text(
