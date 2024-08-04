@@ -103,9 +103,9 @@ async def start(message: types.Message):
                         db.add_client(user, message.from_user.username)
                     rest_name = decode_payload(message.get_args())[4:]
                     rest_address = db.restaurants_find_address(rest_name)
+                    db.set_client_last_qr_time(user, round(time.time()))
                     if "rest" in decode_payload(message.get_args()):
                         db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
-                        db.set_client_last_qr_time(user, round(time.time()))
                         if db.check_basket_exists(user):
                             db.set_basket(user, "{}")
                 except Exception as e:
@@ -128,9 +128,9 @@ async def start(message: types.Message):
                 db.add_client(user, message.from_user.username)
             rest_name = decode_payload(message.get_args())[4:]
             rest_address = db.restaurants_find_address(rest_name)
+            db.set_client_last_qr_time(user, round(time.time()))
             if "rest" in decode_payload(message.get_args()):
                 db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
-                db.set_client_last_qr_time(user, round(time.time()))
                 if db.check_basket_exists(user):
                     db.set_basket(user, "{}")
         except Exception as e:

@@ -749,6 +749,7 @@ def generate_recommendation(user):
 async def food_rec(call: types.CallbackQuery):
     user = call.from_user.id
     data = call.data.split('_')
+    rest_name = db.get_client_temp_rest(user).split(':')[0]
     if db.get_users_ban(user):
         return None
 
@@ -766,7 +767,7 @@ async def food_rec(call: types.CallbackQuery):
     if len(data) > 2:
         db.set_client_temp_recommendation(user, data[-1])
 
-    recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
+    recommendation_text = f"<b>🥇 ТОП блюд кафе {rest_name} из разных категорий под твоё настроение:</b>\n\n"
     try:
         recommendation = generate_recommendation(user)
         for dish in recommendation:
@@ -797,7 +798,7 @@ async def food_rec2(user, data):
     if len(data) > 2:
         db.set_client_temp_recommendation(user, data[-1])
 
-    recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
+    recommendation_text = f"<b>🥇 ТОП блюд кафе {rest_name} из разных категорий под твоё настроение:</b>\n\n"
     try:
         recommendation = generate_recommendation(user)
         for dish in recommendation:
