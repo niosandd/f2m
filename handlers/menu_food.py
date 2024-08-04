@@ -730,7 +730,7 @@ def generate_recommendation(user):
 
     if dishes:
         recommendation = []
-        banned_categories = []
+        banned_categories = ["Хлеб"]
         banned_dishes = []
         for _ in range(10):
             dish = random.choice(dishes)
