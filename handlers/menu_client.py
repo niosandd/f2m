@@ -21,6 +21,7 @@ async def client_register(call: types.CallbackQuery):
     user = call.from_user.id
     data = call.data.split('_')
     temp_rest = None
+    last_qr_time = 0
     if db.get_users_ban(user):
         return None
 
@@ -30,6 +31,7 @@ async def client_register(call: types.CallbackQuery):
             temp_rest = db.get_client_temp_rest(user)
         except Exception as e:
             print(e)
+        last_qr_time = db.get_client_last_qr_time(user)
         db.del_client(user)
 
     if not db.check_client(user):
@@ -37,6 +39,7 @@ async def client_register(call: types.CallbackQuery):
             db.add_client(user, call.from_user.username)
             try:
                 db.set_client_temp_rest(user, temp_rest)
+                db.set_client_last_qr_time(user, last_qr_time)
                 if db.check_basket_exists(user):
                     db.set_basket(user, "{}")
             except Exception as e:
