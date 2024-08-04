@@ -770,9 +770,13 @@ async def food_rec(call: types.CallbackQuery):
         db.set_client_temp_recommendation(user, data[-1])
 
     recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
-    recommendation = generate_recommendation(user)
-    for dish in recommendation:
-        recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
+    try:
+        recommendation = generate_recommendation(user)
+        print(recommendation)
+        for dish in recommendation:
+            recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
+    except Exception as e:
+        print(e)
     recommendation_text +=\
         "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
 
@@ -797,9 +801,13 @@ async def food_rec2(user, data):
         db.set_client_temp_recommendation(user, data[-1])
 
     recommendation_text = "<b>🥇 ТОП блюд кафе ... из разных категорий под твоё настроение:</b>\n\n"
-    recommendation = generate_recommendation(user)
-    for dish in recommendation:
-        recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
+    try:
+        recommendation = generate_recommendation(user)
+        print(recommendation)
+        for dish in recommendation:
+            recommendation_text += f"{dish[0]}\n{dish[1]}\n\n"
+    except Exception as e:
+        print(e)
     recommendation_text +=\
         "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
 
