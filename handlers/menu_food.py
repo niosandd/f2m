@@ -700,7 +700,7 @@ async def back_to_categories(call: types.CallbackQuery):
 def generate_recommendation(user):
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
-    restaurant = db.get_client_temp_rest(user)
+    # restaurant = db.get_client_temp_rest(user)
     blacklist = db.get_client_blacklist(user)
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.recommendations_get_all(), columns=[
@@ -726,7 +726,7 @@ def generate_recommendation(user):
     print(df.head() + "\n\n")
 
     if df.empty:
-        return None, None
+        return None
 
     dishes = []
     for dish in df.values.tolist():
