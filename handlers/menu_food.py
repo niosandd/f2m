@@ -202,18 +202,21 @@ def get_user_profile_text(user_id):
     blacklist = db.get_client_blacklist(user_id)
 
     # Устанавливаем значения по умолчанию, если данных нет или они равны None
-    if not (sex and sex != 'None'):
-        sex = 'не определен 🤷'
-        db.set_client_sex('не определен 🤷')
-    if not (age and age != 'None'):
-        age = 'не определен 🤷'
-        db.set_client_age('не определен 🤷')
-    if not (style and style != 'None'):
-        style = 'Стандартный 🥘'
-        db.set_client_style('Стандартный 🥘')
-    if not (blacklist and blacklist != 'None'):
-        blacklist = 'пусто ⭕️'
-        db.set_client_blacklist('пусто ⭕️')
+    try:
+        if not (sex and sex != 'None'):
+            sex = 'не определен 🤷'
+            db.set_client_sex('не определен 🤷')
+        if not (age and age != 'None'):
+            age = 'не определен 🤷'
+            db.set_client_age('не определен 🤷')
+        if not (style and style != 'None'):
+            style = 'Стандартный 🥘'
+            db.set_client_style('Стандартный 🥘')
+        if not (blacklist and blacklist != 'None'):
+            blacklist = 'пусто ⭕️'
+            db.set_client_blacklist('пусто ⭕️')
+    except Exception as e:
+        print(e)
 
     # Формируем текст сообщения
     message_text = (
