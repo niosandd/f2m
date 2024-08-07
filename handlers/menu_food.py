@@ -698,32 +698,35 @@ async def back_to_categories(call: types.CallbackQuery):
 
 
 def generate_recommendation(user):
-    mood = db.get_client_temp_mood(user)
-    style = db.get_client_style(user)
-    restaurant = db.get_client_temp_rest(user)
-    blacklist = db.get_client_blacklist(user)
-    # Загружаем таблицу с меню
-    df = pd.DataFrame(db.recommendations_get_all(), columns=[
-        'id',
-        'Название ресторана',
-        'Адрес ресторана',
-        'Категория',
-        'Название блюда',
-        'Описание блюда',
-        'Ингредиенты',
-        'Стиль питания',
-        'Настроение',
-        'Ссылка'
-    ])
+    try:
+        mood = db.get_client_temp_mood(user)
+        style = db.get_client_style(user)
+        restaurant = db.get_client_temp_rest(user)
+        blacklist = db.get_client_blacklist(user)
+        # Загружаем таблицу с меню
+        df = pd.DataFrame(db.recommendations_get_all(), columns=[
+            'id',
+            'Название ресторана',
+            'Адрес ресторана',
+            'Категория',
+            'Название блюда',
+            'Описание блюда',
+            'Ингредиенты',
+            'Стиль питания',
+            'Настроение',
+            'Ссылка'
+        ])
 
-    # Выделяем только то меню, что сейчас запрашивает клиент
-    print(df.head() + "\n\n")
-    df = df[df['Название ресторана'].str.contains(restaurant)]
-    print(df.head() + "\n\n")
-    df = df[df['Настроение'].str.contains(mood)]
-    print(df.head() + "\n\n")
-    df = df[df['Стиль питания'].str.contains(style)]
-    print(df.head() + "\n\n")
+        # Выделяем только то меню, что сейчас запрашивает клиент
+        print(df.head() + "\n\n")
+        df = df[df['Название ресторана'].str.contains(restaurant)]
+        print(df.head() + "\n\n")
+        df = df[df['Настроение'].str.contains(mood)]
+        print(df.head() + "\n\n")
+        df = df[df['Стиль питания'].str.contains(style)]
+        print(df.head() + "\n\n")
+    except Exception as e:
+        print(e)
 
     if df.empty:
         return None, None
