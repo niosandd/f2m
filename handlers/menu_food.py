@@ -205,16 +205,16 @@ def get_user_profile_text(user_id):
     try:
         if not (sex and sex != 'None'):
             sex = 'не определен 🤷'
-            db.set_client_sex('не определен 🤷')
+            db.set_client_sex(user_id, 'не определен 🤷')
         if not (age and age != 'None'):
             age = 'не определен 🤷'
-            db.set_client_age('не определен 🤷')
+            db.set_client_age(user_id, 'не определен 🤷')
         if not (style and style != 'None'):
             style = 'Стандартный 🥘'
-            db.set_client_style('Стандартный 🥘')
+            db.set_client_style(user_id, 'Стандартное')
         if not (blacklist and blacklist != 'None'):
             blacklist = 'пусто ⭕️'
-            db.set_client_blacklist('пусто ⭕️')
+            db.set_client_blacklist(user_id, 'Пусто')
     except Exception as e:
         print(e)
 
