@@ -1,4 +1,46 @@
-[2024-08-04 12:54:48] INFO
+[2024-08-04 13:22:57] INFO
 Bot: food2mood - \u0435\u0434\u0430 \u043f\u043e\u0434 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 [@food2mood_bot]
-[2024-08-04 12:54:48] INFO
+[2024-08-04 13:22:57] INFO
 Start polling.
+[2024-08-04 18:11:51] ERROR
+Cause exception while getting updates.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
+    updates = await self.bot.get_updates(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
+    result = await self.request(api.Methods.GET_UPDATES, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
+    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
+    raise exceptions.TelegramAPIError(description)
+aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
+[2024-08-05 18:13:44] ERROR
+Cause exception while getting updates.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
+    updates = await self.bot.get_updates(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
+    result = await self.request(api.Methods.GET_UPDATES, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
+    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
+    raise exceptions.TelegramAPIError(description)
+aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
+[2024-08-05 18:13:49] ERROR
+Cause exception while getting updates.
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\dispatcher\dispatcher.py", line 381, in start_polling
+    updates = await self.bot.get_updates(
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\bot.py", line 110, in get_updates
+    result = await self.request(api.Methods.GET_UPDATES, payload)
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\base.py", line 236, in request
+    return await api.make_request(await self.get_session(), self.server, self.__token, method, data, files,
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 140, in make_request
+    return check_result(method, response.content_type, response.status, await response.text())
+  File "C:\Users\Administrator\Desktop\food2mood\venv\lib\site-packages\aiogram\bot\api.py", line 128, in check_result
+    raise exceptions.TelegramAPIError(description)
+aiogram.utils.exceptions.TelegramAPIError: Bad Gateway
