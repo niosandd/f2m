@@ -849,7 +849,7 @@ async def show_categories(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-    if "again" in call.message.text:
+    if "again" in call.data:
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
