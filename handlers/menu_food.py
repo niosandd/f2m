@@ -849,12 +849,21 @@ async def show_categories(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-    message_obj = await bot.send_message(
-        chat_id=user,
-        text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
-             f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
-        reply_markup=buttons_food_04(available_categories)
-    )
+    if "again" in call.message.text:
+        message_obj = await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
+                 f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
+            reply_markup=buttons_food_04(available_categories)
+        )
+    else:
+        message_obj = await bot.send_message(
+            chat_id=user,
+            text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
+                 f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
+            reply_markup=buttons_food_04(available_categories)
+        )
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
@@ -1247,7 +1256,7 @@ def bon_appetite_keyboard():
                                 callback_data="menu_start")
 
     btn2 = InlineKeyboardButton(text="« Поменять категорию",
-                                callback_data="show_categories")
+                                callback_data="show_categories_again")
 
     btn3 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
 
@@ -1363,7 +1372,7 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_b
         menu.add(btn0)
     # menu_start
     btn1 = InlineKeyboardButton(text="« Поменять категорию",
-                                callback_data="show_categories")
+                                callback_data="show_categories_again")
 
     btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
                                 callback_data="menu_start")
