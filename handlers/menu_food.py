@@ -715,9 +715,9 @@ def generate_recommendation(user):
         'Настроение',
         'Ссылка'
     ])
-    print(mood, style, restaurant, blacklist)
+
     # Выделяем только то меню, что сейчас запрашивает клиент
-    # df = df[df['Название ресторана'].str.contains(restaurant)]
+    df = df[df['Название ресторана'].str.contains(restaurant)]
     df = df[df['Настроение'].str.contains(mood)]
     df = df[df['Стиль питания'].str.contains(style)]
 
