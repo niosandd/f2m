@@ -1247,7 +1247,7 @@ def bon_appetite_keyboard():
                                 callback_data="menu_start")
 
     btn2 = InlineKeyboardButton(text="« Поменять категорию",
-                                callback_data="food_rec")
+                                callback_data="show_categories")
 
     btn3 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
 
@@ -1363,7 +1363,7 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_b
         menu.add(btn0)
     # menu_start
     btn1 = InlineKeyboardButton(text="« Поменять категорию",
-                                callback_data="food_rec")
+                                callback_data="show_categories")
 
     btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
                                 callback_data="menu_start")
