@@ -463,6 +463,19 @@ class Database:
                 (user_id,)).fetchall()
             return result
 
+    def set_client_recommendation(self, user_id: int, recommendation: str):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE clients SET recommendation = ? WHERE id = ?",
+                (recommendation, user_id))
+
+    def get_client_recommendation(self, user_id) -> str:
+        with self.connection:
+            result = self.connection.execute(
+                "SELECT recommendation FROM clients WHERE id = ?",
+                (user_id,)).fetchall()
+            return int(result[0][0])
+
     # ======================================================================================================================
     # ===== ТАБЛИЦА: restaurants =================================================================================================
     # ======================================================================================================================
