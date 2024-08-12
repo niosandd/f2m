@@ -474,7 +474,7 @@ class Database:
             result = self.connection.execute(
                 "SELECT recommendation FROM clients WHERE id = ?",
                 (user_id,)).fetchall()
-            return int(result[0][0])
+            return str(result[0][0])
 
     # ======================================================================================================================
     # ===== ТАБЛИЦА: restaurants =================================================================================================

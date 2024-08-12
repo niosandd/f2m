@@ -82,7 +82,7 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
 
     # Изменение в сортировке, передача rec_item в sort_by функцию
     df_new = sorted(df, key=lambda x: sort_by(x))
-
+    print(first_dish)
     dishes = []
     for dish in df_new:
         dish_ingredients_unformatted = str(dish[6]).strip().lower()
@@ -142,11 +142,11 @@ def get_dish(user: int):
     price = db.get_dish_price(user)
     g = db.get_g(user)
     first_dish = None
-    # recommendation = eval(db.get_client_recommendation(user))
-    # if recommendation:
-    #     for item in recommendation:
-    #         if category in item[0]:
-    #             first_dish = item[1]
+    recommendation = eval(db.get_client_recommendation(user))
+    if recommendation:
+        for item in recommendation:
+            if category in item[0]:
+                first_dish = item[1]
     return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g, first_dish)
 
 
