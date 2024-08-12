@@ -143,10 +143,10 @@ def get_dish(user: int):
     g = db.get_g(user)
     first_dish = None
     # recommendation = eval(db.get_client_recommendation(user))
-    if recommendation:
-        for item in recommendation:
-            if category in item[0]:
-                first_dish = item[1]
+    # if recommendation:
+    #     for item in recommendation:
+    #         if category in item[0]:
+    #             first_dish = item[1]
     return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g, first_dish)
 
 
