@@ -611,6 +611,13 @@ class Database:
                 (id,)).fetchall()
             return result[0]
 
+    def restaurants_get_by_name(self, restaurant: str, dish_name: str) -> list:
+        with self.connection:
+            result = self.connection.execute(
+                "SELECT * FROM restaurants WHERE rest_name = ? AND dish_name = ?",
+                (restaurant, dish_name,)).fetchall()
+            return result[0]
+
     # --- review ---
 
     def restaurants_set_review(self, id: int, review: str):
