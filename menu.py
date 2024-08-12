@@ -86,7 +86,6 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
     dishes = []
     if first_dish:
         first_dish = db.restaurants_get_by_name(restaurant, first_dish)
-        print(first_dish)
         dish_ingredients_unformatted = str(first_dish[6]).strip().lower()
         dish_ingredients = dish_ingredients_unformatted.split(',')
         dishes.append({
