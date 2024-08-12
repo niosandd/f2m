@@ -82,8 +82,27 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
 
     # Изменение в сортировке, передача rec_item в sort_by функцию
     df_new = sorted(df, key=lambda x: sort_by(x))
-    print(first_dish)
+
     dishes = []
+    if first_dish:
+        first_dish = db.restaurants_find_dish(restaurant, first_dish)
+        print(first_dish)
+        dish_ingredients_unformatted = str(first_dish[6]).strip().lower()
+        dish_ingredients = dish_ingredients_unformatted.split(',')
+        dishes.append({
+            "Ресторан": first_dish[1],
+            "Адрес": first_dish[2],
+            "Категория": first_dish[3],
+            "Название": first_dish[4],
+            "Описание": first_dish[5],
+            "Ингредиенты": dish_ingredients,
+            "Стиль питания": first_dish[7],
+            "Настроение": mood,
+            "Ссылка": first_dish[9],
+            "Рейтинг": first_dish[14],
+            "Цена": first_dish[17],
+            "Грамм": first_dish[18]
+        })
     for dish in df_new:
         dish_ingredients_unformatted = str(dish[6]).strip().lower()
         dish_ingredients = dish_ingredients_unformatted.split(',')
@@ -104,6 +123,8 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
                 break
 
         if drop:
+            continue
+        if dish[4] == first_dish:
             continue
 
         dishes.append({
