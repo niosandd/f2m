@@ -82,7 +82,7 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
 
     # Изменение в сортировке, передача rec_item в sort_by функцию
     df_new = sorted(df, key=lambda x: sort_by(x))
-    print(df_new)
+
     dishes = []
     for dish in df_new:
         dish_ingredients_unformatted = str(dish[6]).strip().lower()
