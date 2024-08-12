@@ -7,7 +7,7 @@ import random
 import pandas as pd
 
 def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
-               blacklist: str, numb: int, price: int, g: int):
+               blacklist: str, numb: int, price: int, g: int, first_dish: str | None):
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.restaurants_get(restaurant), columns=[
         'id',
@@ -82,7 +82,7 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
 
     # Изменение в сортировке, передача rec_item в sort_by функцию
     df_new = sorted(df, key=lambda x: sort_by(x))
-
+    print(df_new)
     dishes = []
     for dish in df_new:
         dish_ingredients_unformatted = str(dish[6]).strip().lower()
@@ -141,7 +141,13 @@ def get_dish(user: int):
     numb = db.get_client_temp_dish(user)
     price = db.get_dish_price(user)
     g = db.get_g(user)
-    return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g)
+    first_dish = None
+    recommendation = eval(db.get_client_recommendation(user))
+    if recommendation:
+        for item in recommendation:
+            if category in item[0]:
+                first_dish = item[1]
+    return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g, first_dish)
 
 
 def check_blacklist_with_ai(blacklist, dish_ingredients):

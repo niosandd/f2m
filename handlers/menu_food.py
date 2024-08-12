@@ -744,7 +744,7 @@ def generate_recommendation(user):
 
     if dishes:
         recommendation = []
-        banned_categories = ["Хлеб"]
+        banned_categories = ["Хлеб", "Соус"]
         banned_dishes = []
         for _ in range(10):
             dish = random.choice(dishes)
@@ -945,7 +945,6 @@ async def food_category(call: types.CallbackQuery):
         rest = db.get_client_temp_rest(user).split(':')
         db.set_client_temp_dish(user, 0)
         dish, length, numb = menu.get_dish(user)
-
         if dish is not None:
             # ingredients = ""
             # for ing in dish['Ингредиенты']:
