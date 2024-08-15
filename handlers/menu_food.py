@@ -245,8 +245,7 @@ async def food_choose_get(call: types.CallbackQuery):
 
     last_qr_time = db.get_client_last_qr_time(user)
 
-    # if (round(time.time()) - last_qr_time) // 3600 <= 3:
-    if (round(time.time()) - last_qr_time) // 60 <= 1:
+    if (round(time.time()) - last_qr_time) // 3600 <= 3:
         message_text = get_user_profile_text(user)
 
         message_obj = await bot.edit_message_text(
