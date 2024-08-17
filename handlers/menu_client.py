@@ -22,6 +22,7 @@ async def client_register(call: types.CallbackQuery):
     user = call.from_user.id
     data = call.data.split('_')
     temp_rest = None
+    temp_state = None
     last_qr_time = 0
     if db.get_users_ban(user):
         return None
@@ -33,6 +34,7 @@ async def client_register(call: types.CallbackQuery):
         except Exception as e:
             print(e)
         last_qr_time = db.get_client_last_qr_time(user)
+        temp_state = db.get_client_temp_mood(user)
         db.del_client(user)
 
     if not db.check_client(user):
@@ -41,6 +43,7 @@ async def client_register(call: types.CallbackQuery):
             try:
                 db.set_client_temp_rest(user, temp_rest)
                 db.set_client_last_qr_time(user, last_qr_time)
+                db.set_client_temp_mood(user, temp_state)
                 if db.check_basket_exists(user):
                     db.set_basket(user, "{}")
             except Exception as e:
@@ -221,8 +224,9 @@ def buttons_client_00(mode: str):
         menu.add(btn1)
         menu.add(btn2)
 
-    btn9 = InlineKeyboardButton(text="« Назад",
-                                callback_data="menu_start")
-    menu.add(btn9)
+    if mode != 'ready':
+        btn9 = InlineKeyboardButton(text="« Назад",
+                                    callback_data="menu_start")
+        menu.add(btn9)
 
     return menu
