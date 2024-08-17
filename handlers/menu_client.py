@@ -9,6 +9,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 
 from main import dp, bot, db, config, Tools
+import handlers.menu_food as m_food
 admin = config()['telegram']['admin']
 
 
@@ -119,9 +120,7 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=int(db.get_users_mode(user)['id']),
-            text=f"<b>Спасибо за регистрацию!🤗</b>\n"
-                    f"\n"
-                    f"Анкета заполнена, теперь ты можешь получить персональные рекомендации🔥\n\n",
+            text=m_food.get_user_profile_text(user),
             reply_markup=buttons_client_00('ready')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_ready')
@@ -130,9 +129,7 @@ async def client_register(call: types.CallbackQuery):
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=int(db.get_users_mode(user)['id']),
-            text=f"<b>Спасибо за регистрацию!🤗</b>\n"
-                    f"\n"
-                    f"Анкета заполнена, теперь ты можешь получить персональные рекомендации🔥\n\n",
+            text=m_food.get_user_profile_text(user),
             reply_markup=buttons_client_00('ready')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_e_ready')
@@ -218,10 +215,11 @@ def buttons_client_00(mode: str):
         menu.add(btn1)
 
     elif mode == 'ready':
-        btn1 = InlineKeyboardButton(text="Выбрать настроение! 😌",
-                                    callback_data="food_mood")
+        btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="scanned_qrcode")
+        btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
 
         menu.add(btn1)
+        menu.add(btn2)
 
     btn9 = InlineKeyboardButton(text="« Назад",
                                 callback_data="menu_start")
