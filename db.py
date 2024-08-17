@@ -454,14 +454,14 @@ class Database:
             result = self.cursor.execute(
                 "SELECT dish_price FROM restaurants WHERE id = ?",
                 (id,)).fetchall()
-            return result
+            return int(result[0][0])
 
     def get_g(self, id) -> str:
         with self.connection:
             result = self.cursor.execute(
                 "SELECT dish_g FROM restaurants WHERE id = ?",
                 (id,)).fetchall()
-            return result
+            return int(result[0][0])
 
     def set_client_recommendation(self, user_id: int, recommendation: str):
         with self.connection:
