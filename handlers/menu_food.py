@@ -1048,9 +1048,15 @@ async def change_basket(call: types.CallbackQuery):
         except ValueError:
             pass
         db.set_basket(user, str(basket))
-        await bot.edit_message_reply_markup(
+        basket_cost = calc_basket_cost(user)
+        text = "❗️<b>Проверь корзину, перед тем как сделать заказ</b> ❗️\n\n" \
+               "<i><b>Нажми на позицию</b>, чтобы убрать ее из корзины 🚫\n" \
+               "<b>Вернись к категориям</b>, чтобы добавить еще блюда ➕</i>\n\n" \
+               f"<b>Суммарная стоимость заказа: {basket_cost}</b>"
+        await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
+            text=text,
             reply_markup=generate_basket(user))
     except Exception as e:
         print("basket error", e)
