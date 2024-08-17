@@ -291,36 +291,12 @@ async def send_profile(message: types.Message):
 def buttons_food_01():
     menu = InlineKeyboardMarkup(row_width=3)
 
-    # btn1 = InlineKeyboardButton(text="Подобрать заведение 🍽️", callback_data="food_restaurant")
-    # # btn3 = InlineKeyboardButton(text="Уже в заведении 📸", callback_data="scan_qrcode")
-    # btn3 = InlineKeyboardButton(text="Уже в заведении 🥘", callback_data="scanned_qrcode")
-    # # btn2 = InlineKeyboardButton(text="Куда сходить? 💫", callback_data="food_choose_random")
-    # btn9 = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
-    # menu.add(btn3)
-    # # menu.add(btn2)
-    # menu.add(btn1)
-    # menu.add(btn9)
     btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="scanned_qrcode")
     btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
 
     menu.add(btn1)
     menu.add(btn2)
     return menu
-
-
-# def buttons_food_01():
-#     menu = InlineKeyboardMarkup(row_width=3)
-#
-#     btn1 = InlineKeyboardButton(text="Выбрать заведение 🍤", callback_data="food_restaurant")
-#     btn3 = InlineKeyboardButton(text="📸 Отсканировать QR-код", callback_data="scan_qrcode")
-#     btn2 = InlineKeyboardButton(text="Куда сходить? 💫", callback_data="food_choose_random")
-#     btn9 = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
-#     menu.add(btn1)
-#     menu.add(btn2)
-#     menu.add(btn3)
-#     menu.add(btn9)
-#
-#     return menu
 
 
 """
@@ -334,9 +310,6 @@ async def food_restaurant(call: types.CallbackQuery):
     data = call.data.split('_')
     if db.get_users_ban(user):
         return None
-
-    # Действие:
-    # db.set_client_temp_rest(user, None) Зачем это вообще надо?
 
     message_obj = await bot.edit_message_text(
         chat_id=user,
@@ -373,34 +346,9 @@ async def request_qr_photo(call: types.CallbackQuery):
                 reply_markup=get_back())
             db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
         else:
-            rest_name, rest_address = db.get_client_temp_rest(user).split(':')
-            # Установка данных о ресторане
-            await dp.storage.set_data(user=user, data={'rest_name': rest_name, 'rest_address': rest_address})
-
-            # Извлечение установленных данных
-            user_data = await dp.storage.get_data(user=user)
-            await bot.edit_message_text(
-                chat_id=user,
-                message_id=call.message.message_id,
-                text=f"🤔📍 Ты находишься в кафе <b>«{rest_name}»</b>, по адресу: {rest_address}? \n\n"
-                     f"<i>Если нет, отсканируй QR-код на флаере в заведении и попробуй снова</i>",
-                reply_markup=qr_scanned())
+            await food_rec2(user, "food_rec_Нутрициолог".split('_'))
     except Exception as e:
         print(e)
-
-
-@dp.callback_query_handler(lambda call: call.data == "scan_qrcode")
-async def request_qr_photo(call: types.CallbackQuery):
-    user = call.from_user.id
-
-    message_obj = await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text="🔍 Друг, скорей <b>фотографируй</b> QR-код своего заведения <b>и присылай</b> его нам в чат! \n\n"
-             "Ты найдешь его на оборотной стороне буклета с "
-             "QR-кодом самого сервиса food2mood непосредственно в заведении🔖 \n\nОсталось всего лишь:"
-             "<blockquote>📎->🤳-> 📸 -> 🔖-> 📤</blockquote>",
-        reply_markup=get_back())
 
 
 def get_back():
@@ -415,36 +363,6 @@ def get_back():
 
 
 token = ""
-
-
-@dp.message_handler(content_types=['photo'])
-async def handle_docs_photo(message: types.Message):
-    user_id = message.from_user.id
-    try:
-        # Получение информации о файле асинхронно
-        file_info = await bot.get_file(message.photo[-1].file_id)
-        file_path = f'https://api.telegram.org/file/bot{token}/{file_info.file_path}'
-
-        # Загрузка файла с использованием requests (синхронно)
-        file = requests.get(file_path)
-        image = Image.open(BytesIO(file.content))
-
-        # Декодирование QR-кода
-        qr_result = decode(image)
-        if qr_result:
-            decoded_data = qr_result[0].data.decode()
-            # Используйте текст из QR как поисковой запрос
-            search_query = decoded_data.split('/')[-1]  # или какой-то другой способ получения текста для поиска
-            await search_and_select_restaurant(user_id, search_query)
-            await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
-        else:
-            await bot.send_message(user_id, "QR-код не распознан. Попробуйте еще раз.",
-                                   reply_markup=qr_scanned_keyboard_none())
-    except Exception as e:
-        await bot.reply_to(message, str(e))
-    finally:
-        # Удаление сообщения с фотографией QR-кода после обработки
-        await bot.delete_message(chat_id=message.chat.id, message_id=message.message_id)
 
 
 user_data = {}
@@ -483,7 +401,6 @@ def qr_scanned_keyboard():
 
 def qr_scanned():
     keyboard = InlineKeyboardMarkup(row_width=3)
-    # choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'apply_')
     choose_category_button = InlineKeyboardButton(text=f'Да, я здесь!', callback_data=f'food_rec_Нутрициолог')
     change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
     keyboard.row(choose_category_button)
@@ -493,35 +410,10 @@ def qr_scanned():
 
 def qr_scanned_keyboard_none():
     keyboard = InlineKeyboardMarkup(row_width=3)
-    change_restaurant_button = InlineKeyboardButton(text="Отсканировать заново", callback_data="scan_qrcode")
+    # change_restaurant_button = InlineKeyboardButton(text="Отсканировать заново", callback_data="scan_qrcode")
     change_mood_button = InlineKeyboardButton(text="« Вернуться назад", callback_data="scan_qrcode")
-    keyboard.add(change_restaurant_button, change_mood_button)
+    keyboard.add(change_mood_button)
     return keyboard
-
-
-# def qr_scanned_keyboard(rest_name):
-#     keyboard = InlineKeyboardMarkup(row_width=3)
-#     choose_category_button = InlineKeyboardButton(text="Да, я нахожусь в этом ресторане",
-#                                                   switch_inline_query_current_chat=f'{rest_name}')
-#
-#     change_restaurant_button = InlineKeyboardButton(text="Отсканировать заново", callback_data="scan_qrcode")
-#     change_mood_button = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
-#     keyboard.add(choose_category_button, change_restaurant_button, change_mood_button)
-#     return keyboard
-# def qr_scanned_keyboard(rest_name):
-#     keyboard = InlineKeyboardMarkup(row_width=3)
-#     choose_category_button = InlineKeyboardButton(text=f'Да, я нахожусь в этом ресторане', callback_data=f'apply_{rest_name}')
-#     change_restaurant_button = InlineKeyboardButton(text="Отсканировать заново", callback_data="scan_qrcode")
-#     change_mood_button = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
-#     keyboard.add(choose_category_button, change_restaurant_button, change_mood_button)
-#     return keyboard
-#
-# def qr_scanned_keyboard_none():
-#     keyboard = InlineKeyboardMarkup(row_width=3)
-#     change_restaurant_button = InlineKeyboardButton(text="Отсканировать заново", callback_data="scan_qrcode")
-#     change_mood_button = InlineKeyboardButton(text="« Поменять настроение", callback_data="food_mood")
-#     keyboard.add(change_restaurant_button, change_mood_button)
-#     return keyboard
 
 
 """
@@ -548,50 +440,6 @@ async def food_rec_get(user, message):
     )
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
-
-# @dp.callback_query_handler(text_contains=f"apply_restaurant")
-# async def food_rec_get3(call: types.CallbackQuery):
-#     user = call.from_user.id
-#     dp.send_message(call.from_user.id, "Вы подтвердили своё нахождение в ресторане")
-#
-#     db.set_users_mode(user, call.message_obj.message_id, 'apply_restaurant')
-
-# КЛАСССС
-
-# @dp.callback_query_handler(lambda c: c.data == 'apply_restaurant_confirmed')
-# async def restaurant_confirmation(call: types.CallbackQuery):
-#     # Эмулируем получение сообщения от пользователя
-#     user_id = call.from_user.id
-#     # Обработка "сообщения" от пользователя, как будто он отправил "Привет, Бот"
-#     await process_user_message(user_id, 'Привет, Бот')
-#     # Подтверждение получения команды пользователем, если нужно
-#     await call.answer("Ваше присутствие в ресторане подтверждено.", show_alert=True)
-#
-# async def process_user_message(user_id: int, message_text: str):
-#     # Логика обработки сообщения пользователя, например:
-#     print(f"Получено сообщение от {user_id}: {message_text}")
-#     # Отправка ответа или выполнение действия в зависимости от сообщения
-#     # Здесь может быть любая логика, например, отправка подтверждения или информации обратно пользователю
-#     await bot.send_message(chat_id=user_id, text=f"Вы сказали: {message_text}")
-
-# @dp.inline_handler(lambda c: c.data and c.data.startswith('apply_restaurant_confirmed'))
-# async def inline_echo(inline_query: InlineQuery):
-#     user_id = inline_query.from_user.id
-#     # Специальный вариант для отправки "ПРИВЕТ БОТ" от пользователя
-#     result = InlineQueryResultArticle(
-#         id='unique_id',  # Уникальный идентификатор результата
-#         title="Сказать 'ПРИВЕТ БОТ'",
-#         input_message_content=InputTextMessageContent("ПРИВЕТ БОТ")
-#     )
-#     # Отправка результата пользователю
-#     await inline_query.answer([result], cache_time=1)
-
-# @dp.callback_query_handler(text_contains=f"apply_")
-# async def food_rec_get3(call: types.CallbackQuery):
-#     user = call.from_user.id
-#     _, rest_name = call.data.split('_')
-#     await bot.send_message(call.from_user.id, f"соси {rest_name}")
-#     # await food_rec_get_inside(user, call.message)
 
 @dp.callback_query_handler(text_contains=f"apply_")
 async def food_rec_get3(call: types.CallbackQuery):
