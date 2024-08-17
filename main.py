@@ -140,7 +140,7 @@ async def start(message: types.Message):
 @dp.message_handler(commands=['waiter'])
 async def waiter(message: types.Message):
     user = message.from_user.id
-    await bot.send_message(
+    message_obj = await bot.send_message(
         chat_id=user,
         text="Пожалуйста, введи свое ФИО/название ресторана в формате: "
              "Иван Иванович Иванов/Блан де Блан"
