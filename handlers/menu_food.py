@@ -961,13 +961,24 @@ async def send_dish(call: types.CallbackQuery):
         print(e)
 
 
+def calc_basket_cost(user):
+    summary = 0
+    if db.check_basket_exists(user):
+        basket = eval(db.get_basket(user))
+        for dish in basket:
+            summary += db.get_dish_price(basket[dish])
+    return summary
+
+
 @dp.callback_query_handler(text_contains=f"check_order")
 async def check_order(call: types.CallbackQuery):
     try:
         user = call.from_user.id
+        basket_cost = calc_basket_cost(user)
         text = "❗️<b>Проверь корзину, перед тем как сделать заказ</b> ❗️\n\n" \
                "<i><b>Нажми на позицию</b>, чтобы убрать ее из корзины 🚫\n" \
-               "<b>Вернись к категориям</b>, чтобы добавить еще блюда ➕</i>"
+               "<b>Вернись к категориям</b>, чтобы добавить еще блюда ➕</i>\n\n" \
+               f"<b>Суммарная стоимость заказа: {basket_cost}</b>"
         await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
