@@ -140,12 +140,16 @@ async def start(message: types.Message):
 @dp.message_handler(commands=['waiter'])
 async def waiter(message: types.Message):
     user = message.from_user.id
-    message_obj = await bot.send_message(
-        chat_id=user,
-        text="Пожалуйста, введи свое ФИО/название ресторана в формате: "
-             "Иван Иванович Иванов/Блан де Блан"
-    )
-    db.set_users_mode(user, message_obj.message_id, 'waiter_reg')
+    if not db.check_waiter_exists(user):
+        message_obj = await bot.send_message(
+            chat_id=user,
+            text="Пожалуйста, введи свое ФИО/название ресторана в формате: "
+                 "Иван Иванович Иванов/Блан де Блан"
+        )
+        db.set_users_mode(user, message_obj.message_id, 'waiter_reg')
+    else:
+        text = f'\nТы уже зарегистрировался(ась) как официант'
+        await bot.send_message(user, text)
 
 
 @dp.message_handler(commands=['admin'])
