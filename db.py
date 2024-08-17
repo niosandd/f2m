@@ -454,7 +454,7 @@ class Database:
             result = self.cursor.execute(
                 "SELECT dish_price FROM restaurants WHERE id = ?",
                 (id,)).fetchall()
-            return int(result[0][0])
+            return result
 
     def get_g(self, id) -> str:
         with self.connection:

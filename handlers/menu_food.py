@@ -966,7 +966,8 @@ def calc_basket_cost(user):
     if db.check_basket_exists(user):
         basket = eval(db.get_basket(user))
         for dish in basket:
-            summary += db.get_dish_price(basket[dish])
+            print(db.get_dish_price(basket[dish]))
+            summary += int(db.get_dish_price(basket[dish]))
     return summary
 
 
