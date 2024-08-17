@@ -676,12 +676,13 @@ class Database:
 
     # --- Добавить значение ---
 
-    def add_waiter(self, user_id, user_link, user_name=None, user_first_name=None, user_last_name=None, score=0):
+    def add_waiter(self, user_id, user_rest, user_link, user_name=None, user_first_name=None, user_last_name=None,
+                   user_surname=None, score=0):
         with self.connection:
             return self.cursor.execute(
-                "INSERT INTO waiters (waiter_id, waiter_link, waiter_name, waiter_first_name, waiter_last_name, "
-                "waiter_score) VALUES (?, ?, ?, ?, ?, ?)",
-                (user_id, user_link, user_name, user_first_name, user_last_name, score))
+                "INSERT INTO waiters (waiter_id, waiter_rest, waiter_link, waiter_name, waiter_first_name,"
+                " waiter_last_name, waiter_surname, waiter_score) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (user_id, user_rest, user_link, user_name, user_first_name, user_last_name, user_surname, score))
 
     def del_waiter(self, user_id):
         with self.connection:

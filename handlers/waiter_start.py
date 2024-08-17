@@ -29,25 +29,35 @@ def ind_to_number(ind):
 
 async def start(message: types.Message):
     user = message.from_user.id
-    # Новый официант:
-    if not db.check_waiter_exists(user):
-        # Регистрируем официанта:
-        db.add_waiter(
-            user,
-            f'tg://user?id={user}',
-            message.from_user.username,
-            message.from_user.first_name,
-            message.from_user.last_name
-        )
-        text = f'\n🙋🏻‍♂️Новый официант:' \
-               f'\n' \
-               f'\n<b>{message.from_user.first_name} {message.from_user.last_name}</b>' \
-               f'\n@{message.from_user.username}' \
-               f'\nid <a href="tg://user?id={user}">{user}</a>' \
-               f'\n'
-        await bot.send_message(user, text)
-    else:
-        text = f'\nТы уже зарегистрировался(ась) как официант'
+    try:
+        info = message.text.split("/")
+        name = info[0].split()
+        rest = info[1]
+        # Новый официант:
+        if not db.check_waiter_exists(user):
+            # Регистрируем официанта:
+            db.add_waiter(
+                user,
+                rest,
+                f'tg://user?id={user}',
+                message.from_user.username,
+                name[0],
+                name[1],
+                name[2]
+            )
+            text = f'\n🙋🏻‍♂️Новый официант:' \
+                   f'\n' \
+                   f'\n<b>Ресторан {rest}</b>' \
+                   f'\n<b>{name[0]} {name[1]} {name[2]}</b>' \
+                   f'\n@{message.from_user.username}' \
+                   f'\nid <a href="tg://user?id={user}">{user}</a>' \
+                   f'\n'
+            await bot.send_message(user, text)
+        else:
+            text = f'\nТы уже зарегистрировался(ась) как официант'
+            await bot.send_message(user, text)
+    except Exception:
+        text = f'\nОшибка ввода ФИО/ресторан'
         await bot.send_message(user, text)
 
 

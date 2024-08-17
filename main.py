@@ -139,7 +139,13 @@ async def start(message: types.Message):
 
 @dp.message_handler(commands=['waiter'])
 async def waiter(message: types.Message):
-    await w_start.start(message)
+    user = message.from_user.id
+    db.set_users_mode(user, message_obj.message_id, 'waiter_reg')
+    await bot.send_message(
+        chat_id=user,
+        text="Пожалуйста, введи свое ФИО/название ресторана в формате: "
+             "Иван Иванович Иванов/Блан де Блан"
+    )
 
 
 @dp.message_handler(commands=['admin'])
@@ -301,6 +307,9 @@ async def bot_message(message):
             if db.check_basket_exists(user):
                 db.set_basket(user, "{}")
             await m_food.food_rec2(user, "food_rec_Нутрициолог".split('_'))
+
+        if mode['key'] == "waiter_reg":
+            await w_start.start(message)
 
         # Выбор блюда из поиска
         if mode['key'] == 'write_review':
