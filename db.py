@@ -461,7 +461,7 @@ class Database:
             result = self.cursor.execute(
                 "SELECT dish_g FROM restaurants WHERE id = ?",
                 (id,)).fetchall()
-            return int(result[0][0])
+            return result
 
     def set_client_recommendation(self, user_id: int, recommendation: str):
         with self.connection:
