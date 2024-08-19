@@ -193,6 +193,7 @@ async def send_notification(call: types.CallbackQuery):
         except Exception as e:
             print(e)
             continue
+    await bot.send_message(chat_id=original_id, text="Рассылка завершена")
 
 
 @dp.message_handler(commands=['mldzh'])
