@@ -68,6 +68,7 @@ async def start(message: types.Message):
                     f'<b>Команды в разделе "Меню:"</b>\n'
                     f"<i>/start - запуск food2mood\n</i>"
                     f"<i>/form - тест на выявление твоих вкусовых предпочтений\n</i>"
+                    f"<i>/f2m_coins - информация о нашей валюте, которую можно обменять на подарки от партнеров\n</i>"
                     f"\n",
             parse_mode='HTML',
             reply_markup=buttons_start_02()
@@ -83,6 +84,7 @@ async def start(message: types.Message):
                     f'<b>Команды в разделе "Меню:"</b>\n'
                     f"<i>/start - запуск food2mood\n</i>"
                     f"<i>/form - тест на выявление твоих вкусовых предпочтений\n</i>"
+                    f"<i>/f2m_coins - информация о нашей валюте, которую можно обменять на подарки от партнеров\n</i>"
                     f"\n",
             parse_mode='HTML',
             reply_markup=buttons_start_02()
@@ -129,6 +131,7 @@ async def menu_start(call: types.CallbackQuery):
                     f'<b>Команды в разделе "Меню:"</b>\n'
                     f"<i>/start - запуск food2mood\n</i>"
                     f"<i>/form - тест на выявление твоих вкусовых предпочтений\n</i>"
+                    f"<i>/f2m_coins - информация о нашей валюте, которую можно обменять на подарки от партнеров\n</i>"
                     f"\n",
             reply_markup=buttons_start_02()
         )
@@ -143,6 +146,7 @@ async def menu_start(call: types.CallbackQuery):
                     f'<b>Команды в разделе "Меню:"</b>\n'
                     f"<i>/start - запуск food2mood\n</i>"
                     f"<i>/form - тест на выявление твоих вкусовых предпочтений\n</i>"
+                    f"<i>/f2m_coins - информация о нашей валюте, которую можно обменять на подарки от партнеров\n</i>"
                     f"\n",
             reply_markup=buttons_start_02()
         )

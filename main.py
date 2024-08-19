@@ -185,12 +185,12 @@ async def send_notification(call: types.CallbackQuery):
             users = db.get_users_users()
         elif "waiter" in data:
             users = db.get_waiters_waiters()
-        # for id in users:
-        #     try:
-        #         await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
-        #     except Exception as e:
-        #         print(e)
-        #         continue
+        for id in users:
+            try:
+                await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
+            except Exception as e:
+                print(e)
+                continue
         await bot.send_message(chat_id=original_id, text="Рассылка завершена")
         await bot.delete_message(chat_id=original_id, message_id=call.message.message_id)
     except Exception as e:
@@ -223,6 +223,12 @@ def buttons_food_x():
     btn1 = InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')
     menu.add(btn1)
     return menu
+
+
+@dp.message_handler(commands=['f2m_coins'])
+async def f2m_coins(message: types.Message):
+    user = message.from_user.id
+    await bot.forward_message(chat_id=user, from_chat_id=1664444653, message_id=55)
 
 
 @dp.inline_handler()
@@ -298,7 +304,7 @@ async def bot_message(message):
     user = message.from_user.id
     mode = db.get_users_mode(user)
 
-    if message.text not in ['/start', '/waiter', '/admin', '/mldzh']:
+    if message.text not in ['/start', '/waiter', '/admin', '/mldzh', '/f2m_coins']:
 
         # Чёрный список продуктов
         if mode['key'] == 'client_register_blacklist':
