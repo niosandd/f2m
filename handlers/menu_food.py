@@ -793,6 +793,9 @@ async def food_category(call: types.CallbackQuery):
         rest = db.get_client_temp_rest(user).split(':')
         db.set_client_temp_dish(user, 0)
         dish, length, numb = menu.get_dish(user)
+        print(dish)
+        print(length)
+        print(numb)
         if dish is not None:
             # ingredients = ""
             # for ing in dish['Ингредиенты']:
@@ -869,7 +872,7 @@ async def food_category(call: types.CallbackQuery):
             )
         db.set_users_mode(user, message_obj.message_id, 'food_category')
     except Exception as e:
-        print(e)
+        print("category error", e)
 
 
 @dp.callback_query_handler(text_contains=f"send_dish")
