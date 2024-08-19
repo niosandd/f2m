@@ -784,10 +784,8 @@ async def food_category(call: types.CallbackQuery):
             message_id=call.message.message_id,
             text=f"Одну секунду... ⏳"
         )
-        print(data)
         # Действие:
         category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
-        print(category)
         if category:  # Проверка на наличие категории
             db.set_client_temp_category(user, category)
 

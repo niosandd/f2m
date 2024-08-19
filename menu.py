@@ -167,6 +167,7 @@ def get_dish(user: int):
         for item in recommendation:
             if category in item[0]:
                 first_dish = item[1]
+    print(restaurant[0], category, mood, style, rec, blacklist, numb, price, g, first_dish)
     return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g, first_dish)
 
 
