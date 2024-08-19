@@ -166,12 +166,11 @@ async def admin(message: types.Message):
 
 
 def notification(original_message_id):
-    menu = InlineKeyboardMarkup(row_width=2)
+    menu = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton(text="Всем пользователям", callback_data=f'user_notification_{original_message_id}')
     btn2 = InlineKeyboardButton(text="Официантам", callback_data=f'waiter_notification_{original_message_id}')
-    btn3 = InlineKeyboardButton(text="Тест", callback_data=f'self_notification_{original_message_id}')
-    # menu.add(btn1, btn2)
-    menu.add(btn3)
+    menu.add(btn1)
+    menu.add(btn2)
     return menu
 
 
@@ -186,15 +185,14 @@ async def send_notification(call: types.CallbackQuery):
             users = db.get_users_users()
         elif "waiter" in data:
             users = db.get_waiters_waiters()
-        elif "self" in data:
-            users += [803124861, 375565156]
-        for id in users:
-            try:
-                await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
-            except Exception as e:
-                print(e)
-                continue
+        # for id in users:
+        #     try:
+        #         await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
+        #     except Exception as e:
+        #         print(e)
+        #         continue
         await bot.send_message(chat_id=original_id, text="Рассылка завершена")
+        await bot.delete_message(chat_id=original_id, message_id=call.message.message_id)
     except Exception as e:
         print(e)
 
