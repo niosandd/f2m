@@ -599,7 +599,7 @@ class Database:
 
     def restaurants_get_dish(self, restaurant, address, dish) -> list:
         with self.connection:
-            print(restaurant, dish)
+            print(restaurant, address, dish)
             result = self.connection.execute(
                 "SELECT * FROM restaurants WHERE rest_name = ? AND rest_address = ? AND dish_name = ?",
                 (restaurant, address, dish)).fetchall()
