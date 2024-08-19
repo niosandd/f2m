@@ -228,10 +228,7 @@ def buttons_food_x():
 @dp.message_handler(commands=['f2m_coins'])
 async def f2m_coins(message: types.Message):
     user = message.from_user.id
-    try:
-        await bot.forward_message(chat_id=user, from_chat_id=-1001664444653, message_id=55)
-    except Exception as e:
-        print(e)
+    await bot.send_message(user, text="https://t.me/food_2_mood/55")
 
 
 @dp.inline_handler()
