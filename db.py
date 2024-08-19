@@ -599,10 +599,9 @@ class Database:
 
     def restaurants_get_dish(self, restaurant, address, dish) -> list:
         with self.connection:
-            print(restaurant, address, dish)
             result = self.connection.execute(
                 "SELECT * FROM restaurants WHERE rest_name = ? AND rest_address = ? AND dish_name = ?",
-                (restaurant.strip(), address.strip(), dish.strip())).fetchall()
+                (restaurant, address, dish)).fetchall()
             return result[0]
 
     def restaurants_get_by_id(self, id) -> list:
@@ -616,8 +615,8 @@ class Database:
         with self.connection:
             result = self.connection.execute(
                 "SELECT * FROM restaurants WHERE rest_name = ? AND dish_name = ?",
-                (restaurant.strip(), dish_name.strip(),)).fetchall()
-            print(restaurant, dish_name)
+                (restaurant, dish_name,)).fetchall()
+            print(restaurant, dish_name, dish_name == dish_name.strip(), dish_name.strip())
             return result[0]
 
     # --- review ---

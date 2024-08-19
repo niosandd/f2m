@@ -84,8 +84,6 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
     df_new = sorted(df, key=lambda x: sort_by(x))
     dishes = []
     if first_dish:
-        check = db.restaurants_get_dish(restaurant, "Москва, ул. Люсиновская, 36/50", first_dish)
-        print(check)
         first_dish = db.restaurants_get_by_name(restaurant, first_dish)
         dish_ingredients_unformatted = str(first_dish[6]).strip().lower()
         dish_ingredients = dish_ingredients_unformatted.split(',')
