@@ -155,15 +155,44 @@ async def waiter(message: types.Message):
 @dp.message_handler(commands=['admin'])
 async def admin(message: types.Message):
     user = message.from_user.id
-    text = "Текст сообщения"
     if user in [375565156, 1004320969]:
+        message_obj = await bot.send_message(
+            chat_id=user,
+            text="Отправьте рассылаемое сообщение в этот чат, после чего выберите режим оповещения",
+        )
+        db.set_users_mode(user, message_obj.message_id, 'notification')
+    else:
+        await bot.send_message(user, "Отсутствуют права доступа")
+
+
+def notification(original_message_id):
+    menu = InlineKeyboardMarkup(row_width=2)
+    btn1 = InlineKeyboardButton(text="Всем пользователям", callback_data=f'user_notification_{original_message_id}')
+    btn2 = InlineKeyboardButton(text="Официантам", callback_data=f'waiter_notification_{original_message_id}')
+    btn3 = InlineKeyboardButton(text="Себе", callback_data=f'self_notification_{original_message_id}')
+    # menu.add(btn1, btn2)
+    menu.add(btn3)
+    return menu
+
+
+@dp.callback_query_handler(text_contains=f"notification")
+async def send_notification(call: types.CallbackQuery):
+    data = call.data.split('_')
+    original_id = call.from_user.id
+    original_message_id = int(data[-1])
+    users = []
+    if "user" in data:
         users = db.get_users_users()
-        # for id in users:
-        #     try:
-        #         await bot.send_message(chat_id=id, text=text)
-        #     except Exception as e:
-        #         print(e)
-        #         continue
+    elif "waiter" in data:
+        users = db.get_waiters_waiters()
+    elif "self" in data:
+        users.append(original_id)
+    for id in users:
+        try:
+            await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
+        except Exception as e:
+            print(e)
+            continue
 
 
 @dp.message_handler(commands=['mldzh'])
@@ -311,6 +340,14 @@ async def bot_message(message):
 
         if mode['key'] == "waiter_reg":
             await w_start.start(message)
+
+        if mode['key'] == "notification":
+            await bot.send_message(
+                chat_id=user,
+                text="Выберите режим оповещения",
+                reply_markup=notification(message.message_id)
+            )
+
 
         # Выбор блюда из поиска
         if mode['key'] == 'write_review':

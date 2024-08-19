@@ -706,6 +706,14 @@ class Database:
             result = self.cursor.execute("SELECT waiter_score FROM waiters WHERE waiter_id=?", (user_id,)).fetchall()
             return result[0][0]
 
+    def get_waiters_waiters(self):
+        with self.connection:
+            result = self.connection.execute("SELECT waiter_id FROM waiters").fetchall()
+            users_id = []
+            for row in result:
+                users_id.append(int(row[0]))
+            return users_id
+
     # ======================================================================================================================
     # ===== ТАБЛИЦА: baskets =================================================================================================
     # ======================================================================================================================
