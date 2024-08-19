@@ -617,6 +617,7 @@ class Database:
                 "SELECT * FROM restaurants WHERE dish_name = ?",
                 (dish_name,)).fetchall()
             print(restaurant, dish_name)
+            print(result)
             return result[0]
 
     # --- review ---
