@@ -155,7 +155,7 @@ async def waiter(message: types.Message):
 @dp.message_handler(commands=['admin'])
 async def admin(message: types.Message):
     user = message.from_user.id
-    if user in [375565156, 1004320969]:
+    if user in [375565156, 1004320969, 803124861]:
         message_obj = await bot.send_message(
             chat_id=user,
             text="Отправьте рассылаемое сообщение в этот чат, после чего выберите режим оповещения",
@@ -169,7 +169,7 @@ def notification(original_message_id):
     menu = InlineKeyboardMarkup(row_width=2)
     btn1 = InlineKeyboardButton(text="Всем пользователям", callback_data=f'user_notification_{original_message_id}')
     btn2 = InlineKeyboardButton(text="Официантам", callback_data=f'waiter_notification_{original_message_id}')
-    btn3 = InlineKeyboardButton(text="Себе", callback_data=f'self_notification_{original_message_id}')
+    btn3 = InlineKeyboardButton(text="Тест", callback_data=f'self_notification_{original_message_id}')
     # menu.add(btn1, btn2)
     menu.add(btn3)
     return menu
@@ -186,7 +186,7 @@ async def send_notification(call: types.CallbackQuery):
     elif "waiter" in data:
         users = db.get_waiters_waiters()
     elif "self" in data:
-        users.append(original_id)
+        users.append(original_id, 803124861)
     for id in users:
         try:
             await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
