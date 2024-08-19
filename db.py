@@ -616,8 +616,6 @@ class Database:
             result = self.connection.execute(
                 "SELECT * FROM restaurants WHERE rest_name = ? AND dish_name = ?",
                 (restaurant, dish_name,)).fetchall()
-            print(restaurant, dish_name)
-            print(result)
             return result[0]
 
     # --- review ---
