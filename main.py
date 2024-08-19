@@ -391,9 +391,9 @@ async def bot_message(message):
             db.set_new_review(unique_uuid, username, rating, review, dish_name, restaurant_name)
             db.restaurants_set_review(db.get_client_temp_dish_id(user), message.text)
             db.set_users_mode(user, mode['id'], '')
-
     try:
-        await bot.delete_message(user, message.message_id)
+        if mode['key'] != "notification":
+            await bot.delete_message(user, message.message_id)
     except:
         pass
 
