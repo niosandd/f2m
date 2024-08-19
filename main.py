@@ -177,23 +177,26 @@ def notification(original_message_id):
 
 @dp.callback_query_handler(text_contains=f"notification")
 async def send_notification(call: types.CallbackQuery):
-    data = call.data.split('_')
-    original_id = call.from_user.id
-    original_message_id = int(data[-1])
-    users = []
-    if "user" in data:
-        users = db.get_users_users()
-    elif "waiter" in data:
-        users = db.get_waiters_waiters()
-    elif "self" in data:
-        users.append(original_id, 803124861)
-    for id in users:
-        try:
-            await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
-        except Exception as e:
-            print(e)
-            continue
-    await bot.send_message(chat_id=original_id, text="Рассылка завершена")
+    try:
+        data = call.data.split('_')
+        original_id = call.from_user.id
+        original_message_id = int(data[-1])
+        users = []
+        if "user" in data:
+            users = db.get_users_users()
+        elif "waiter" in data:
+            users = db.get_waiters_waiters()
+        elif "self" in data:
+            users += [original_id, 803124861]
+        for id in users:
+            try:
+                await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
+            except Exception as e:
+                print(e)
+                continue
+        await bot.send_message(chat_id=original_id, text="Рассылка завершена")
+    except Exception as e:
+        print(e)
 
 
 @dp.message_handler(commands=['mldzh'])
