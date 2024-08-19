@@ -219,6 +219,14 @@ def get_user_profile_text(user_id):
         print(e)
 
     # Формируем текст сообщения
+    if age == "18":
+        age = "До 18"
+    elif age == "25":
+        age = "18-25"
+    elif age == "35":
+        age = "26-35"
+    elif age == "45":
+        age = "36-45"
     message_text = (
         f"<b>Твоя анкета 📃</b>\n\n"
         f"<b>——— Пол ———</b>\n"
