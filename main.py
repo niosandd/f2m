@@ -187,7 +187,7 @@ async def send_notification(call: types.CallbackQuery):
         elif "waiter" in data:
             users = db.get_waiters_waiters()
         elif "self" in data:
-            users += [original_id, 803124861]
+            users += [803124861, 375565156]
         for id in users:
             try:
                 await bot.forward_message(chat_id=id, from_chat_id=original_id, message_id=original_message_id)
