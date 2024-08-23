@@ -228,7 +228,18 @@ def buttons_food_x():
 @dp.message_handler(commands=['f2m_coins'])
 async def f2m_coins(message: types.Message):
     user = message.from_user.id
-    await bot.send_message(user, text="https://t.me/food_2_mood/55")
+    mode = db.get_users_mode(user)['id']
+    username = db.get_users_user_first_name(user)
+    coin_counter = db.get_users_food_to_mood_coin(user)
+    await bot.send_message(
+        chat_id=user,
+        text=f"{username}, количество твоих <i>f2m коинов</i> составляет: <b>{coin_counter}</b> \n\n"
+             f"<b>Спасибо за активность! Так держать!🚀🔥</b>\n\n"
+             f"<i>Проверь, можешь обменять такое количество на бесплатную консультацию от нутрициолога по кнопке внизу👇🧑‍⚕️🆓</i>",
+        reply_markup=consult_coin_keyboard()
+    )
+    db.set_users_mode(user, mode, "food_to_mood_status")
+    # await bot.send_message(user, text="https://t.me/food_2_mood/55")
 
 
 @dp.inline_handler()
