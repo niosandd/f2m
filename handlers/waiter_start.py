@@ -108,14 +108,19 @@ async def d_from_order(call: types.CallbackQuery):
     except Exception as e:
         print("waiter error", e)
         basket = {}
-    if len(data) > 3:
-        dish_id = data[-1]
-        dish = db.restaurants_get_by_id(dish_id)[4]
-        try:
+    try:
+        if len(data) > 3:
+            dish_id = data[-1]
+            dish = db.restaurants_get_by_id(dish_id)[4]
             basket.pop(dish, None)
             db.set_basket(user, str(basket))
-        except ValueError:
-            pass
+            # try:
+            #     basket.pop(dish, None)
+            #     db.set_basket(user, str(basket))
+            # except ValueError:
+            #     pass
+    except Exception as e:
+        print(e)
     await bot.send_message(chat_id=waiter, text="Нажмите на позицию чтобы удалить", reply_markup=change_order(basket))
 
 
