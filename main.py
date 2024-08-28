@@ -445,7 +445,7 @@ async def bot_message(message):
             db.restaurants_set_review(db.get_client_temp_dish_id(user), message.text)
             db.set_users_mode(user, mode['id'], '')
     try:
-        if mode['key'] != "notification":
+        if mode['key'] not in ["notification", "get_order"]:
             await bot.delete_message(user, message.message_id)
     except:
         pass
