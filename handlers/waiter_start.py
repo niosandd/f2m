@@ -78,7 +78,7 @@ async def get_order(message: types.Message, client_id):
 def order_status():
     markup = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton(text="+", switch_inline_query_current_chat='')
-    btn2 = InlineKeyboardButton(text="-", callback_data="delete_from_order")
+    btn2 = InlineKeyboardButton(text="-", callback_data="d_from_order")
     btn3 = InlineKeyboardButton(text="Принять заказ", callback_data="order_accepted")
     markup.add(btn1, btn2)
     markup.add(btn3)
@@ -98,8 +98,8 @@ async def dish_added(waiter, dish_id):
     await set_order(waiter, client_id)
 
 
-@dp.callback_query_handler(text_contains=f"delete_from_order")
-async def delete_from_order(call: types.CallbackQuery):
+@dp.callback_query_handler(text_contains=f"d_from_order")
+async def d_from_order(call: types.CallbackQuery):
     waiter = call.from_user.id
     client_id = eval(db.get_waiter_score(waiter))[-1]
     data = call.data.split('_')
@@ -123,7 +123,7 @@ def change_order(basket):
     keyboard = InlineKeyboardMarkup(row_width=1)
     for dish in basket:
         btn = InlineKeyboardButton(text=str(dish),
-                                   callback_data=f"delete_from_order_{basket[dish]}")
+                                   callback_data=f"d_from_order_{basket[dish]}")
         keyboard.row(btn)
     btn1 = InlineKeyboardButton(text="Назад", callback_data="back_to_order")
     keyboard.row(btn1)
