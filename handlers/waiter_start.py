@@ -138,6 +138,7 @@ async def back_to_order(call: types.CallbackQuery):
 
 
 async def set_order(waiter, client_id):
+    temp_list = eval(db.get_waiter_score(waiter))
     try:
         basket = list(eval(db.get_basket(client_id)).keys())
     except Exception as e:
