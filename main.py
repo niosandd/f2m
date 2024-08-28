@@ -256,7 +256,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
             posts = db.restaurants_get_all()
 
         results = []
-        if posts == []:
+        if not posts:
             result = InlineQueryResultArticle(
                 id='0',
                 title=f"Кафе в базе нет 😔",
@@ -283,6 +283,35 @@ async def food_restaurant_search(inline_query: InlineQuery):
         rest_name = db.get_client_temp_rest(user).split(':')[0]
         if len(str(inline_query.query)) > 0:
             print(f'│ [{Tools.timenow()}] Пользователь ищет блюдо... {str(inline_query.query)}')
+            posts = db.restaurants_find_dish(rest_name, str(inline_query.query).lower().capitalize())
+        else:
+            posts = db.restaurants_get_all_dish(rest_name)
+
+        results = []
+        if len(posts) == 0:
+            result = InlineQueryResultArticle(
+                id='0',
+                title=f"Такого блюда в базе нет 🤔",
+                description="Попробуйте ввести другое название",
+                input_message_content=InputTextMessageContent(
+                    f'Такого блюда в базе нет 🤔\nПопробуйте ввести другое название'),
+            )
+            results.append(result)
+            await inline_query.answer(results, cache_time=1)
+        else:
+            for post in posts:
+                result = InlineQueryResultArticle(
+                    id=post[0],
+                    title=f"«{post[1]}»: «{post[3]}»",
+                    description=post[2],
+                    input_message_content=InputTextMessageContent(f'{post[1]}:{post[2]}:{post[3]}'),
+                )
+                results.append(result)
+            await inline_query.answer(results[:10], cache_time=1)
+
+    elif mode['key'] == "get_order":
+        rest_name = db.get_client_temp_rest(user).split(':')[0]
+        if len(str(inline_query.query)) > 0:
             posts = db.restaurants_find_dish(rest_name, str(inline_query.query).lower().capitalize())
         else:
             posts = db.restaurants_get_all_dish(rest_name)
@@ -359,6 +388,11 @@ async def bot_message(message):
 
         if mode['key'] == "waiter_reg":
             await w_start.start(message)
+
+        if mode['key'] == "get_order":
+            dish = message.text.split(':')
+            dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]
+            await w_start.dish_added(user, dish_id)
 
         if mode['key'] == "notification":
             await bot.send_message(

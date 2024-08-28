@@ -10,10 +10,6 @@ from main import dp, bot, db, config, Tools
 
 admin = config()['telegram']['admin']
 
-"""
-Обработка команды /waiter
-"""
-
 
 def waiter_action(first_name, location):
     print(f"│ [{Tools.timenow()}] {first_name} → {location}")
@@ -28,18 +24,18 @@ def ind_to_number(ind):
 
 
 async def start(message: types.Message):
-    user = message.from_user.id
+    waiter = message.from_user.id
     try:
         info = message.text.split("/")
         name = info[0].split()
         rest = info[1]
         # Новый официант:
-        if not db.check_waiter_exists(user):
+        if not db.check_waiter_exists(waiter):
             # Регистрируем официанта:
             db.add_waiter(
-                user,
+                waiter,
                 rest,
-                f'tg://user?id={user}',
+                f'tg://user?id={waiter}',
                 message.from_user.username,
                 name[0],
                 name[1],
@@ -50,43 +46,106 @@ async def start(message: types.Message):
                    f'\n<b>Ресторан {rest}</b>' \
                    f'\n<b>{name[0]} {name[1]} {name[2]}</b>' \
                    f'\n@{message.from_user.username}' \
-                   f'\nid <a href="tg://user?id={user}">{user}</a>' \
+                   f'\nid <a href="tg://user?id={waiter}">{waiter}</a>' \
                    f'\n'
-            await bot.send_message(user, text)
+            await bot.send_message(waiter, text)
         else:
             text = f'\nТы уже зарегистрировался(ась) как официант'
-            await bot.send_message(user, text)
+            await bot.send_message(waiter, text)
     except Exception:
         text = f'\nОшибка ввода ФИО/ресторан'
-        await bot.send_message(user, text)
+        await bot.send_message(waiter, text)
 
 
-async def get_order(message: types.Message, order):
-    user = message.from_user.id
+async def get_order(message: types.Message, client_id):
+    waiter = message.from_user.id
     # Проверяем официанта:
-    if db.check_waiter_exists(user):
-        name = db.get_users_user_first_name(order) + " " + db.get_users_user_last_name(order)
-        if not db.get_waiter_score(user):
-            temp_list = [order]
+    if db.check_waiter_exists(waiter):
+        if not db.get_waiter_score(waiter):
+            temp_list = [client_id]
         else:
-            temp_list = eval(db.get_waiter_score(user))
-            temp_list.append(order)
-        db.set_waiter_score(user, str(temp_list))
+            temp_list = eval(db.get_waiter_score(waiter))
+            temp_list.append(client_id)
+        db.set_waiter_score(waiter, str(temp_list))
+        temp_rest = db.get_client_temp_rest(client_id)
+        db.set_client_temp_rest(waiter, temp_rest)
+        await set_order(waiter, client_id)
+
+
+def order_status():
+    markup = InlineKeyboardMarkup()
+    btn1 = InlineKeyboardButton(text="+", switch_inline_query_current_chat='')
+    btn2 = InlineKeyboardButton(text="-", callback_data="delete_from_order")
+    btn3 = InlineKeyboardButton(text="Принять заказ", callback_data="order_accepted")
+    markup.add(btn1, btn2)
+    markup.add(btn3)
+    return markup
+
+
+async def dish_added(waiter, dish_id):
+    client_id = eval(db.get_waiter_score(waiter))[-1]
+    dish = db.restaurants_get_by_id(dish_id)[4]
+    try:
+        basket = eval(db.get_basket(client_id))
+    except Exception as e:
+        print("waiter error", e)
+        basket = {}
+    basket[dish] = dish_id
+    db.set_basket(client_id, str(basket))
+    await set_order(waiter, client_id)
+
+
+@dp.callback_query_handler(text_contains=f"delete_from_order")
+async def delete_from_order(call: types.CallbackQuery):
+    waiter = call.from_user.id
+    client_id = eval(db.get_waiter_score(waiter))[-1]
+    data = call.data.split('_')
+    try:
+        basket = eval(db.get_basket(client_id))
+    except Exception as e:
+        print("waiter error", e)
+        basket = {}
+    if len(data) > 3:
+        dish_id = data[-1]
+        dish = db.restaurants_get_by_id(dish_id)[4]
         try:
-            basket = list(eval(db.get_basket(order)).keys())
-        except Exception as e:
-            print("waiter error", e)
-            basket = []
-        order_text = ""
-        for i in range(len(basket)):
-            order_text += ind_to_number(i + 1) + " " + basket[i] + "\n"
-        text = f'\n<b>Новый заказ:</b>' \
-               f'\n\n' \
-               f'{order_text}' \
-               f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
-        await bot.send_message(user, text)
+            basket.pop(dish, None)
+            db.set_basket(user, str(basket))
+        except ValueError:
+            pass
+    await bot.send_message(chat_id=waiter, text="Нажмите на позицию чтобы удалить", reply_markup=change_order(basket))
 
 
-"""
-Обработка команды /waiter
-"""
+def change_order(basket):
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    for dish in basket:
+        btn = InlineKeyboardButton(text=str(dish),
+                                   callback_data=f"delete_from_order_{basket[dish]}")
+        keyboard.row(btn)
+    btn1 = InlineKeyboardButton(text="Назад", callback_data="back_to_order")
+    keyboard.row(btn1)
+    return keyboard
+
+
+@dp.callback_query_handler(text_contains=f"back_to_order")
+async def back_to_order(call: types.CallbackQuery):
+    waiter = call.from_user.id
+    client_id = eval(db.get_waiter_score(waiter))[-1]
+    await set_order(waiter, client_id)
+
+
+async def set_order(waiter, client_id):
+    try:
+        basket = list(eval(db.get_basket(client_id)).keys())
+    except Exception as e:
+        print("waiter error", e)
+        basket = []
+    order_text = ""
+    for i in range(len(basket)):
+        order_text += ind_to_number(i + 1) + " " + basket[i] + "\n"
+    text = f'\n<b>Новый заказ:</b>' \
+           f'\n\n' \
+           f'{order_text}' \
+           f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
+    message_obj = await bot.send_message(chat_id=waiter, text=text, reply_markup=order_status())
+    db.set_users_mode(waiter, message_obj.message_id, 'get_order')
