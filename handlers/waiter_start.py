@@ -69,7 +69,10 @@ async def get_order(message: types.Message, client_id):
         db.set_waiter_score(waiter, str(temp_list))
         temp_rest = db.get_client_temp_rest(client_id)
         db.set_client_temp_rest(waiter, temp_rest)
-        await set_order(waiter, client_id)
+        try:
+            await set_order(waiter, client_id)
+        except Exception as e:
+            print(e)
 
 
 def order_status():
