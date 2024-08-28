@@ -270,7 +270,7 @@ async def food_choose_get(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-    if len(data) > 3:
+    if len(data) > 2:
         db.set_client_temp_mood(user, data[-1])
 
     last_qr_time = db.get_client_last_qr_time(user)
@@ -314,9 +314,6 @@ def buttons_food_001():
 @dp.message_handler(commands=['form'])
 async def send_profile(message: types.Message):
     user = message.from_user.id
-    temp_state = db.get_client_temp_mood(user)
-    if not temp_state or temp_state == 'None':
-        db.set_client_temp_mood(user, "Радость")
     message_text = get_user_profile_text(user)
     await message.answer(text=message_text, reply_markup=buttons_food_01())
 
@@ -371,19 +368,12 @@ async def request_qr_photo(call: types.CallbackQuery):
     try:
         temp = db.get_client_temp_rest(user).split(':')
         if len(temp) == 1:
-            try:
-                await bot.edit_message_text(
-                    chat_id=user,
-                    message_id=call.message.message_id,
-                    text="Не знаешь куда сходить? 🧐\n\n"
-                         "<b>Искусственный интеллект food2mood подобрал заведения под твоё настроение!</b>",
-                    reply_markup=get_back())
-            except:
-                await bot.send_message(
-                    chat_id=user,
-                    text="Не знаешь куда сходить? 🧐\n\n"
-                         "<b>Искусственный интеллект food2mood подобрал заведения под твоё настроение!</b>",
-                    reply_markup=get_back())
+            await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text="Не знаешь куда сходить? 🧐\n\n"
+                     "<b>Искусственный интеллект food2mood подобрал заведения под твоё настроение!</b>",
+                reply_markup=get_back())
             db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
         else:
             await food_rec2(user, "food_rec_Нутрициолог".split('_'))
