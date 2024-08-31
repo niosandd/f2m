@@ -664,7 +664,7 @@ async def food_rec(call: types.CallbackQuery):
         recommendation = generate_recommendation(user)
         db.set_client_recommendation(user, f"{recommendation}")
         for dish in recommendation:
-            recommendation_text += f"{dish[0]}\n<i>{dish[1]}</i>\n\n"
+            recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
     except Exception as e:
         print(e)
     recommendation_text +=\
@@ -696,7 +696,7 @@ async def food_rec2(user, data):
         recommendation = generate_recommendation(user)
         db.set_client_recommendation(user, f"{recommendation}")
         for dish in recommendation:
-            recommendation_text += f"{dish[0]}\n<i>{dish[1]}</i>\n\n"
+            recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
     except Exception as e:
         print(e)
     recommendation_text +=\
@@ -1014,7 +1014,7 @@ async def check_order(call: types.CallbackQuery):
         text = "❗️<b>Проверь корзину, перед тем как сделать заказ</b> ❗️\n\n" \
                "<i><b>Нажми на позицию</b>, чтобы убрать ее из корзины 🚫\n" \
                "<b>Вернись к категориям</b>, чтобы добавить еще блюда ➕</i>\n\n" \
-               f"<i><b>ИТОГО</b>: {basket_cost} руб.</i>"
+               f"<i><b>🛒ИТОГО</b>: {basket_cost} руб.</i>"
         await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
@@ -1088,7 +1088,7 @@ async def change_basket(call: types.CallbackQuery):
         text = "❗️<b>Проверь корзину, перед тем как сделать заказ</b> ❗️\n\n" \
                "<i><b>Нажми на позицию</b>, чтобы убрать ее из корзины 🚫\n" \
                "<b>Вернись к категориям</b>, чтобы добавить еще блюда ➕</i>\n\n" \
-               f"<i><b>ИТОГО</b>: {basket_cost} руб.</i>"
+               f"<i><b>🛒ИТОГО</b>: {basket_cost} руб.</i>"
         await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
