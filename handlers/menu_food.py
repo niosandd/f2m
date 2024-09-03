@@ -399,7 +399,7 @@ async def filters(call: types.CallbackQuery):
     data = call.data.split('_')
     actual_filter = eval(db.get_client_filter(user))
     if not actual_filter or actual_filter == "None":
-        actual_filter = {}
+        actual_filter = {"cost": "", "cuisine": ""}
     if "cost" in data:
         actual_filter["cost"] = data[-1]
     if "cuisine" in data:
