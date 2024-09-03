@@ -363,7 +363,7 @@ def buttons_food_02():
 
 
 @dp.callback_query_handler(lambda call: call.data == "scanned_qrcode")
-async def request_qr_photo(call: types.CallbackQuery):
+async def scanned_qrcode(call: types.CallbackQuery):
     user = call.from_user.id
     try:
         temp = db.get_client_temp_rest(user).split(':')
@@ -383,12 +383,48 @@ async def request_qr_photo(call: types.CallbackQuery):
 
 def get_back():
     keyboard = InlineKeyboardMarkup(row_width=1)
-
-    btn2 = InlineKeyboardButton(text="« Вернуться назад",
-                                callback_data="food_choose_get")
-
     btn1 = InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')
-    keyboard.add(btn1, btn2)
+
+    btn2 = InlineKeyboardButton(text="Настроить фильтр", callback_data="filter")
+
+    btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
+
+    keyboard.add(btn1, btn2, btn)
+    return keyboard
+
+
+@dp.callback_query_handler(text_contains=f"filter")
+async def filter(call: types.CallbackQuery):
+    user = call.from_user.id
+    data = call.data.split('_')
+    actual_filter = eval(db.get_client_filter(user))
+    if "cost" in data:
+        actual_filter["cost"] = data[-1]
+    if "cuisine" in data:
+        actual_filter["cuisine"] = data[-1]
+    db.set_client_filter(user, str(actual_filter))
+    await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text="Настрой фильтр с помощью кнопок",
+        reply_markup=filter_keyboard(actual_filter))
+
+
+def filter_keyboard(actual_filter):
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    if "Сначала недорогие" in actual_filter["cost"]:
+        btn1 = InlineKeyboardButton(text="« Сначала дорогие", callback_data="filter_cost_expensive")
+    else:
+        btn2 = InlineKeyboardButton(text="Сначала недорогие »", callback_data="filter_cost_cheap")
+
+    if "Европейская кухня" in actual_filter["cuisine"]:
+        btn3 = InlineKeyboardButton(text="« Азиатская кухня", callback_data="filter_cuisine_asia")
+    else:
+        btn4 = InlineKeyboardButton(text="Европейская кухня »", callback_data="filter_cuisine_euro")
+
+    btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
+
+    keyboard.add(btn1, btn2, btn3, btn4, btn)
     return keyboard
 
 

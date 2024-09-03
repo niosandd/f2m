@@ -476,6 +476,19 @@ class Database:
                 (user_id,)).fetchall()
             return str(result[0][0])
 
+    def set_client_filter(self, user_id: int, filter: str):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE clients SET filter = ? WHERE id = ?",
+                (filter, user_id))
+
+    def get_client_filter(self, user_id: int) -> str:
+        with self.connection:
+            result = self.connection.execute(
+                "SELECT filter FROM clients WHERE id = ?",
+                (user_id,)).fetchall()
+            return str(result[0][0])
+
     # ======================================================================================================================
     # ===== ТАБЛИЦА: restaurants =================================================================================================
     # ======================================================================================================================
