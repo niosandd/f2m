@@ -387,9 +387,11 @@ def get_back():
 
     btn2 = InlineKeyboardButton(text="Настроить фильтр", callback_data="filter")
 
+    btn3 = InlineKeyboardButton(text="Найти ближайшее заведение", callback_data="geolocation")
+
     btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
 
-    keyboard.add(btn1, btn2, btn)
+    keyboard.add(btn1, btn2, btn3, btn)
     return keyboard
 
 
@@ -415,14 +417,14 @@ async def filters(call: types.CallbackQuery):
 def filter_keyboard(actual_filter):
     keyboard = InlineKeyboardMarkup(row_width=1)
     if "cost" in actual_filter:
-        if "Сначала недорогие" in actual_filter["cost"]:
+        if "cheap" in actual_filter["cost"]:
             btn1 = InlineKeyboardButton(text="« Сначала дорогие", callback_data="filter_cost_expensive")
             keyboard.add(btn1)
         else:
             btn2 = InlineKeyboardButton(text="Сначала недорогие »", callback_data="filter_cost_cheap")
             keyboard.add(btn2)
     if "cuisine" in actual_filter:
-        if "Европейская кухня" in actual_filter["cuisine"]:
+        if "euro" in actual_filter["cuisine"]:
             btn3 = InlineKeyboardButton(text="« Азиатская кухня", callback_data="filter_cuisine_asia")
             keyboard.add(btn3)
         else:
