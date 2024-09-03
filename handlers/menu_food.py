@@ -385,56 +385,56 @@ def get_back():
     keyboard = InlineKeyboardMarkup(row_width=1)
     btn1 = InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')
 
-    btn2 = InlineKeyboardButton(text="Настроить фильтр", callback_data="filter")
-
-    btn3 = InlineKeyboardButton(text="Найти ближайшее заведение", callback_data="geolocation")
+    # btn2 = InlineKeyboardButton(text="Настроить фильтр", callback_data="filter")
+    #
+    # btn3 = InlineKeyboardButton(text="Найти ближайшее заведение", callback_data="geolocation")
 
     btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
 
-    keyboard.add(btn1, btn2, btn3, btn)
+    keyboard.add(btn1, btn)
     return keyboard
 
 
-@dp.callback_query_handler(text_contains=f"filter")
-async def filters(call: types.CallbackQuery):
-    user = call.from_user.id
-    data = call.data.split('_')
-    actual_filter = eval(db.get_client_filter(user))
-    if not actual_filter or actual_filter == "None":
-        actual_filter = {"cost": "", "cuisine": ""}
-    if "cost" in data:
-        actual_filter["cost"] = data[-1]
-    if "cuisine" in data:
-        actual_filter["cuisine"] = data[-1]
-    db.set_client_filter(user, str(actual_filter))
-    await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text="Настрой фильтр с помощью кнопок",
-        reply_markup=filter_keyboard(actual_filter))
-
-
-def filter_keyboard(actual_filter):
-    keyboard = InlineKeyboardMarkup(row_width=1)
-    if "cost" in actual_filter:
-        if "cheap" in actual_filter["cost"]:
-            btn1 = InlineKeyboardButton(text="« Сначала дорогие", callback_data="filter_cost_expensive")
-            keyboard.add(btn1)
-        else:
-            btn2 = InlineKeyboardButton(text="Сначала недорогие »", callback_data="filter_cost_cheap")
-            keyboard.add(btn2)
-    if "cuisine" in actual_filter:
-        if "euro" in actual_filter["cuisine"]:
-            btn3 = InlineKeyboardButton(text="« Азиатская кухня", callback_data="filter_cuisine_asia")
-            keyboard.add(btn3)
-        else:
-            btn4 = InlineKeyboardButton(text="Европейская кухня »", callback_data="filter_cuisine_euro")
-            keyboard.add(btn4)
-
-    btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
-
-    keyboard.add(btn)
-    return keyboard
+# @dp.callback_query_handler(text_contains=f"filter")
+# async def filters(call: types.CallbackQuery):
+#     user = call.from_user.id
+#     data = call.data.split('_')
+#     actual_filter = eval(db.get_client_filter(user))
+#     if not actual_filter or actual_filter == "None":
+#         actual_filter = {"cost": "", "cuisine": ""}
+#     if "cost" in data:
+#         actual_filter["cost"] = data[-1]
+#     if "cuisine" in data:
+#         actual_filter["cuisine"] = data[-1]
+#     db.set_client_filter(user, str(actual_filter))
+#     await bot.edit_message_text(
+#         chat_id=user,
+#         message_id=call.message.message_id,
+#         text="Настрой фильтр с помощью кнопок",
+#         reply_markup=filter_keyboard(actual_filter))
+#
+#
+# def filter_keyboard(actual_filter):
+#     keyboard = InlineKeyboardMarkup(row_width=1)
+#     if "cost" in actual_filter:
+#         if "cheap" in actual_filter["cost"]:
+#             btn1 = InlineKeyboardButton(text="« Сначала дорогие", callback_data="filter_cost_expensive")
+#             keyboard.add(btn1)
+#         else:
+#             btn2 = InlineKeyboardButton(text="Сначала недорогие »", callback_data="filter_cost_cheap")
+#             keyboard.add(btn2)
+#     if "cuisine" in actual_filter:
+#         if "euro" in actual_filter["cuisine"]:
+#             btn3 = InlineKeyboardButton(text="« Азиатская кухня", callback_data="filter_cuisine_asia")
+#             keyboard.add(btn3)
+#         else:
+#             btn4 = InlineKeyboardButton(text="Европейская кухня »", callback_data="filter_cuisine_euro")
+#             keyboard.add(btn4)
+#
+#     btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
+#
+#     keyboard.add(btn)
+#     return keyboard
 
 
 token = ""
