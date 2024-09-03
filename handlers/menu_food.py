@@ -412,19 +412,24 @@ async def filter(call: types.CallbackQuery):
 
 def filter_keyboard(actual_filter):
     keyboard = InlineKeyboardMarkup(row_width=1)
-    if "Сначала недорогие" in actual_filter["cost"]:
-        btn1 = InlineKeyboardButton(text="« Сначала дорогие", callback_data="filter_cost_expensive")
-    else:
-        btn2 = InlineKeyboardButton(text="Сначала недорогие »", callback_data="filter_cost_cheap")
-
-    if "Европейская кухня" in actual_filter["cuisine"]:
-        btn3 = InlineKeyboardButton(text="« Азиатская кухня", callback_data="filter_cuisine_asia")
-    else:
-        btn4 = InlineKeyboardButton(text="Европейская кухня »", callback_data="filter_cuisine_euro")
+    if "cost" in actual_filter:
+        if "Сначала недорогие" in actual_filter["cost"]:
+            btn1 = InlineKeyboardButton(text="« Сначала дорогие", callback_data="filter_cost_expensive")
+            keyboard.add(btn1)
+        else:
+            btn2 = InlineKeyboardButton(text="Сначала недорогие »", callback_data="filter_cost_cheap")
+            keyboard.add(btn2)
+    if "cuisine" in actual_filter:
+        if "Европейская кухня" in actual_filter["cuisine"]:
+            btn3 = InlineKeyboardButton(text="« Азиатская кухня", callback_data="filter_cuisine_asia")
+            keyboard.add(btn3)
+        else:
+            btn4 = InlineKeyboardButton(text="Европейская кухня »", callback_data="filter_cuisine_euro")
+            keyboard.add(btn4)
 
     btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
 
-    keyboard.add(btn1, btn2, btn3, btn4, btn)
+    keyboard.add(btn)
     return keyboard
 
 
