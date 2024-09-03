@@ -394,7 +394,7 @@ def get_back():
 
 
 @dp.callback_query_handler(text_contains=f"filter")
-async def filter(call: types.CallbackQuery):
+async def filters(call: types.CallbackQuery):
     user = call.from_user.id
     data = call.data.split('_')
     actual_filter = eval(db.get_client_filter(user))
