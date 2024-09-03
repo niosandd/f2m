@@ -774,28 +774,31 @@ def menu_button():
 
 @dp.callback_query_handler(text_contains=f"show_categories")
 async def show_categories(call: types.CallbackQuery):
-    user = call.from_user.id
-    rest_name = db.get_client_temp_rest(user).split(':')[0]
-    available_categories = db.restaurants_get_all_categories(rest_name)
-    if db.get_users_ban(user):
-        return None
+    try:
+        user = call.from_user.id
+        rest_name = db.get_client_temp_rest(user).split(':')[0]
+        available_categories = db.restaurants_get_all_categories(rest_name)
+        if db.get_users_ban(user):
+            return None
 
-    if "again" in call.data:
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=call.message.message_id,
-            text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
-                 f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
-            reply_markup=buttons_food_04(available_categories)
-        )
-    else:
-        message_obj = await bot.send_message(
-            chat_id=user,
-            text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
-                 f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
-            reply_markup=buttons_food_04(available_categories)
-        )
-    db.set_users_mode(user, message_obj.message_id, 'food_rec')
+        if "again" in call.data:
+            message_obj = await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
+                     f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
+                reply_markup=buttons_food_04(available_categories)
+            )
+        else:
+            message_obj = await bot.send_message(
+                chat_id=user,
+                text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
+                     f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
+                reply_markup=buttons_food_04(available_categories)
+            )
+        db.set_users_mode(user, message_obj.message_id, 'food_rec')
+    except Exception as e:
+        print(e)
 
 
 def buttons_food_04(available_categories):
