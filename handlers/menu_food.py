@@ -712,12 +712,19 @@ async def food_rec(call: types.CallbackQuery):
         "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
 
     db.set_client_rec_message_id(user, call.message.message_id)
-    message_obj = await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text=recommendation_text,
-        reply_markup=menu_button()
-    )
+    try:
+        message_obj = await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=recommendation_text,
+            reply_markup=menu_button()
+        )
+    except:
+        message_obj = await bot.send_message(
+            chat_id=user,
+            text=recommendation_text,
+            reply_markup=menu_button()
+        )
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
