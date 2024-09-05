@@ -122,18 +122,18 @@ async def menu_start(call: types.CallbackQuery):
 
     if db.check_client(user):
         try:
-            sex = db.get_client_sex(user_id)
-            age = db.get_client_age(user_id)
-            style = db.get_client_style(user_id)
-            blacklist = db.get_client_blacklist(user_id)
+            sex = db.get_client_sex(user)
+            age = db.get_client_age(user)
+            style = db.get_client_style(user)
+            blacklist = db.get_client_blacklist(user)
             if not (sex and sex != 'None'):
-                db.set_client_sex(user_id, 'не определен 🤷')
+                db.set_client_sex(user, 'не определен 🤷')
             if not (age and age != 'None'):
-                db.set_client_age(user_id, 'не определен 🤷')
+                db.set_client_age(user, 'не определен 🤷')
             if not (style and style != 'None'):
-                db.set_client_style(user_id, 'Стандартное')
+                db.set_client_style(user, 'Стандартное')
             if not (blacklist and blacklist != 'None'):
-                db.set_client_blacklist(user_id, 'Пусто')
+                db.set_client_blacklist(user, 'Пусто')
         except Exception as e:
             print(e)
         message_obj = await bot.send_message(
