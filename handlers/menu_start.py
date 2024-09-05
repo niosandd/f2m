@@ -121,11 +121,11 @@ async def menu_start(call: types.CallbackQuery):
     db.set_users_mode(user, 0, 'start')
 
     if db.check_client(user):
-        sex = db.get_client_sex(user_id)
-        age = db.get_client_age(user_id)
-        style = db.get_client_style(user_id)
-        blacklist = db.get_client_blacklist(user_id)
         try:
+            sex = db.get_client_sex(user_id)
+            age = db.get_client_age(user_id)
+            style = db.get_client_style(user_id)
+            blacklist = db.get_client_blacklist(user_id)
             if not (sex and sex != 'None'):
                 db.set_client_sex(user_id, 'не определен 🤷')
             if not (age and age != 'None'):
