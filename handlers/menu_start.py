@@ -120,22 +120,23 @@ async def menu_start(call: types.CallbackQuery):
     # Действие:
     db.set_users_mode(user, 0, 'start')
 
+    try:
+        sex = db.get_client_sex(user)
+        age = db.get_client_age(user)
+        style = db.get_client_style(user)
+        blacklist = db.get_client_blacklist(user)
+        if not (sex and sex != 'None'):
+            db.set_client_sex(user, 'не определен 🤷')
+        if not (age and age != 'None'):
+            db.set_client_age(user, 'не определен 🤷')
+        if not (style and style != 'None'):
+            db.set_client_style(user, 'Стандартное')
+        if not (blacklist and blacklist != 'None'):
+            db.set_client_blacklist(user, 'Пусто')
+    except Exception as e:
+        print(e)
+
     if db.check_client(user):
-        try:
-            sex = db.get_client_sex(user)
-            age = db.get_client_age(user)
-            style = db.get_client_style(user)
-            blacklist = db.get_client_blacklist(user)
-            if not (sex and sex != 'None'):
-                db.set_client_sex(user, 'не определен 🤷')
-            if not (age and age != 'None'):
-                db.set_client_age(user, 'не определен 🤷')
-            if not (style and style != 'None'):
-                db.set_client_style(user, 'Стандартное')
-            if not (blacklist and blacklist != 'None'):
-                db.set_client_blacklist(user, 'Пусто')
-        except Exception as e:
-            print(e)
         message_obj = await bot.send_message(
             chat_id=user,
             text=f"<b>Привет!</b> 👋\n"
