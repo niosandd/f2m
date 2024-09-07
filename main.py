@@ -460,7 +460,7 @@ async def client_register_blacklist(user, message: types.Message):
     await bot.edit_message_text(
         chat_id=user,
         message_id=message_obj.message_id,
-        text=f"<b>Эти продукты ты не упоребляешь в пищу:</b>\n"
+        text=f"<b>Эти продукты ты не употребляешь в пищу:</b>\n"
              f"<code>{products}</code>\n"
              f"\n"
              f"Всё верно?",
