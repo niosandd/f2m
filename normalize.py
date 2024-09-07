@@ -108,7 +108,8 @@ normal_words = ['авокадо', 'ананас', 'анчоус', 'апельс�
 
 
 def normal_word(word):
-    if word == 'картошка':
+    word3 = normalize_diminutive_word(word)
+    if word3 == 'картошка':
         return 'картофель'
     else:
         word2 = normalize_diminutive_word(word)
