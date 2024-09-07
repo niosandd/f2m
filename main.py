@@ -20,6 +20,7 @@ import ccxt.async_support as ccxt
 import json
 import requests
 
+import normalize
 from my_libraries import Tools
 from help import config
 from db import Database
@@ -455,7 +456,8 @@ async def client_register_blacklist(user, message: types.Message):
     message_obj = await message.answer(
         text=f"Одну секунду... ⏳"
     )
-    products = str(chat_gpt.send_message(message.text)).strip('"')
+    # products = str(chat_gpt.send_message(message.text)).strip('"')
+    products = normalize.normal_list(message.text)
     db.set_client_blacklist(user, products)
     await bot.edit_message_text(
         chat_id=user,
