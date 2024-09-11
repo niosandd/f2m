@@ -151,6 +151,5 @@ async def set_order(waiter, client_id):
            f'\n\n' \
            f'{order_text}' \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
-    await bot.send_message(chat_id=waiter, text=text)
     message_obj = await bot.send_message(chat_id=waiter, text=text, reply_markup=order_status())
     db.set_users_mode(waiter, message_obj.message_id, 'get_order')
