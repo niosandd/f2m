@@ -61,12 +61,6 @@ async def get_order(message: types.Message, client_id):
     waiter = message.from_user.id
     # Проверяем официанта:
     if db.check_waiter_exists(waiter):
-        if not db.get_waiter_score(waiter):
-            temp_list = [client_id]
-        else:
-            temp_list = eval(db.get_waiter_score(waiter))
-            temp_list.append(client_id)
-        db.set_waiter_score(waiter, str(temp_list))
         temp_rest = db.get_client_temp_rest(client_id)
         db.set_client_temp_rest(waiter, temp_rest)
         try:
@@ -135,6 +129,21 @@ async def back_to_order(call: types.CallbackQuery):
     waiter = call.from_user.id
     client_id = eval(db.get_waiter_score(waiter))[-1]
     await set_order(waiter, client_id)
+
+
+@dp.callback_query_handler(text_contains=f"order_accepted")
+async def order_accepted(call: types.CallbackQuery):
+    waiter = call.from_user.id
+    client_id = eval(db.get_waiter_score(waiter))[-1]
+    if not db.get_waiter_score(waiter):
+        temp_list = [client_id]
+    else:
+        temp_list = eval(db.get_waiter_score(waiter))
+        temp_list.append(client_id)
+    db.set_waiter_score(waiter, str(temp_list))
+    text = "Заказ принят!\n" \
+           f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
+    await bot.send_message(chat_id=waiter, text=text)
 
 
 async def set_order(waiter, client_id):
