@@ -82,6 +82,7 @@ def order_status():
 async def dish_added(waiter, dish_id):
     client_id = eval(db.get_waiter_score(waiter))[-1]
     dish = db.restaurants_get_by_id(dish_id)[4]
+    mode = db.get_users_mode(waiter)
     try:
         basket = eval(db.get_basket(client_id))
     except Exception as e:
@@ -89,7 +90,7 @@ async def dish_added(waiter, dish_id):
         basket = {}
     basket[dish] = dish_id
     db.set_basket(client_id, str(basket))
-    await set_order(waiter, client_id)
+    await set_order(waiter, client_id, message_id=mode['id'])
 
 
 @dp.callback_query_handler(text_contains=f"d_from_order")
@@ -110,7 +111,10 @@ async def d_from_order(call: types.CallbackQuery):
             db.set_basket(client_id, str(basket))
         except ValueError:
             pass
-    await bot.send_message(chat_id=waiter, text="Нажмите на позицию чтобы удалить", reply_markup=change_order(basket))
+    await bot.edit_message_text(chat_id=waiter,
+                                message_id=call.message.message_id,
+                                text="Нажмите на позицию чтобы удалить",
+                                reply_markup=change_order(basket))
 
 
 def change_order(basket):
@@ -128,7 +132,7 @@ def change_order(basket):
 async def back_to_order(call: types.CallbackQuery):
     waiter = call.from_user.id
     client_id = eval(db.get_waiter_score(waiter))[-1]
-    await set_order(waiter, client_id)
+    await set_order(waiter, client_id, message_id=call.message.message_id)
 
 
 @dp.callback_query_handler(text_contains=f"order_accepted")
@@ -143,10 +147,10 @@ async def order_accepted(call: types.CallbackQuery):
     db.set_waiter_score(waiter, str(temp_list))
     text = "Заказ принят!\n" \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
-    await bot.send_message(chat_id=waiter, text=text)
+    await bot.edit_message_text(chat_id=waiter, message_id=call.message.message_id, text=text)
 
 
-async def set_order(waiter, client_id):
+async def set_order(waiter, client_id, message_id=None):
     temp_list = eval(db.get_waiter_score(waiter))
     try:
         basket = list(eval(db.get_basket(client_id)).keys())
@@ -160,5 +164,11 @@ async def set_order(waiter, client_id):
            f'\n\n' \
            f'{order_text}' \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
-    message_obj = await bot.send_message(chat_id=waiter, text=text, reply_markup=order_status())
+    if message_id:
+        message_obj = await bot.edit_message_text(chat_id=waiter,
+                                                  message_id=message_id,
+                                                  text=text,
+                                                  reply_markup=order_status())
+    else:
+        message_obj = await bot.send_message(chat_id=waiter, text=text, reply_markup=order_status())
     db.set_users_mode(waiter, message_obj.message_id, 'get_order')
