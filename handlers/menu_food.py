@@ -651,10 +651,10 @@ def generate_recommendation(user):
     for dish in df.values.tolist():
         # dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
-        print(blacklist)
+        print(list(blacklist))
         print(dish_ingredients)
-        print(set(blacklist) & set(dish_ingredients))
-        if set(blacklist) & set(dish_ingredients):
+        print(set(list(blacklist)) & set(dish_ingredients))
+        if set(list(blacklist)) & set(dish_ingredients):
             print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
             print("Запрещенные ингредиенты:", blacklist)
             print("Ингредиенты блюда:", dish_ingredients)
