@@ -42,6 +42,7 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
                 rec_n = 11
             if ...
     '''
+    df = df[df['Название ресторана'].str.contains(restaurant)]
     df = df[df['Настроение'].str.contains(mood)]
     df = df[df['Стиль питания'].str.contains(style)]
     df = df.loc[df['Категория'] == category]
@@ -103,12 +104,7 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
             "Грамм": first_dish[18]
         })
     for dish in df_new:
-        # dish_ingredients_unformatted = str(dish[6]).strip().lower()
-        # dish_ingredients = dish_ingredients_unformatted.split(',')
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
-        print(blacklist)
-        print(dish_ingredients)
-        print(set(blacklist) & set(dish_ingredients))
         if set(blacklist) & set(dish_ingredients):
             print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
             print("Запрещенные ингредиенты:", blacklist)
@@ -234,6 +230,7 @@ def read_table_2(user, mood: str, style: str, blacklist: str):
     ])
 
     # Выделяем только то меню, что сейчас запрашивает клиент
+    df = df[df['Название ресторана'].str.contains(restaurant)]
     df = df[df['Настроение'].str.contains(mood)]
     df = df[df['Стиль питания'].str.contains(style)]
 
@@ -242,11 +239,7 @@ def read_table_2(user, mood: str, style: str, blacklist: str):
 
     dishes = []
     for dish in df.values.tolist():
-        # dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
-        print(blacklist)
-        print(dish_ingredients)
-        print(set(blacklist) & set(dish_ingredients))
         if set(blacklist) & set(dish_ingredients):
             print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
             print("Запрещенные ингредиенты:", blacklist)

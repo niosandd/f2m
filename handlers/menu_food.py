@@ -626,7 +626,7 @@ def generate_recommendation(user):
     restaurant = db.get_client_temp_rest(user).split(":")[0]
     blacklist = [ingredient.strip() for ingredient in db.get_client_blacklist(user).split(",")]
     # Загружаем таблицу с меню
-    df = pd.DataFrame(db.recommendations_get_all(), columns=[
+    df = pd.DataFrame(db.restaurants_get(restaurant), columns=[
         'id',
         'Название ресторана',
         'Адрес ресторана',
@@ -636,7 +636,17 @@ def generate_recommendation(user):
         'Ингредиенты',
         'Стиль питания',
         'Настроение',
-        'Ссылка'
+        'Рекомендации нутрициолога',
+        'Рекомендации сообщества',
+        'Рекомендации Обломова',
+        'Ивлев',
+        'Отзывы',
+        'Рейтинг',
+        'Коины',
+        'Ссылка',
+        'Цена',
+        'Граммы',
+        'Простые ингредиенты'
     ])
 
     # Выделяем только то меню, что сейчас запрашивает клиент
@@ -649,11 +659,7 @@ def generate_recommendation(user):
 
     dishes = []
     for dish in df.values.tolist():
-        # dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
-        print(blacklist)
-        print(dish_ingredients)
-        print(set(blacklist) & set(dish_ingredients))
         if set(blacklist) & set(dish_ingredients):
             print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
             print("Запрещенные ингредиенты:", blacklist)
