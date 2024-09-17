@@ -148,7 +148,7 @@ def get_dish(user: int):
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
     rec = db.get_client_temp_recommendation(user)
-    blacklist = db.get_client_blacklist(user).split(",")
+    blacklist = [ingredient.strip() for ingredient in db.get_client_blacklist(user).split(",")]
     numb = db.get_client_temp_dish(user)
     price = db.get_dish_price(user)
     g = db.get_g(user)
@@ -286,6 +286,6 @@ def read_table_2(user, mood: str, style: str, blacklist: str):
 def get_recommendation(user: int):
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
-    blacklist = db.get_client_blacklist(user)
+    blacklist = [ingredient.strip() for ingredient in db.get_client_blacklist(user).split(",")]
 
     return read_table_2(user, mood, style, blacklist)

@@ -624,7 +624,7 @@ def generate_recommendation(user):
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
     restaurant = db.get_client_temp_rest(user).split(":")[0]
-    blacklist = db.get_client_blacklist(user).split(",")
+    blacklist = [ingredient.strip() for ingredient in db.get_client_blacklist(user).split(",")]
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.recommendations_get_all(), columns=[
         'id',
