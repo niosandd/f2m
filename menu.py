@@ -7,7 +7,7 @@ import random
 import pandas as pd
 
 def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
-               blacklist: str, numb: int, price: int, g: int, first_dish: str | None):
+               blacklist: list, numb: int, price: int, g: int, first_dish: str | None):
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.restaurants_get(restaurant), columns=[
         'id',
@@ -106,25 +106,15 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
         # dish_ingredients_unformatted = str(dish[6]).strip().lower()
         # dish_ingredients = dish_ingredients_unformatted.split(',')
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
-        print(list(blacklist))
+        print(blacklist)
         print(dish_ingredients)
-        print(set(list(blacklist)) & set(dish_ingredients))
-        if set(list(blacklist)) & set(dish_ingredients):
+        print(set(blacklist) & set(dish_ingredients))
+        if set(blacklist) & set(dish_ingredients):
             print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
             print("Запрещенные ингредиенты:", blacklist)
             print("Ингредиенты блюда:", dish_ingredients)
             continue
 
-        # Проверка через difflib
-        drop = False
-        for ing in blacklist.replace(' ', '').split(','):
-            ing = str(ing).lower().strip()
-            if ing in dish_ingredients:
-                drop = True
-                break
-
-        if drop:
-            continue
         if dish[4] == first_dish:
             continue
 
@@ -158,7 +148,7 @@ def get_dish(user: int):
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
     rec = db.get_client_temp_recommendation(user)
-    blacklist = db.get_client_blacklist(user)
+    blacklist = db.get_client_blacklist(user).split(",")
     numb = db.get_client_temp_dish(user)
     price = db.get_dish_price(user)
     g = db.get_g(user)
@@ -254,10 +244,10 @@ def read_table_2(user, mood: str, style: str, blacklist: str):
     for dish in df.values.tolist():
         # dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
-        print(list(blacklist))
+        print(blacklist)
         print(dish_ingredients)
-        print(set(list(blacklist)) & set(dish_ingredients))
-        if set(list(blacklist)) & set(dish_ingredients):
+        print(set(blacklist) & set(dish_ingredients))
+        if set(blacklist) & set(dish_ingredients):
             print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
             print("Запрещенные ингредиенты:", blacklist)
             print("Ингредиенты блюда:", dish_ingredients)
