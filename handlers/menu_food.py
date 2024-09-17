@@ -649,10 +649,10 @@ def generate_recommendation(user):
 
     dishes = []
     for dish in df.values.tolist():
-        dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
-
+        # dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
+        dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
         if blacklist not in ["Пусто", "пусто ⭕️", None, 'None']:
-            if menu.check_blacklist_with_ai(blacklist, dish_ingredients):
+            if set(blacklist) & set(dish_ingredients):
                 print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
                 print("Запрещенные ингредиенты:", blacklist)
                 print("Ингредиенты блюда:", dish_ingredients)

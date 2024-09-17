@@ -44,11 +44,6 @@ async def start(message: types.Message):
         await bot.send_message(admin, text)
         db.set_users_mode(user, 0, 'start')
 
-    # Данные чата:
-    try:
-        await bot.delete_message(user, call.message.message_id)
-    except:
-        pass
     first = int(db.get_users_first_message(user))
     last = int(db.get_users_last_message(user)) + 1
     db.set_users_first_message(user, 0)
