@@ -651,12 +651,14 @@ def generate_recommendation(user):
     for dish in df.values.tolist():
         # dish_ingredients = [ingredient.strip() for ingredient in str(dish[6]).lower().split(',')]
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
-        if blacklist not in ["Пусто", "пусто ⭕️", None, 'None']:
-            if set(blacklist) & set(dish_ingredients):
-                print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
-                print("Запрещенные ингредиенты:", blacklist)
-                print("Ингредиенты блюда:", dish_ingredients)
-                continue
+        print(blacklist)
+        print(dish_ingredients)
+        print(set(blacklist) & set(dish_ingredients))
+        if set(blacklist) & set(dish_ingredients):
+            print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
+            print("Запрещенные ингредиенты:", blacklist)
+            print("Ингредиенты блюда:", dish_ingredients)
+            continue
 
         dishes.append({
             "Ресторан": dish[1],
