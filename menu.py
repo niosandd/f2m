@@ -106,9 +106,6 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
     for dish in df_new:
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
         if set(blacklist) & set(dish_ingredients):
-            print("Пропускаем блюдо из-за запрещенного ингредиента:", dish[4])
-            print("Запрещенные ингредиенты:", blacklist)
-            print("Ингредиенты блюда:", dish_ingredients)
             continue
 
         if dish[4] == first_dish:
