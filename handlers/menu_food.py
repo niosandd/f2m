@@ -209,10 +209,10 @@ def get_user_profile_text(user_id):
         if not (age and age != 'None'):
             age = 'не определен 🤷'
             db.set_client_age(user_id, 'не определен 🤷')
-        if not (style and style != 'None'):
+        if not (style and style != 'None') or style == 'Стандартное':
             style = 'Стандартный 🥘'
             db.set_client_style(user_id, 'Стандартное')
-        if not (blacklist and blacklist != 'None'):
+        if not (blacklist and blacklist != 'None') or blacklist == "Пусто":
             blacklist = 'пусто ⭕️'
             db.set_client_blacklist(user_id, 'Пусто')
     except Exception as e:
