@@ -270,7 +270,7 @@ async def food_choose_get(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
 
-    if len(data) > 2:
+    if len(data) > 3:
         db.set_client_temp_mood(user, data[-1])
 
     last_qr_time = db.get_client_last_qr_time(user)
