@@ -367,6 +367,9 @@ async def scanned_qrcode(call: types.CallbackQuery):
     user = call.from_user.id
     try:
         temp = db.get_client_temp_rest(user).split(':')
+        temp_state = db.get_client_temp_mood(user)
+        if not temp_state or temp_state == "None":
+            db.set_client_temp_mood(user, "Радость")
         if len(temp) == 1:
             await bot.edit_message_text(
                 chat_id=user,
