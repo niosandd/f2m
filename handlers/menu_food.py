@@ -961,7 +961,7 @@ async def food_category(call: types.CallbackQuery):
                      f"\n"
                      f"<b>Кажется, в этом заведении нет блюд, подходящих под ваши критерии</b> 🤔\n"
                      f"\n"
-                     f"Попробуй поменять категорию блюд, настроение или список продуктов, которые ты не употребляешь в пищу 😉\n"
+                     f"Попробуй Вернуться к категориям блюд, настроение или список продуктов, которые ты не употребляешь в пищу 😉\n"
 
                      f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
                 reply_markup=buttons_food_05(None, None, None, None)
@@ -1219,7 +1219,7 @@ def bon_appetite_keyboard():
     btn1 = InlineKeyboardButton(text="«« Вернуться на главную",
                                 callback_data="menu_start")
 
-    btn2 = InlineKeyboardButton(text="« Поменять категорию",
+    btn2 = InlineKeyboardButton(text="« Вернуться к категориям",
                                 callback_data="show_categories_again")
 
     btn3 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
@@ -1335,15 +1335,15 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_b
                                         callback_data=f"basket_add")
         menu.add(btn0)
     # menu_start
-    btn1 = InlineKeyboardButton(text="« Поменять категорию",
+    btn1 = InlineKeyboardButton(text="« Вернуться к категориям",
                                 callback_data="show_categories_again")
 
-    btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
-                                callback_data="menu_start")
+    # btn2 = InlineKeyboardButton(text="«« Вернуться на главную",
+    #                             callback_data="menu_start")
 
     btn3 = InlineKeyboardButton(text="Сделать заказ ❗️", callback_data="check_order")
     menu.add(btn1)
-    menu.add(btn2)
+    # menu.add(btn2)
     menu.add(btn3)
     return menu
 
