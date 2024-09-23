@@ -30,7 +30,7 @@ def normalize_word(word):
     return parsed.normal_form
 
 
-def correct_word(input_word, word_list, threshold=70):
+def correct_word(input_word, word_list, threshold=80):
     normalized_word = normalize_word(input_word)
     match = process.extractOne(normalized_word, word_list, scorer=fuzz.ratio)
     if match and match[1] >= threshold:
