@@ -830,7 +830,7 @@ class Database:
         try:
             last_session = self.get_last_session(user_id)
         except:
-            last_session = False
+            return False
         last_action = last_session[1].split('->')
         if last_action[-1] == action:
             return True
