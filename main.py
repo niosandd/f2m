@@ -92,64 +92,67 @@ import handlers.menu_food as m_food
 
 class ActionLoggingMiddleware(BaseMiddleware):
     async def on_pre_process_update(self, update: types.Update, data: dict):
-        user_id = None
-        action = None
+        try:
+            user_id = None
+            action = None
 
-        if update.message:
-            user_id = update.message.from_user.id
-            if update.message.text == '/start':
-                action = 'Запуск бота'
-            elif update.message.text == '/form':
-                action = 'Пользователь прошел тест на выявление вкусовых предпочтений'
-            else:
-                if update.message.text:
-                    action = f"Пользователь отправил сообщение: {update.message.text}"
+            if update.message:
+                user_id = update.message.from_user.id
+                if update.message.text == '/start':
+                    action = 'Запуск бота'
+                elif update.message.text == '/form':
+                    action = 'Пользователь прошел тест на выявление вкусовых предпочтений'
                 else:
-                    action = "Сообщение без текста"
-        elif update.callback_query:
-            user_id = update.callback_query.from_user.id
-            if update.callback_query.data == 'confirmation_of_the_questionnaire':
-                action = f"Пользователь подтвердил свою анкету"
-            if update.callback_query.data == 'food_mood':
-                action = f"Пользователь перешел к выбору настроения"
-            if update.callback_query.data in ["food_choose_get_Радость", "food_choose_get_Печаль", "food_choose_get_Гнев", "food_choose_get_Спокойствие", "food_choose_get_Волнение"]:
-                action = "Пользователь выбрал свое настроение"
-            if update.callback_query.data == 'client_change_questionnaire':
-                action = 'Пользователь перешел в меню редактирование анкеты'
-            if 'rewiew_star' in update.callback_query.data:
-                action = 'Пользователь поставил оценку на блюдо'
-            if update.callback_query.data == 'food_mood':
-                action = 'Пользователь захотел получить рекомендацию'
-            if update.callback_query.data == 'menu_start':
-                action = 'Пользователь вернулся в главное меню'
-            if update.callback_query.data == 'food_to_mood_coin_status':
-                action= 'Пользователь проверяет количество своих коинов'
-            if update.callback_query.data == 'leave_a_review':
-                action = 'Пользователь оставил отзыв'
-            if 'client_register_style' in update.callback_query.data:
-                action = 'Пользователь выбрал стиль питания'
-            if 'food_category_' in update.callback_query.data:
-                action = f'Пользователь перешел в категорию {update.callback_query.data.split("food_category_")[1]}'
-            if update.callback_query.data in ['back_to_categories', 'show_categories', 'show_categories_again']:
-                action = 'Пользователь перешел к меню по категориям'
-            if update.callback_query.data == 'basket_add':
-                action = 'Пользователь добавил блюдо в корзину'
-            if update.callback_query.data == 'basket_remove':
-                action = 'Пользователь удалил блюдо из корзины'
-            if update.callback_query.data == 'check_order':
-                action = 'Пользователь нажал на кнопку сделать заказ'
-            if update.callback_query.data == 'create_qr':
-                action = 'Пользователь оформил заказ'
-            if 'bon_appetite' in update.callback_query.data:
-                action = 'После оформления заказа пользователь нажал на кнопку "Готово!"'
-            if 'send_dish_del' in update.callback_query.data:
-                action = 'Пользователь вернулся к рекомендациям"'
+                    if update.message.text:
+                        action = f"Пользователь отправил сообщение: {update.message.text}"
+                    else:
+                        action = "Сообщение без текста"
+            elif update.callback_query:
+                user_id = update.callback_query.from_user.id
+                if update.callback_query.data == 'confirmation_of_the_questionnaire':
+                    action = f"Пользователь подтвердил свою анкету"
+                if update.callback_query.data == 'food_mood':
+                    action = f"Пользователь перешел к выбору настроения"
+                if update.callback_query.data in ["food_choose_get_Радость", "food_choose_get_Печаль", "food_choose_get_Гнев", "food_choose_get_Спокойствие", "food_choose_get_Волнение"]:
+                    action = "Пользователь выбрал свое настроение"
+                if update.callback_query.data == 'client_change_questionnaire':
+                    action = 'Пользователь перешел в меню редактирование анкеты'
+                if 'rewiew_star' in update.callback_query.data:
+                    action = 'Пользователь поставил оценку на блюдо'
+                if update.callback_query.data == 'food_mood':
+                    action = 'Пользователь захотел получить рекомендацию'
+                if update.callback_query.data == 'menu_start':
+                    action = 'Пользователь вернулся в главное меню'
+                if update.callback_query.data == 'food_to_mood_coin_status':
+                    action= 'Пользователь проверяет количество своих коинов'
+                if update.callback_query.data == 'leave_a_review':
+                    action = 'Пользователь оставил отзыв'
+                if 'client_register_style' in update.callback_query.data:
+                    action = 'Пользователь выбрал стиль питания'
+                if 'food_category_' in update.callback_query.data:
+                    action = f'Пользователь перешел в категорию {update.callback_query.data.split("food_category_")[1]}'
+                if update.callback_query.data in ['back_to_categories', 'show_categories', 'show_categories_again']:
+                    action = 'Пользователь перешел к меню по категориям'
+                if update.callback_query.data == 'basket_add':
+                    action = 'Пользователь добавил блюдо в корзину'
+                if update.callback_query.data == 'basket_remove':
+                    action = 'Пользователь удалил блюдо из корзины'
+                if update.callback_query.data == 'check_order':
+                    action = 'Пользователь нажал на кнопку сделать заказ'
+                if update.callback_query.data == 'create_qr':
+                    action = 'Пользователь оформил заказ'
+                if 'bon_appetite' in update.callback_query.data:
+                    action = 'После оформления заказа пользователь нажал на кнопку "Готово!"'
+                if 'send_dish_del' in update.callback_query.data:
+                    action = 'Пользователь вернулся к рекомендациям"'
 
 
-        if user_id and action:
-            if not db.check_last_action(user_id, action):
-                db.add_user_action(user_id, action)
-                logging.info(f"Пользователь {user_id} совершил действие: {action}")
+            if user_id and action:
+                if not db.check_last_action(user_id, action):
+                    db.add_user_action(user_id, action)
+                    logging.info(f"Пользователь {user_id} совершил действие: {action}")
+        except Exception as e:
+            print(e)
 
 dp.middleware.setup(ActionLoggingMiddleware())
 

@@ -807,10 +807,7 @@ class Database:
 
     def add_user_action(self, user_id, action):
         SESSION_TIMEOUT = datetime.timedelta(hours=3)
-        try:
-            last_session = self.get_last_session(user_id)
-        except:
-            last_session = False
+        last_session = self.get_last_session(user_id)
         if last_session:
             last_start_time = datetime.datetime.strptime(last_session[2], '%Y-%m-%d %H:%M:%S')
             if datetime.datetime.now() - last_start_time > SESSION_TIMEOUT:
