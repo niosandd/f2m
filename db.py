@@ -776,7 +776,10 @@ class Database:
         return result
 
     def create_new_session(self, user_id, action):
-        last_session = self.get_last_session(user_id)
+        try:
+            last_session = self.get_last_session(user_id)
+        except:
+            last_session = False
         SESSION_TIMEOUT = datetime.timedelta(hours=3)
         if last_session:
             last_session_num = last_session[0]
@@ -795,7 +798,10 @@ class Database:
         ''', (user_id, new_session_num, action, current_time.strftime('%Y-%m-%d %H:%M:%S')))
 
     def update_session(self, user_id, action):
-        last_session = self.get_last_session(user_id)
+        try:
+            last_session = self.get_last_session(user_id)
+        except:
+            last_session = False
         if last_session:
             session_num, actions, start_time, end_time = last_session
             updated_actions = actions + '->' + action
@@ -807,7 +813,10 @@ class Database:
 
     def add_user_action(self, user_id, action):
         SESSION_TIMEOUT = datetime.timedelta(hours=3)
-        last_session = self.get_last_session(user_id)
+        try:
+            last_session = self.get_last_session(user_id)
+        except:
+            last_session = False
         if last_session:
             last_start_time = datetime.datetime.strptime(last_session[2], '%Y-%m-%d %H:%M:%S')
             if datetime.datetime.now() - last_start_time > SESSION_TIMEOUT:
@@ -818,8 +827,10 @@ class Database:
             self.create_new_session(user_id, action)
 
     def check_last_action(self, user_id, action):
-        last_session = self.get_last_session(user_id)
-        print(last_session)
+        try:
+            last_session = self.get_last_session(user_id)
+        except:
+            last_session = False
         last_action = last_session[1].split('->')
         if last_action[-1] == action:
             return True
