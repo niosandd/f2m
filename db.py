@@ -777,7 +777,7 @@ class Database:
 
     def create_new_session(self, user_id, action):
         last_session = self.get_last_session(user_id)
-        SESSION_TIMEOUT = datetime.timedelta(minutes=30)
+        SESSION_TIMEOUT = datetime.timedelta(hours=3)
         if last_session:
             last_session_num = last_session[0]
             last_start_time = datetime.datetime.strptime(last_session[2], '%Y-%m-%d %H:%M:%S')
@@ -807,7 +807,10 @@ class Database:
 
     def add_user_action(self, user_id, action):
         SESSION_TIMEOUT = datetime.timedelta(hours=3)
-        last_session = self.get_last_session(user_id)
+        try:
+            last_session = self.get_last_session(user_id)
+        except:
+            last_session = False
         if last_session:
             last_start_time = datetime.datetime.strptime(last_session[2], '%Y-%m-%d %H:%M:%S')
             if datetime.datetime.now() - last_start_time > SESSION_TIMEOUT:
