@@ -321,8 +321,8 @@ async def send_profile(message: types.Message):
 def buttons_food_01():
     menu = InlineKeyboardMarkup(row_width=3)
 
-    btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="scanned_qrcode")
-    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
+    btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="confirmation_of_the_questionnaire")
+    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_change_questionnaire")
     btn3 = InlineKeyboardButton(text="Поменять настроение", callback_data="food_mood")
 
     menu.add(btn1)
@@ -364,8 +364,8 @@ def buttons_food_02():
     return menu
 
 
-@dp.callback_query_handler(lambda call: call.data == "scanned_qrcode")
-async def scanned_qrcode(call: types.CallbackQuery):
+@dp.callback_query_handler(lambda call: call.data == "confirmation_of_the_questionnaire")
+async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
     user = call.from_user.id
     try:
         temp = db.get_client_temp_rest(user).split(':')
@@ -626,6 +626,7 @@ async def back_to_categories(call: types.CallbackQuery):
 
 
 def generate_recommendation(user):
+    db.add_user_action(user, 'Пользователь получил меню с рекомендацией')
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
     restaurant = db.get_client_temp_rest(user).split(":")[0]
@@ -963,7 +964,7 @@ async def food_category(call: types.CallbackQuery):
                      f"\n"
                      f"<b>Кажется, в этом заведении нет блюд, подходящих под ваши критерии</b> 🤔\n"
                      f"\n"
-                     f"Попробуй Вернуться к категориям блюд, настроение или список продуктов, которые ты не употребляешь в пищу 😉\n"
+                     f"Попробуй поменять категорию блюд, настроение или список продуктов, которые ты не употребляешь в пищу 😉\n"
 
                      f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
                 reply_markup=buttons_food_05(None, None, None, None)
@@ -1203,7 +1204,7 @@ async def send_reminder_message(user_id):
     cafe = cafe.split(":")[0]
 
     keyboard = InlineKeyboardMarkup()
-    btn1 = InlineKeyboardButton(text="Оставить отзыв", callback_data="search_dish")
+    btn1 = InlineKeyboardButton(text="Оставить отзыв", callback_data="leave_a_review")
     btn2 = InlineKeyboardButton(text="Не интересно", callback_data="menu_start")
     keyboard.add(btn1, btn2)
 
@@ -1275,8 +1276,8 @@ import asyncio
 from aiogram import types
 
 
-@dp.callback_query_handler(text_contains="search_dish")
-async def search_dish_global(call: types.CallbackQuery):
+@dp.callback_query_handler(text_contains="leave_a_review")
+async def leave_a_review_global(call: types.CallbackQuery):
     user = call.from_user.id
     mode = db.get_users_mode(user)['id']
 
