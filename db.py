@@ -819,6 +819,7 @@ class Database:
 
     def check_last_action(self, user_id, action):
         last_session = self.get_last_session(user_id)
+        print(last_session)
         last_action = last_session[1].split('->')
         if last_action[-1] == action:
             return True
