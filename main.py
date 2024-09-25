@@ -149,6 +149,7 @@ class ActionLoggingMiddleware(BaseMiddleware):
 
             if user_id and action:
                 if not db.check_last_action(user_id, action):
+                    print(1)
                     db.add_user_action(user_id, action)
                     logging.info(f"Пользователь {user_id} совершил действие: {action}")
         except Exception as e:
