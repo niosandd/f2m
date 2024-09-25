@@ -827,10 +827,11 @@ class Database:
             self.create_new_session(user_id, action)
 
     def check_last_action(self, user_id, action):
-        return False
         try:
             last_session = self.get_last_session(user_id)
         except:
+            return False
+        if not last_session:
             return False
         last_action = last_session[1].split('->')
         if last_action[-1] == action:
