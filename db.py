@@ -827,6 +827,7 @@ class Database:
             self.create_new_session(user_id, action)
 
     def check_last_action(self, user_id, action):
+        return False
         try:
             last_session = self.get_last_session(user_id)
         except:
