@@ -7,6 +7,7 @@ from tkinter import Image
 from unittest import result
 
 
+
 class Database:
     def __init__(self, db_file):
         self.connection = sqlite3.connect(db_file)
@@ -759,4 +760,65 @@ class Database:
                 "DELETE FROM baskets WHERE user_id = ?",
                 (user_id,))
 
+    # ======================================================================================================================
+    # ===== ТАБЛИЦА: user_actions =================================================================================================
+    # ======================================================================================================================
 
+    def get_last_session(self, user_id):
+        self.cursor.execute('''
+            SELECT session_num, actions, start_time, end_time
+            FROM user_actions
+            WHERE user_id = ?
+            ORDER BY start_time DESC
+            LIMIT 1
+        ''', (user_id,))
+        result = self.cursor.fetchone()
+        return result
+
+    def create_new_session(self, user_id, action):
+        last_session = self.get_last_session(user_id)
+        SESSION_TIMEOUT = datetime.timedelta(minutes=30)
+        if last_session:
+            last_session_num = last_session[0]
+            last_start_time = datetime.datetime.strptime(last_session[2], '%Y-%m-%d %H:%M:%S')
+            if datetime.datetime.now() - last_start_time > SESSION_TIMEOUT:
+                new_session_num = last_session_num + 1
+            else:
+                new_session_num = last_session_num
+        else:
+            new_session_num = 1
+        current_time = datetime.datetime.now().replace(microsecond=0)
+
+        self.cursor.execute('''
+            INSERT INTO user_actions (user_id, session_num, actions, start_time)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, new_session_num, action, current_time.strftime('%Y-%m-%d %H:%M:%S')))
+
+    def update_session(self, user_id, action):
+        last_session = self.get_last_session(user_id)
+        if last_session:
+            session_num, actions, start_time, end_time = last_session
+            updated_actions = actions + '->' + action
+            self.cursor.execute('''
+                UPDATE user_actions
+                SET actions = ?, end_time = ?
+                WHERE user_id = ? AND session_num = ?
+            ''', (updated_actions, datetime.datetime.now().replace(microsecond=0), user_id, session_num))
+
+    def add_user_action(self, user_id, action):
+        SESSION_TIMEOUT = datetime.timedelta(hours=3)
+        last_session = self.get_last_session(user_id)
+        if last_session:
+            last_start_time = datetime.datetime.strptime(last_session[2], '%Y-%m-%d %H:%M:%S')
+            if datetime.datetime.now() - last_start_time > SESSION_TIMEOUT:
+                self.create_new_session(user_id, action)
+            else:
+                self.update_session(user_id, action)
+        else:
+            self.create_new_session(user_id, action)
+
+    def check_last_action(self, user_id, action):
+        last_session = self.get_last_session(user_id)
+        last_action = last_session[1].split('->')
+        if last_action[-1] == action:
+            return True

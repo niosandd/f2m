@@ -1,5 +1,5 @@
 from uuid import uuid4
-
+import logging
 import qrcode
 from PIL import Image
 import asyncio
@@ -7,7 +7,7 @@ import datetime
 import time
 import logging
 from datetime import datetime
-
+from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 from aiogram.utils.deep_linking import decode_payload
@@ -24,7 +24,7 @@ import normalize
 from my_libraries import Tools
 from help import config
 from db import Database
-import chat_gpt
+#import chat_gpt
 
 db = Database('files/db_users.db')
 
@@ -88,6 +88,70 @@ import handlers.waiter_start as w_start
 import handlers.menu_client as m_settings
 import handlers.menu_food as m_food
 
+
+
+class ActionLoggingMiddleware(BaseMiddleware):
+    async def on_pre_process_update(self, update: types.Update, data: dict):
+        user_id = None
+        action = None
+
+        if update.message:
+            user_id = update.message.from_user.id
+            if update.message.text == '/start':
+                action = 'Запуск бота'
+            elif update.message.text == '/form':
+                action = 'Пользователь прошел тест на выявление вкусовых предпочтений'
+            else:
+                if update.message.text:
+                    action = f"Пользователь отправил сообщение: {update.message.text}"
+                else:
+                    action = "Сообщение без текста"
+        elif update.callback_query:
+            user_id = update.callback_query.from_user.id
+            if update.callback_query.data == 'confirmation_of_the_questionnaire':
+                action = f"Пользователь подтвердил свою анкету"
+            if update.callback_query.data == 'food_mood':
+                action = f"Пользователь перешел к выбору настроения"
+            if update.callback_query.data in ["food_choose_get_Радость", "food_choose_get_Печаль", "food_choose_get_Гнев", "food_choose_get_Спокойствие", "food_choose_get_Волнение"]:
+                action = "Пользователь выбрал свое настроение"
+            if update.callback_query.data == 'client_change_questionnaire':
+                action = 'Пользователь перешел в меню редактирование анкеты'
+            if 'rewiew_star' in update.callback_query.data:
+                action = 'Пользователь поставил оценку на блюдо'
+            if update.callback_query.data == 'food_mood':
+                action = 'Пользователь захотел получить рекомендацию'
+            if update.callback_query.data == 'menu_start':
+                action = 'Пользователь вернулся в главное меню'
+            if update.callback_query.data == 'food_to_mood_coin_status':
+                action= 'Пользователь проверяет количество своих коинов'
+            if update.callback_query.data == 'leave_a_review':
+                action = 'Пользователь оставил отзыв'
+            if 'client_register_style' in update.callback_query.data:
+                action = 'Пользователь выбрал стиль питания'
+            if 'food_category_' in update.callback_query.data:
+                action = f'Пользователь перешел в категорию {update.callback_query.data.split("food_category_")[1]}'
+            if update.callback_query.data in ['back_to_categories', 'show_categories', 'show_categories_again']:
+                action = 'Пользователь перешел к меню по категориям'
+            if update.callback_query.data == 'basket_add':
+                action = 'Пользователь добавил блюдо в корзину'
+            if update.callback_query.data == 'basket_remove':
+                action = 'Пользователь удалил блюдо из корзины'
+            if update.callback_query.data == 'check_order':
+                action = 'Пользователь нажал на кнопку сделать заказ'
+            if update.callback_query.data == 'create_qr':
+                action = 'Пользователь оформил заказ'
+            if 'bon_appetite' in update.callback_query.data:
+                action = 'После оформления заказа пользователь нажал на кнопку "Готово!"'
+            if 'send_dish_del' in update.callback_query.data:
+                action = 'Пользователь вернулся к рекомендациям"'
+
+
+        if user_id and action:
+            if not db.check_last_action(user_id, action):
+                db.add_user_action(user_id, action)
+                logging.info(f"Пользователь {user_id} совершил действие: {action}")
+
+dp.middleware.setup(ActionLoggingMiddleware())
 
 @dp.message_handler(commands=['start', 'restart'])
 async def start(message: types.Message):
@@ -220,7 +284,6 @@ async def mldzh(message: types.Message):
 
 def buttons_food_x():
     menu = InlineKeyboardMarkup(row_width=3)
-
     btn1 = InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')
     menu.add(btn1)
     return menu
@@ -240,6 +303,7 @@ async def f2m_coins(message: types.Message):
         reply_markup=consult_coin_keyboard()
     )
     db.set_users_mode(user, mode, "food_to_mood_status")
+    db.add_user_action(user, 'Пользователь проверил свои f2m_coins')
     # await bot.send_message(user, text="https://t.me/food_2_mood/55")
 
 
@@ -247,9 +311,9 @@ async def f2m_coins(message: types.Message):
 async def food_restaurant_search(inline_query: InlineQuery):
     user = inline_query.from_user.id
     mode = db.get_users_mode(user)
-
     # Поиск ресторана
     if 'food_inline_handler' in mode['key']:
+        db.add_user_action(user, 'Пользователь ищет кафе через поиск')
         if len(str(inline_query.query)) > 0:
             print(f'│ [{Tools.timenow()}] Пользователь ищет кафе... {str(inline_query.query)}')
             posts = db.restaurants_find_all(str(inline_query.query).lower().capitalize())
@@ -281,6 +345,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
 
     # Поиск блюда
     elif mode['key'] == 'write_review':
+        db.add_user_action(user, 'Пользователь ищет блюдо через поиск')
         rest_name = db.get_client_temp_rest(user).split(':')[0]
         if len(str(inline_query.query)) > 0:
             print(f'│ [{Tools.timenow()}] Пользователь ищет блюдо... {str(inline_query.query)}')
@@ -311,6 +376,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
             await inline_query.answer(results[:10], cache_time=1)
 
     elif mode['key'] == "get_order":
+        db.add_user_action(user, 'Пользователь хочет оформить заказ')
         rest_name = db.get_client_temp_rest(user).split(':')[0]
         if len(str(inline_query.query)) > 0:
             posts = db.restaurants_find_dish(rest_name, str(inline_query.query).lower().capitalize())
@@ -362,8 +428,10 @@ async def bot_message(message):
         # Выбор ресторана из поиска
         if mode['key'] == 'food_inline_handler':
             await m_food.food_rec_get(user, message)
+            db.add_user_action(user, 'Пользователь выбирает ресторан из поиска')
 
         if mode['key'] == 'food_inline_handler_x':
+            db.add_user_action(user, 'Пользователь выбирает другой ресторан')
             data = message.text.split(':')
             db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
             db.set_client_temp_recommendation(user, None)
@@ -435,6 +503,7 @@ async def bot_message(message):
                      f"<blockquote>Мы будем ждать тебя на консультации у нашего нутрициолога 🧑‍⚕️🩺🍏</blockquote>",
                 reply_markup=buttons_02()
             )
+            db.add_user_action(user, 'Пользователь оставил отзыв')
 
             if len(message.text.split()) >= 10:
                 coin_counter = 2
@@ -468,6 +537,7 @@ async def client_register_blacklist(user, message: types.Message):
              f"Всё верно?",
         reply_markup=buttons_01()
     )
+    db.add_user_action(user, 'Пользователь составил свой блэклист продуктов')
 
 
 def buttons_00():
@@ -502,7 +572,7 @@ def buttons_02():
     btn1 = InlineKeyboardButton(text="« Вернуться на главную",
                                 callback_data="menu_start")
 
-    btn2 = InlineKeyboardButton(text="Оставить ещё один отзыв", callback_data="search_dish")
+    btn2 = InlineKeyboardButton(text="Оставить ещё один отзыв", callback_data="leave_a_review")
 
     btn3 = InlineKeyboardButton(text="Мои f2m коины 🪙", callback_data="food_to_mood_coin_status")
 
@@ -543,6 +613,7 @@ async def coin_status(call: types.CallbackQuery):
         reply_markup=consult_coin_keyboard()
     )
     db.set_users_mode(user, mode, "food_to_mood_status")
+    db.add_user_action(user, 'Пользователь проверяет количество своих коинов')
 
 
 @dp.callback_query_handler(text_contains=f"coin_exchange")
@@ -553,6 +624,7 @@ async def coin_exchange(call: types.CallbackQuery):
                            text=f"<a href='https://t.me/food_2_mood/58'>Тут описание, как обменять коины на консультацию</a>",
                            reply_markup=get_to_menu())
     db.set_users_mode(user, mode, "coin_exchange")
+    db.add_user_action(user, 'Пользователь захотел обменять коины на консультацию')
     # Удаление сообщения из coin_status
     await bot.delete_message(chat_id=user, message_id=call.message.message_id)
 
@@ -633,7 +705,7 @@ def buttons_03():
 
     btn1 = InlineKeyboardButton(text="🔎 Выбрать блюдо", switch_inline_query_current_chat='')
     btn2 = InlineKeyboardButton(text="Получить рекомендации! 🍤", callback_data="food_mood")
-    btn3 = InlineKeyboardButton(text="Заполнить анкету заново 📋", callback_data="client_register_again")
+    btn3 = InlineKeyboardButton(text="Заполнить анкету заново 📋", callback_data="client_change_questionnaire")
 
     menu.row(btn1)
     menu.row(btn2)
@@ -690,10 +762,12 @@ async def review_end(call: types.CallbackQuery):
              f"<blockquote>Мы будем ждать тебя на консультации у нашего нутрициолога 🧑‍⚕️🩺🍏</blockquote>️",
         reply_markup=buttons_02()
     )
+    db.add_user_action(user, 'Пользователь оставил отзыв')
     await db.add_food_to_mood_coin(user, coin_counter)
     db.set_new_review(unique_uuid, user, username, rating, review, dish_name, restaurant_name)
     # db.set_users_last_recomendation_time(user, current_time)
     db.set_users_mode(user, mode['id'], '')
+
 
 
 @dp.callback_query_handler(text_contains=f"review_star")
@@ -734,7 +808,7 @@ async def review_star(call: types.CallbackQuery):
         reply_markup=buttons_05()
     )
     db.set_users_mode(user, message_obj.message_id, 'type_review')
-
+    db.add_user_action(user, 'Пользователь оставил отзыв')
 
 def buttons_05():
     menu = InlineKeyboardMarkup(row_width=1)
