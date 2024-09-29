@@ -198,18 +198,18 @@ def buttons_client_00(mode: str):
         btn2 = InlineKeyboardButton(text="Диетическое 🥗",
                                         callback_data="client_register_style_diet")
 
-        # btn3 = InlineKeyboardButton(text="Вегетарианство 🧀",
-        #                                 callback_data="client_register_style_veget")
-        #
-        # btn4 = InlineKeyboardButton(text="Веганство 🥜",
-        #                                 callback_data="client_register_style_vegan")
-        #
-        # btn5 = InlineKeyboardButton(text="Сыроедение 🥦",
-        #                                 callback_data="client_register_style_raw")
+        btn3 = InlineKeyboardButton(text="Вегетарианство 🧀",
+                                        callback_data="client_register_style_veget")
+
+        btn4 = InlineKeyboardButton(text="Веганство 🥜",
+                                        callback_data="client_register_style_vegan")
+
+        btn5 = InlineKeyboardButton(text="Сыроедение 🥦",
+                                        callback_data="client_register_style_raw")
 
         menu.row(btn1, btn2)
-        # menu.row(btn3, btn4)
-        # menu.row(btn5)
+        menu.row(btn3, btn4)
+        menu.row(btn5)
 
     elif mode == 'blacklist':
         btn1 = InlineKeyboardButton(text="Пропустить вопрос",
