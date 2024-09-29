@@ -115,7 +115,7 @@ class ActionLoggingMiddleware(BaseMiddleware):
                     action = f"Пользователь перешел к выбору настроения"
                 if update.callback_query.data in ["food_choose_get_Радость", "food_choose_get_Печаль", "food_choose_get_Гнев", "food_choose_get_Спокойствие", "food_choose_get_Волнение"]:
                     action = "Пользователь выбрал свое настроение"
-                if update.callback_query.data == 'client_change_questionnaire':
+                if update.callback_query.data == 'client_register_again':
                     action = 'Пользователь перешел в меню редактирование анкеты'
                 if 'rewiew_star' in update.callback_query.data:
                     action = 'Пользователь поставил оценку на блюдо'
@@ -708,7 +708,7 @@ def buttons_03():
 
     btn1 = InlineKeyboardButton(text="🔎 Выбрать блюдо", switch_inline_query_current_chat='')
     btn2 = InlineKeyboardButton(text="Получить рекомендации! 🍤", callback_data="food_mood")
-    btn3 = InlineKeyboardButton(text="Заполнить анкету заново 📋", callback_data="client_change_questionnaire")
+    btn3 = InlineKeyboardButton(text="Заполнить анкету заново 📋", callback_data="client_register_again")
 
     menu.row(btn1)
     menu.row(btn2)

@@ -322,7 +322,7 @@ def buttons_food_01():
     menu = InlineKeyboardMarkup(row_width=3)
 
     btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="confirmation_of_the_questionnaire")
-    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_change_questionnaire")
+    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
     btn3 = InlineKeyboardButton(text="Поменять настроение", callback_data="food_mood")
 
     menu.add(btn1)
