@@ -130,7 +130,7 @@ async def generate_boss_menu(boss_id, message_id=None):
     "/ОФИЦИАНТЫ - статистика по работе официантов\n\n"
     "/РЕКЛАМА - статистика вовлеченности пользователей")
     if message_id:
-        message_obj = await bot.edit_message_text(chat_id=message_id,
+        message_obj = await bot.edit_message_text(chat_id=boss_id,
                                     message_id=message_id,
                                     text=text,
                                     reply_markup=boss_menu())
