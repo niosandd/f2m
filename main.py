@@ -223,14 +223,17 @@ async def waiter(message: types.Message):
 
 @dp.message_handler(commands=['boss_mldzh'])
 async def boss_mldzh(message: types.Message):
-    user = message.from_user.id
-    if db.check_boss_exists(user):
-        await bosses.generate_boss_menu(user)
-    else:
-        db.add_boss(user, db.get_client_temp_rest(user))
-        await bosses.generate_boss_menu(user)
-        # text = f'\nТы не зарегистрирован(ана) как менеджер заведения'
-        # await bot.send_message(user, text)
+    try:
+        user = message.from_user.id
+        if db.check_boss_exists(user):
+            await bosses.generate_boss_menu(user)
+        else:
+            db.add_boss(user, db.get_client_temp_rest(user))
+            await bosses.generate_boss_menu(user)
+            # text = f'\nТы не зарегистрирован(ана) как менеджер заведения'
+            # await bot.send_message(user, text)
+    except Exception as e:
+        print(e)
 
 
 @dp.message_handler(commands=['admin'])
@@ -427,7 +430,7 @@ async def bot_message(message):
     user = message.from_user.id
     mode = db.get_users_mode(user)
 
-    if message.text not in ['/start', '/waiter', '/admin', '/mldzh', '/f2m_coins']:
+    if message.text not in ['/start', '/waiter', '/admin', '/mldzh', '/f2m_coins', '/boss_mldzh']:
 
         # Чёрный список продуктов
         if mode['key'] == 'client_register_blacklist':
