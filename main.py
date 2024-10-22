@@ -221,6 +221,18 @@ async def waiter(message: types.Message):
         await bot.send_message(user, text)
 
 
+@dp.message_handler(commands=['boss_mldzh'])
+async def boss_mldzh(message: types.Message):
+    user = message.from_user.id
+    if not db.check_boss_exists(user):
+        await bosses.generate_boss_menu(user)
+    else:
+        db.add_boss(user, db.get_client_temp_rest(user))
+        await bosses.generate_boss_menu(user)
+        # text = f'\nТы не зарегистрирован(ана) как менеджер заведения'
+        # await bot.send_message(user, text)
+
+
 @dp.message_handler(commands=['admin'])
 async def admin(message: types.Message):
     user = message.from_user.id

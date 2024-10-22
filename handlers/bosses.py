@@ -1,21 +1,16 @@
+from aiogram import types
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
+    ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
+
+from main import dp, bot, db, config, Tools
+
+
 def ind_to_number(ind):
     numbers = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
     result = ""
     for char in str(ind):
         result += numbers[int(char)]
     return result
-
-
-@dp.message_handler(commands=['boss_mldzh'])
-async def boss_mldzh(message: types.Message):
-    user = message.from_user.id
-    if not db.check_boss_exists(user):
-        await generate_boss_menu(user)
-    else:
-        db.add_boss(user, db.get_client_temp_rest(user))
-        await generate_boss_menu(user)
-        # text = f'\nТы не зарегистрирован(ана) как менеджер заведения'
-        # await bot.send_message(user, text)
 
 
 def boss_menu():
