@@ -836,3 +836,64 @@ class Database:
         last_action = last_session[1].split('->')
         if last_action[-1] == action:
             return True
+
+    # ======================================================================================================================
+    # ===== ТАБЛИЦА: bosses =================================================================================================
+    # ======================================================================================================================
+
+    # --- Добавить значение ---
+
+    def add_boss(self, user_id, user_rest):
+        with self.connection:
+            return self.cursor.execute(
+                "INSERT INTO bosses (boss_id, boss_rest) VALUES (?, ?)",
+                (user_id, user_rest))
+
+    def del_boss(self, user_id):
+        with self.connection:
+            return self.cursor.execute(
+                "DELETE FROM bosses WHERE boss_id = ?",
+                (user_id,))
+
+    def check_boss_exists(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM bosses WHERE boss_id=?", (user_id,)).fetchall()
+            return bool(len(result))
+
+    def get_boss_rest(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT boss_rest FROM bosses WHERE boss_id=?", (user_id,)).fetchall()
+            return result[0][0]
+
+    # ======================================================================================================================
+    # ===== ТАБЛИЦА: stop_lists =================================================================================================
+    # ======================================================================================================================
+
+    def create_stop_list(self, rest, stop_list="{}"):
+        with self.connection:
+            return self.cursor.execute(
+                "INSERT INTO stop_lists (rest, stop_list) VALUES (?, ?)",
+                (rest, stop_list))
+
+    def check_stop_list_exists(self, rest):
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM stop_lists WHERE rest=?", (rest,)).fetchall()
+            return bool(len(result))
+
+    def set_stop_list(self, rest, stop_list):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE stop_lists SET stop_list = ? WHERE rest = ?",
+                (stop_list, rest))
+
+    def get_stop_list(self, rest):
+        with self.connection:
+            result = self.cursor.execute("SELECT stop_list FROM stop_lists WHERE rest=?", (rest,)).fetchall()
+            return result[0][0]
+
+    def del_stop_list(self, rest):
+        with self.connection:
+            return self.cursor.execute(
+                "DELETE FROM stop_lists WHERE rest = ?",
+                (rest,))
+

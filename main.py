@@ -85,6 +85,7 @@ time_wait = 1000  # Задержка в мс
 
 import handlers.menu_start as m_start
 import handlers.waiter_start as w_start
+import handlers.bosses as bosses
 import handlers.menu_client as m_settings
 import handlers.menu_food as m_food
 
@@ -378,7 +379,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
                 results.append(result)
             await inline_query.answer(results[:10], cache_time=1)
 
-    elif mode['key'] == "get_order":
+    elif mode['key'] == "get_order" or mode['key'] == "set_stop_list":
         db.add_user_action(user, 'Пользователь хочет оформить заказ')
         rest_name = db.get_client_temp_rest(user).split(':')[0]
         if len(str(inline_query.query)) > 0:
@@ -465,6 +466,11 @@ async def bot_message(message):
             dish = message.text.split(':')
             dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]
             await w_start.dish_added(user, dish_id)
+
+        if mode['key'] == "set_stop_list":
+            dish = message.text.split(':')
+            dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]
+            await bosses.dish_added(user, dish_id)
 
         if mode['key'] == "notification":
             await bot.send_message(
