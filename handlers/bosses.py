@@ -99,7 +99,7 @@ async def back_to_order(call: types.CallbackQuery):
 
 async def set_stop_list(boss_id, message_id=None):
     try:
-        stop_list = eval(db.get_stop_list(db.get_boss_rest(boss_id)))
+        stop_list = list(eval(db.get_stop_list(db.get_boss_rest(boss_id))).keys())
         stop_list_text = ""
         for i in range(len(stop_list)):
             stop_list_text += ind_to_number(i + 1) + " " + stop_list[i] + "\n"
