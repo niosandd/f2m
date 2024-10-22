@@ -31,7 +31,6 @@ async def boss_stop_list(call: types.CallbackQuery):
     if not db.check_stop_list_exists(rest):
         db.create_stop_list(rest)
     await set_stop_list(boss_id, call.message.message_id)
-    db.set_users_mode(boss_id, message_obj.message_id, 'boss_stop_list')
 
 
 def stop_list_status():
@@ -99,21 +98,24 @@ async def back_to_order(call: types.CallbackQuery):
 
 
 async def set_stop_list(boss_id, message_id=None):
-    stop_list = eval(db.get_stop_list(db.get_boss_rest(boss_id)))
-    stop_list_text = ""
-    for i in range(len(stop_list)):
-        stop_list_text += ind_to_number(i + 1) + " " + stop_list[i] + "\n"
-    text = f'\n<b>Сейчас в стоп-листе:</b>' \
-           f'\n\n' \
-           f'{stop_list_text}'
-    if message_id:
-        message_obj = await bot.edit_message_text(chat_id=boss_id,
-                                                  message_id=message_id,
-                                                  text=text,
-                                                  reply_markup=stop_list_status())
-    else:
-        message_obj = await bot.send_message(chat_id=boss_id, text=text, reply_markup=stop_list_status())
-    db.set_users_mode(boss_id, message_obj.message_id, 'set_stop_list')
+    try:
+        stop_list = eval(db.get_stop_list(db.get_boss_rest(boss_id)))
+        stop_list_text = ""
+        for i in range(len(stop_list)):
+            stop_list_text += ind_to_number(i + 1) + " " + stop_list[i] + "\n"
+        text = f'\n<b>Сейчас в стоп-листе:</b>' \
+               f'\n\n' \
+               f'{stop_list_text}'
+        if message_id:
+            message_obj = await bot.edit_message_text(chat_id=boss_id,
+                                                      message_id=message_id,
+                                                      text=text,
+                                                      reply_markup=stop_list_status())
+        else:
+            message_obj = await bot.send_message(chat_id=boss_id, text=text, reply_markup=stop_list_status())
+        db.set_users_mode(boss_id, message_obj.message_id, 'set_stop_list')
+    except Exception as e:
+        print(e)
 
 
 @dp.callback_query_handler(lambda call: call.data == "back_to_boss_menu")
