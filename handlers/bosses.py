@@ -31,7 +31,7 @@ async def boss_stop_list(call: types.CallbackQuery):
     if not db.check_stop_list_exists(rest):
         db.create_stop_list(rest)
     await set_stop_list(boss_id, call.message.message_id)
-    db.set_users_mode(user, message_obj.message_id, 'boss_stop_list')
+    db.set_users_mode(boss_id, message_obj.message_id, 'boss_stop_list')
 
 
 def stop_list_status():
@@ -123,7 +123,7 @@ async def back_to_boss_menu(call: types.CallbackQuery):
 
 async def generate_boss_menu(boss_id, message_id=None):
     text = ("Привет!\n\n"
-    f"Это панель управления для менеджера заведения {db.get_boss_rest(user)}\n\n"
+    f"Это панель управления для менеджера заведения {db.get_boss_rest(boss_id)}\n\n"
     "/СТОП-ЛИСТ - добавление блюд в стоп-лист\n\n"
     "/ОФИЦИАНТЫ - статистика по работе официантов\n\n"
     "/РЕКЛАМА - статистика вовлеченности пользователей")
@@ -138,4 +138,4 @@ async def generate_boss_menu(boss_id, message_id=None):
             text=text,
             reply_markup=boss_menu()
         )
-    db.set_users_mode(user, message_obj.message_id, 'boss_menu')
+    db.set_users_mode(boss_id, message_obj.message_id, 'boss_menu')
