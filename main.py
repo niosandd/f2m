@@ -224,7 +224,7 @@ async def waiter(message: types.Message):
 @dp.message_handler(commands=['boss_mldzh'])
 async def boss_mldzh(message: types.Message):
     user = message.from_user.id
-    if not db.check_boss_exists(user):
+    if db.check_boss_exists(user):
         await bosses.generate_boss_menu(user)
     else:
         db.add_boss(user, db.get_client_temp_rest(user))
