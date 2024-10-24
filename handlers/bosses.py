@@ -33,8 +33,7 @@ async def boss_waiters_stat(call: types.CallbackQuery):
         text = "Общая статистика по официантам:\n\n"
         for waiter in stats:
             print(waiter)
-            text += waiter[1] + " " + waiter[2] + " " + waiter[3] + "\n" + "Количество уникальных заказов: " + \
-                    waiter[4] + "\n\n"
+            text += f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {waiter[4]}\n\n"
         await bot.edit_message_text(chat_id=boss_id,
                                     message_id=call.message.message_id,
                                     text=text,
