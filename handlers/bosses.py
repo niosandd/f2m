@@ -26,17 +26,20 @@ def boss_menu():
 
 @dp.callback_query_handler(lambda call: call.data == "boss_waiters_stat")
 async def boss_waiters_stat(call: types.CallbackQuery):
-    boss_id = call.from_user.id
-    rest = db.get_boss_rest(boss_id)
-    stats = db.get_waiters_names_and_stats()
-    text = "Общая статистика по официантам:\n\n"
-    for waiter in stats:
-        text += " ".join(waiter[1:4]) + "\n" + "Количество уникальных заказов: " + waiter[4] + "\n\n"
-    await bot.edit_message_text(chat_id=boss_id,
-                                message_id=call.message.message_id,
-                                text=text,
-                                reply_markup=InlineKeyboardMarkup().row(
-                                    InlineKeyboardButton(text="Назад", callback_data="back_to_boss_menu")))
+    try:
+        boss_id = call.from_user.id
+        rest = db.get_boss_rest(boss_id)
+        stats = db.get_waiters_names_and_stats()
+        text = "Общая статистика по официантам:\n\n"
+        for waiter in stats:
+            text += " ".join(waiter[1:4]) + "\n" + "Количество уникальных заказов: " + waiter[4] + "\n\n"
+        await bot.edit_message_text(chat_id=boss_id,
+                                    message_id=call.message.message_id,
+                                    text=text,
+                                    reply_markup=InlineKeyboardMarkup().row(
+                                        InlineKeyboardButton(text="Назад", callback_data="back_to_boss_menu")))
+    except Exception as e:
+        print(e)
 
 
 @dp.callback_query_handler(lambda call: call.data == "boss_stop_list")
