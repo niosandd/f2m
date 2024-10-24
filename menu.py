@@ -7,7 +7,7 @@ import random
 import pandas as pd
 
 def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
-               blacklist: list, numb: int, price: int, g: int, first_dish: str | None):
+               blacklist: list, numb: int, price: int, g: int, first_dish_name: str | None):
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.restaurants_get(restaurant), columns=[
         'id',
@@ -85,8 +85,8 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
     # Изменение в сортировке, передача rec_item в sort_by функцию
     df_new = sorted(df, key=lambda x: sort_by(x))
     dishes = []
-    if first_dish:
-        first_dish = db.restaurants_get_by_name(restaurant, first_dish)
+    if first_dish_name:
+        first_dish = db.restaurants_get_by_name(restaurant, first_dish_name)
         dish_ingredients_unformatted = str(first_dish[6]).strip().lower()
         dish_ingredients = dish_ingredients_unformatted.split(',')
         dishes.append({
@@ -108,7 +108,7 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
         if set(blacklist) & set(dish_ingredients):
             continue
 
-        if dish[4] == first_dish:
+        if dish[4] == first_dish_name:
             continue
 
         dishes.append({
