@@ -732,10 +732,7 @@ class Database:
         with self.connection:
             result = self.connection.execute("SELECT waiter_id, waiter_last_name, waiter_first_name, waiter_surname, "
                                              "waiter_score FROM waiters").fetchall()
-            stats = []
-            for row in result:
-                stats.append(int(row[0]))
-            return stats
+            return result
 
     # ======================================================================================================================
     # ===== ТАБЛИЦА: baskets =================================================================================================
