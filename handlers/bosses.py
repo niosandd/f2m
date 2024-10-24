@@ -32,7 +32,8 @@ async def boss_waiters_stat(call: types.CallbackQuery):
         stats = db.get_waiters_names_and_stats()
         text = "Общая статистика по официантам:\n\n"
         for waiter in stats:
-            text += f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))}\n\n"
+            if None not in waiter:
+                text += f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))}\n\n"
         await bot.edit_message_text(chat_id=boss_id,
                                     message_id=call.message.message_id,
                                     text=text,
