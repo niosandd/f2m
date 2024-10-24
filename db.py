@@ -728,6 +728,15 @@ class Database:
                 users_id.append(int(row[0]))
             return users_id
 
+    def get_waiters_names_and_stats(self):
+        with self.connection:
+            result = self.connection.execute("SELECT waiter_id, waiter_last_name, waiter_first_name, waiter_surname, "
+                                             "waiter_score FROM waiters").fetchall()
+            stats = []
+            for row in result:
+                stats.append(int(row[0]))
+            return stats
+
     # ======================================================================================================================
     # ===== ТАБЛИЦА: baskets =================================================================================================
     # ======================================================================================================================

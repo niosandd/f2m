@@ -16,12 +16,27 @@ def ind_to_number(ind):
 def boss_menu():
     menu = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton(text="СТОП-ЛИСТ", callback_data="boss_stop_list")
-    btn2 = InlineKeyboardButton(text="ОФИЦИАНТЫ", callback_data="boss_boss_ids")
+    btn2 = InlineKeyboardButton(text="ОФИЦИАНТЫ", callback_data="boss_waiters_stat")
     btn3 = InlineKeyboardButton(text="РЕКЛАМА", callback_data="boss_commercial")
     menu.add(btn1)
     menu.add(btn2)
     menu.add(btn3)
     return menu
+
+
+@dp.callback_query_handler(lambda call: call.data == "boss_waiters_stat")
+async def boss_waiters_stat(call: types.CallbackQuery):
+    boss_id = call.from_user.id
+    rest = db.get_boss_rest(boss_id)
+    stats = db.get_waiters_names_and_stats()
+    text = "Общая статистика по официантам:\n\n"
+    for waiter in stats:
+        text += " ".join(waiter[1:4]) + "\n" + "Количество уникальных заказов: " + waiter[4] + "\n\n"
+    await bot.edit_message_text(chat_id=boss_id,
+                                message_id=call.message.message_id,
+                                text=text,
+                                reply_markup=InlineKeyboardMarkup().row(
+                                    InlineKeyboardButton(text="Назад", callback_data="back_to_boss_menu")))
 
 
 @dp.callback_query_handler(lambda call: call.data == "boss_stop_list")
@@ -125,15 +140,15 @@ async def back_to_boss_menu(call: types.CallbackQuery):
 
 async def generate_boss_menu(boss_id, message_id=None):
     text = ("Привет!\n\n"
-    f"Это панель управления для менеджера заведения {db.get_boss_rest(boss_id)}\n\n"
-    "/СТОП-ЛИСТ - добавление блюд в стоп-лист\n\n"
-    "/ОФИЦИАНТЫ - статистика по работе официантов\n\n"
-    "/РЕКЛАМА - статистика вовлеченности пользователей")
+            f"Это панель управления для менеджера заведения {db.get_boss_rest(boss_id)}\n\n"
+            "/СТОП-ЛИСТ - добавление блюд в стоп-лист\n\n"
+            "/ОФИЦИАНТЫ - статистика по работе официантов\n\n"
+            "/РЕКЛАМА - статистика вовлеченности пользователей")
     if message_id:
         message_obj = await bot.edit_message_text(chat_id=boss_id,
-                                    message_id=message_id,
-                                    text=text,
-                                    reply_markup=boss_menu())
+                                                  message_id=message_id,
+                                                  text=text,
+                                                  reply_markup=boss_menu())
     else:
         message_obj = await bot.send_message(
             chat_id=boss_id,
