@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import logging
 import random
@@ -7,7 +9,6 @@ import os
 
 import aiohttp
 from PIL import Image
-from pyzbar.pyzbar import decode
 from io import BytesIO
 import requests
 
@@ -17,7 +18,7 @@ import sqlite3
 
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
-    ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle
+    ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle, InputMediaPhoto
 from aiogram.utils.deep_linking import get_start_link
 
 from main import dp, bot, db, config, Tools
@@ -31,6 +32,9 @@ import png
 token = ""
 admin = config()['telegram']['admin']
 telepuzik = telebot.TeleBot(token)
+local_recommendation_text = ''
+media = []
+foods_photo_message_id = []
 
 icons = {
     "Салаты и закуски": "🥗",
@@ -111,7 +115,8 @@ icons = {
     47: "4️⃣7️⃣",
     48: "4️⃣8️⃣",
     49: "4️⃣9️⃣",
-    50: "5️⃣0️⃣"
+    50: "5️⃣0️⃣",
+    'Галочка': "✅"
 }
 
 """
@@ -287,7 +292,7 @@ async def food_choose_get(call: types.CallbackQuery):
         db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
     else:
 
-        message_text = "Не знаешь куда сходить? 🧐 \n\n"\
+        message_text = "Не знаешь куда сходить? 🧐 \n\n" \
                        "<b>Искусственный интеллект food2mood  подобрал заведения под твоё настроение!</b>"
 
         message_obj = await bot.edit_message_text(
@@ -322,8 +327,13 @@ def buttons_food_01():
     menu = InlineKeyboardMarkup(row_width=3)
 
     btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="confirmation_of_the_questionnaire")
+<<<<<<< Updated upstream
     btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
     btn3 = InlineKeyboardButton(text="Поменять настроение", callback_data="food_mood")
+=======
+    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_change_questionnaire")
+    btn3 = InlineKeyboardButton(text="Назад", callback_data="food_mood")
+>>>>>>> Stashed changes
 
     menu.add(btn1)
     menu.add(btn2)
@@ -366,6 +376,11 @@ def buttons_food_02():
 
 @dp.callback_query_handler(lambda call: call.data == "confirmation_of_the_questionnaire")
 async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
+<<<<<<< Updated upstream
+=======
+    global media
+    media = []
+>>>>>>> Stashed changes
     user = call.from_user.id
     try:
         temp = db.get_client_temp_rest(user).split(':')
@@ -443,7 +458,6 @@ def get_back():
 
 
 token = ""
-
 
 user_data = {}
 
@@ -611,8 +625,6 @@ async def back_to_categories(call: types.CallbackQuery):
     available_categories = db.restaurants_get_all_categories(rest_name)
     if db.get_users_ban(user):
         return None
-
-        # Действие:
     db.set_client_temp_category(user, None)
 
     message_obj = await bot.edit_message_text(
@@ -625,8 +637,32 @@ async def back_to_categories(call: types.CallbackQuery):
     db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
+@dp.callback_query_handler(text_contains='return_to_recommendation')
+async def return_to_recommendation(call: types.CallbackQuery):
+    global local_recommendation_text, media, foods_photo_message_id
+    user = call.from_user.id
+    openf = []
+    photo_dir = 'фудтумуд'
+    all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
+    for e in media:
+        file_path = all_files[e['caption'][7:]]
+        photo = open(file_path, 'rb')
+        openf.append(InputMediaPhoto(photo, caption=f"Блюдо: {e['caption'][7:]}"))
+    foods_photo_message_id = await bot.send_media_group(chat_id=user, media=openf)
+    await bot.send_message(
+        chat_id=user,
+        text=local_recommendation_text,
+        reply_markup=menu_button())
+
+    await bot.delete_message(chat_id=user, message_id=call.message.message_id)
+
+
 def generate_recommendation(user):
+<<<<<<< Updated upstream
     db.add_user_action(user, 'Пользователь получил меню с рекомендацией')
+=======
+    db.add_user_action(user, 'Пользователь получил меню с рекомендцией')
+>>>>>>> Stashed changes
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
     restaurant = db.get_client_temp_rest(user).split(":")[0]
@@ -654,8 +690,6 @@ def generate_recommendation(user):
         'Граммы',
         'Простые ингредиенты'
     ])
-
-    # Выделяем только то меню, что сейчас запрашивает клиент
     df = df[df['Название ресторана'].str.contains(restaurant)]
     df = df[df['Настроение'].str.contains(mood)]
     df = df[df['Стиль питания'].str.contains(style)]
@@ -695,90 +729,108 @@ def generate_recommendation(user):
 
 @dp.callback_query_handler(text_contains=f"food_rec")
 async def food_rec(call: types.CallbackQuery):
+    global local_recommendation_text, media, foods_photo_message_id
     user = call.from_user.id
     data = call.data.split('_')
     rest_name = db.get_client_temp_rest(user).split(':')[0]
+    list_of_dishes = []
     if db.get_users_ban(user):
         return None
-
-    # Отправка стикера
-    # if call.data == "food_rec_Нутрициолог":
-    #     sticker_message = await bot.send_sticker(
-    #         chat_id=user,
-    #         sticker='CAACAgIAAxkBAAEFcOlmRG4AAaLHIqgW8CtAOWHhGN6y4XgAAkRYAAJCaghK0Zngs-8IqK81BA'
-    #     )
-    #     await asyncio.sleep(3)
-    #     await bot.delete_message(chat_id=user, message_id=sticker_message.message_id)
-
-    # Действие:
     db.set_client_temp_category(user, None)
     if len(data) > 2:
         db.set_client_temp_recommendation(user, data[-1])
-
     recommendation_text = f"<b>🥇 ТОП блюд кафе {rest_name} из разных категорий под твоё настроение:</b>\n\n"
     try:
         recommendation = generate_recommendation(user)
         db.set_client_recommendation(user, f"{recommendation}")
         for dish in recommendation:
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
+            list_of_dishes.append(dish[1])
+        photo_dir = 'фудтумуд'
+        all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
+        open_files = []
+
+        for index, dish_name in enumerate(list_of_dishes):
+            if dish_name in all_files:
+                file_path = all_files[dish_name]
+                if os.path.isfile(file_path):
+                    photo = open(file_path, 'rb')
+                    open_files.append(photo)
+                    media.append(InputMediaPhoto(photo, caption=f"Блюдо: {dish_name}"))
+
+        if media:
+            foods_photo_message_id = await bot.send_media_group(chat_id=user, media=media)
+            for photo in open_files:
+                photo.close()
+            await bot.send_message(chat_id=user, text=local_recommendation_text, reply_markup=menu_button())
+        else:
+            await bot.send_message(chat_id=user, text="Фотографии не найдены.")
+        db.set_client_rec_message_id(user, call.message.message_id)
+
     except Exception as e:
         print(e)
-    recommendation_text +=\
-        "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
-
-    db.set_client_rec_message_id(user, call.message.message_id)
-    try:
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=call.message.message_id,
-            text=recommendation_text,
-            reply_markup=menu_button()
-        )
-    except:
-        message_obj = await bot.send_message(
-            chat_id=user,
-            text=recommendation_text,
-            reply_markup=menu_button()
-        )
-    db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
 async def food_rec2(user, data):
+    global local_recommendation_text, foods_photo_message_id
     mode = db.get_users_mode(user)
     rest_name = db.get_client_temp_rest(user).split(':')[0]
+    list_of_dishes = []
+
     if db.get_users_ban(user):
         return None
-
-    # Действие:
     db.set_client_temp_category(user, None)
     if len(data) > 2:
         db.set_client_temp_recommendation(user, data[-1])
-
     recommendation_text = f"<b>🥇 ТОП блюд кафе {rest_name} из разных категорий под твоё настроение:</b>\n\n"
     try:
         recommendation = generate_recommendation(user)
         db.set_client_recommendation(user, f"{recommendation}")
         for dish in recommendation:
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
+            list_of_dishes.append(dish[1])
+        photo_dir = 'фудтумуд'
+        all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
+        open_files = []
+
+        for index, dish_name in enumerate(list_of_dishes):
+            if dish_name in all_files:
+                file_path = all_files[dish_name]
+                if os.path.isfile(file_path):
+                    photo = open(file_path, 'rb')
+                    open_files.append(photo)
+                    media.append(InputMediaPhoto(photo, caption=f"Блюдо: {dish_name}"))
+
+        recommendation_text += "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
+        local_recommendation_text = recommendation_text
+        db.set_client_rec_message_id(user, mode['id'])
+        try:
+            if media:
+                foods_photo_message_id = await bot.send_media_group(chat_id=user, media=media)
+                await bot.delete_message(chat_id=user, message_id=mode['id'])
+                for photo in open_files:
+                    photo.close()
+            else:
+                await bot.send_message(chat_id=user, text="Фотографии не найдены.")
+
+            time.sleep(1)
+            message_obj = await bot.send_message(
+                chat_id=user,
+                message_id=mode['id'],
+                text=recommendation_text,
+                reply_markup=menu_button()
+            )
+        except:
+            message_obj = await bot.send_message(
+                chat_id=user,
+                text=recommendation_text,
+                reply_markup=menu_button()
+            )
+
+        db.set_users_mode(user, message_obj.message_id, 'food_rec')
+
     except Exception as e:
         print(e)
-    recommendation_text +=\
-        "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
-    db.set_client_rec_message_id(user, mode['id'])
-    try:
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=mode['id'],
-            text=recommendation_text,
-            reply_markup=menu_button()
-        )
-    except:
-        message_obj = await bot.send_message(
-            chat_id=user,
-            text=recommendation_text,
-            reply_markup=menu_button()
-        )
-    db.set_users_mode(user, message_obj.message_id, 'food_rec')
 
 
 def menu_button():
@@ -789,6 +841,7 @@ def menu_button():
 
 @dp.callback_query_handler(text_contains=f"show_categories")
 async def show_categories(call: types.CallbackQuery):
+    global foods_photo_message_id
     try:
         user = call.from_user.id
         rest_name = db.get_client_temp_rest(user).split(':')[0]
@@ -805,12 +858,14 @@ async def show_categories(call: types.CallbackQuery):
                 reply_markup=buttons_food_04(available_categories)
             )
         else:
-            message_obj = await bot.send_message(
-                chat_id=user,
-                text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
-                     f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
-                reply_markup=buttons_food_04(available_categories)
-            )
+            for mes in foods_photo_message_id:
+                await bot.delete_message(chat_id=user, message_id=mes["message_id"])
+            message_obj = await bot.edit_message_text(chat_id=user, message_id=call.message.message_id,
+                                                      text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
+                                                           f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
+                                                      reply_markup=buttons_food_04(available_categories)
+                                                      )
+        foods_photo_message_id = []
         db.set_users_mode(user, message_obj.message_id, 'food_rec')
     except Exception as e:
         print(e)
@@ -818,7 +873,6 @@ async def show_categories(call: types.CallbackQuery):
 
 def buttons_food_04(available_categories):
     menu = InlineKeyboardMarkup(row_width=1)
-
     buttons = [
         InlineKeyboardButton(text=f"Завтрак {icons['Завтрак']}",
                              callback_data="food_category_Завтрак") if "Завтрак" in available_categories else None,
@@ -855,7 +909,7 @@ def buttons_food_04(available_categories):
         # InlineKeyboardButton(text=f"Хлеб {icons['Хлеб']}",
         #                      callback_data="food_category_Хлеб") if "Хлеб" in available_categories else None,
         # InlineKeyboardButton(text="« Поменять автора рекомендаций", callback_data="food_rec_get2")
-        InlineKeyboardButton(text="« Вернуться на главную", callback_data="menu_start")
+        InlineKeyboardButton(text="«Назад", callback_data="return_to_recommendation")
     ]
 
     # Фильтрация None значений из списка кнопок и добавление их в меню
@@ -1256,7 +1310,7 @@ def generate_basket(user):
         keyboard = InlineKeyboardMarkup(row_width=1)
         if len(basket) > 0:
             for dish in basket:
-                btn = InlineKeyboardButton(text=str(dish),
+                btn = InlineKeyboardButton(text=icons['Галочка'] + ' ' + str(dish),
                                            callback_data=f"delete_{basket[dish]}")
                 keyboard.row(btn)
             btn1 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
