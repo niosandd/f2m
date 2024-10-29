@@ -24,15 +24,12 @@ import normalize
 from my_libraries import Tools
 from help import config
 from db import Database
-#import chat_gpt
-
 db = Database('files/db_users.db')
 
 """ 
 Загрузка глобальных переменных.
 """
 
-log = Tools.Log('log.log')
 reviews = config()['telegram']['reviews']
 
 icons = {
@@ -861,19 +858,9 @@ def buttons_05():
 """
 
 
-async def main():
-    print(Tools.Color().send_contact())
-    print("╭─")
-    # asyncio.create_task(checker())
 
 
 if __name__ == '__main__':
-    try:
-        from handlers import dp
-
-        loop = asyncio.get_event_loop()
-        loop.create_task(main())
-        executor.start_polling(dp)
-    except BaseException as ex:
-        log.log_critical('DUMP!!!', True)
-        time.sleep(1000000)
+    from handlers import dp
+    loop = asyncio.get_event_loop()
+    executor.start_polling(dp)

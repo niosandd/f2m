@@ -327,14 +327,8 @@ def buttons_food_01():
     menu = InlineKeyboardMarkup(row_width=3)
 
     btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="confirmation_of_the_questionnaire")
-<<<<<<< Updated upstream
-    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
-    btn3 = InlineKeyboardButton(text="Поменять настроение", callback_data="food_mood")
-=======
     btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_change_questionnaire")
     btn3 = InlineKeyboardButton(text="Назад", callback_data="food_mood")
->>>>>>> Stashed changes
-
     menu.add(btn1)
     menu.add(btn2)
     menu.add(btn3)
@@ -376,11 +370,8 @@ def buttons_food_02():
 
 @dp.callback_query_handler(lambda call: call.data == "confirmation_of_the_questionnaire")
 async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
-<<<<<<< Updated upstream
-=======
     global media
     media = []
->>>>>>> Stashed changes
     user = call.from_user.id
     try:
         temp = db.get_client_temp_rest(user).split(':')
@@ -658,11 +649,7 @@ async def return_to_recommendation(call: types.CallbackQuery):
 
 
 def generate_recommendation(user):
-<<<<<<< Updated upstream
     db.add_user_action(user, 'Пользователь получил меню с рекомендацией')
-=======
-    db.add_user_action(user, 'Пользователь получил меню с рекомендцией')
->>>>>>> Stashed changes
     mood = db.get_client_temp_mood(user)
     style = db.get_client_style(user)
     restaurant = db.get_client_temp_rest(user).split(":")[0]
