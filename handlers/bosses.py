@@ -12,6 +12,15 @@ def ind_to_number(ind):
         result += numbers[int(char)]
     return result
 
+def total_and_current_counter(rest):
+    stats = db.get_waiters_names_and_stats(rest)
+    current_click_count = total_guests_count = current_guests_count = 0
+    total_click_count = db.get_total_click_count(rest)
+    for waiter in stats:
+        if None not in waiter:
+            total_guests_count += len(set(eval(waiter[4])))
+    return total_click_count, current_click_count, total_guests_count, current_guests_count
+
 
 def boss_menu():
     menu = InlineKeyboardMarkup()
@@ -24,16 +33,39 @@ def boss_menu():
     return menu
 
 
+@dp.callback_query_handler(lambda call: call.data == "boss_commercial")
+async def boss_commercial(call: types.CallbackQuery):
+    try:
+        boss_id = call.from_user.id
+        rest = db.get_boss_rest(boss_id)
+        total_click_count, current_click_count, total_guests_count, current_guests_count = total_and_current_counter(rest)
+        text = (f"Статистика вовлеченности пользователей к заведению:\n\n"
+                f"Кликабельность заведения через поиск: {total_click_count} ({current_click_count})\n\n"
+                f"Обслужено гостей через f2m: {total_guests_count} ({current_guests_count})\n"
+                "(В скобках статистика за смену с 00:00 до 23:59)")
+
+        await bot.edit_message_text(chat_id=boss_id,
+                                    message_id=call.message.message_id,
+                                    text=text,
+                                    reply_markup=InlineKeyboardMarkup().row(
+                                        InlineKeyboardButton(text="Назад", callback_data="back_to_boss_menu")))
+    except Exception as e:
+        print(e)
+
+
 @dp.callback_query_handler(lambda call: call.data == "boss_waiters_stat")
 async def boss_waiters_stat(call: types.CallbackQuery):
     try:
         boss_id = call.from_user.id
         rest = db.get_boss_rest(boss_id)
-        stats = db.get_waiters_names_and_stats()
+        stats = db.get_waiters_names_and_stats(rest)
+        current_waiter_count = 0 # ВРЕМЕННО ПОКА НЕ ВВЕЛИ СМЕНЫ
         text = "Общая статистика по официантам:\n\n"
         for waiter in stats:
             if None not in waiter:
-                text += f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))}\n\n"
+                text += (f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))} "
+                         f"({current_waiter_count})\n\n")
+        text += "(В скобках статистика за смену с 00:00 до 23:59)"
         await bot.edit_message_text(chat_id=boss_id,
                                     message_id=call.message.message_id,
                                     text=text,

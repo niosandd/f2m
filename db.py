@@ -728,10 +728,10 @@ class Database:
                 users_id.append(int(row[0]))
             return users_id
 
-    def get_waiters_names_and_stats(self):
+    def get_waiters_names_and_stats(self, rest):
         with self.connection:
             result = self.connection.execute("SELECT waiter_id, waiter_last_name, waiter_first_name, waiter_surname, "
-                                             "waiter_score FROM waiters").fetchall()
+                                             "waiter_score FROM waiters WHERE waiter_rest=?", (rest,)).fetchall()
             return result
 
     # ======================================================================================================================
@@ -901,5 +901,38 @@ class Database:
         with self.connection:
             return self.cursor.execute(
                 "DELETE FROM stop_lists WHERE rest = ?",
+                (rest,))
+
+    # ======================================================================================================================
+    # ===== ТАБЛИЦА: total_and_current_counts =================================================================================================
+    # ======================================================================================================================
+
+    def add_rest(self, rest, total_click_count=0, current_click_count=0, total_guests_count=0, current_guests_count=0):
+        with self.connection:
+            return self.cursor.execute(
+                "INSERT INTO total_and_current_counts (rest, total_click_count, current_click_count, "
+                "total_guests_count, current_guests_count) VALUES (?, ?, ?, ?, ?)",
+                (rest, total_click_count, current_click_count, total_guests_count, current_guests_count))
+
+    def check_rest_exists(self, rest):
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM total_and_current_counts WHERE rest=?", (rest,)).fetchall()
+            return bool(len(result))
+
+    def set_total_click_count(self, rest, total_click_count):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE total_and_current_counts SET total_click_count = ? WHERE rest = ?",
+                (total_click_count, rest))
+
+    def get_total_click_count(self, rest):
+        with self.connection:
+            result = self.cursor.execute("SELECT total_click_count FROM total_and_current_counts WHERE rest=?", (rest,)).fetchall()
+            return result[0][0]
+
+    def del_rest(self, rest):
+        with self.connection:
+            return self.cursor.execute(
+                "DELETE FROM total_and_current_counts WHERE rest = ?",
                 (rest,))
 

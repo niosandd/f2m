@@ -225,13 +225,15 @@ async def waiter(message: types.Message):
 async def boss_mldzh(message: types.Message):
     try:
         user = message.from_user.id
-        if db.check_boss_exists(user):
-            await bosses.generate_boss_menu(user)
+        if "Молодёжь" in db.get_client_temp_rest(user):
+            if db.check_boss_exists(user):
+                await bosses.generate_boss_menu(user)
+            else:
+                db.add_boss(user, db.get_client_temp_rest(user))  # ПОКА НЕТ КОМАНДЫ ADMIN ДЛЯ РЕГИСТРАЦИИ
+                await bosses.generate_boss_menu(user)
         else:
-            db.add_boss(user, db.get_client_temp_rest(user))
-            await bosses.generate_boss_menu(user)
-            # text = f'\nТы не зарегистрирован(ана) как менеджер заведения'
-            # await bot.send_message(user, text)
+            text = f'\nТы не зарегистрирован(ана) как менеджер заведения'
+            await bot.send_message(user, text)
     except Exception as e:
         print(e)
 
@@ -469,6 +471,15 @@ async def bot_message(message):
         if mode['key'] == 'food_inline_handler_y':
             data = message.text.split(':')
             db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
+            try:
+                if not db.check_rest_exists(rest):
+                    db.add_rest(rest)
+                total_click_count = int(db.get_total_click_count(rest))
+                total_click_count += 1
+                db.set_total_click_count(rest, total_click_count)
+            except Exception as e:
+                db.add_rest(rest)
+                print(e)
             db.set_client_temp_recommendation(user, None)
             if db.check_basket_exists(user):
                 db.set_basket(user, "{}")
