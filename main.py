@@ -467,7 +467,8 @@ async def bot_message(message):
 
         if mode['key'] == 'food_inline_handler_y':
             data = message.text.split(':')
-            db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
+            rest = f"{data[0]}:{data[1]}"
+            db.set_client_temp_rest(user, rest)
             try:
                 if not db.check_rest_exists(rest):
                     db.add_rest(rest)
