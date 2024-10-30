@@ -633,7 +633,7 @@ async def return_to_recommendation(call: types.CallbackQuery):
     global local_recommendation_text, media, foods_photo_message_id
     user = call.from_user.id
     openf = []
-    photo_dir = 'фудтумуд'
+    photo_dir = 'Фудтумуд'
     all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
     for e in media:
         file_path = all_files[e['caption'][7:]]
@@ -733,7 +733,7 @@ async def food_rec(call: types.CallbackQuery):
         for dish in recommendation:
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
             list_of_dishes.append(dish[1])
-        photo_dir = 'фудтумуд'
+        photo_dir = 'Фудтумуд'
         all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
         open_files = []
 
@@ -776,7 +776,7 @@ async def food_rec2(user, data):
         for dish in recommendation:
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
             list_of_dishes.append(dish[1])
-        photo_dir = 'фудтумуд'
+        photo_dir = 'Фудтумуд'
         all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
         open_files = []
 
