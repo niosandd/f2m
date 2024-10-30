@@ -476,7 +476,6 @@ async def bot_message(message):
                 total_click_count += 1
                 db.set_total_click_count(rest, total_click_count)
             except Exception as e:
-                db.add_rest(rest)
                 print(e)
             db.set_client_temp_recommendation(user, None)
             if db.check_basket_exists(user):
