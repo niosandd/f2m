@@ -7,7 +7,7 @@ import random
 import pandas as pd
 
 def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
-               blacklist: list, numb: int, price: int, g: int, first_dish_name: str | None):
+               blacklist: list, numb: int, price: int, g: int, first_dish_name: str or None):
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.restaurants_get(restaurant), columns=[
         'id',

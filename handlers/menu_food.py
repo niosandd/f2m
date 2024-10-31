@@ -35,6 +35,8 @@ telepuzik = telebot.TeleBot(token)
 local_recommendation_text = ''
 media = []
 foods_photo_message_id = []
+media_for_category = []
+foods_photo_for_category_message_id = []
 
 icons = {
     "Салаты и закуски": "🥗",
@@ -130,8 +132,6 @@ async def food_mood(call: types.CallbackQuery):
     data = call.data.split('_')
     if db.get_users_ban(user):
         return None
-
-    # Действие:
     db.set_client_temp_mood(user, None)
     message_obj = await bot.edit_message_text(
         chat_id=user,
@@ -759,7 +759,7 @@ async def food_rec(call: types.CallbackQuery):
 
 
 async def food_rec2(user, data):
-    global local_recommendation_text, foods_photo_message_id
+    global local_recommendation_text, foods_photo_message_id, media
     mode = db.get_users_mode(user)
     rest_name = db.get_client_temp_rest(user).split(':')[0]
     list_of_dishes = []
@@ -791,22 +791,28 @@ async def food_rec2(user, data):
         recommendation_text += "<b>Чтобы узнать о блюдах больше, посмотреть другие категории и сделать заказ, нажимай Меню 👇</b>"
         local_recommendation_text = recommendation_text
         db.set_client_rec_message_id(user, mode['id'])
-        try:
-            if media:
-                foods_photo_message_id = await bot.send_media_group(chat_id=user, media=media)
-                await bot.delete_message(chat_id=user, message_id=mode['id'])
-                for photo in open_files:
-                    photo.close()
-            else:
-                await bot.send_message(chat_id=user, text="Фотографии не найдены.")
 
-            time.sleep(1)
-            message_obj = await bot.send_message(
-                chat_id=user,
-                message_id=mode['id'],
-                text=recommendation_text,
-                reply_markup=menu_button()
-            )
+        try:
+            if rest_name != "Блан де Блан":
+                if media:
+                    foods_photo_message_id = await bot.send_media_group(chat_id=user, media=media)
+                    await bot.delete_message(chat_id=user, message_id=mode['id'])
+                    for photo in open_files:
+                        photo.close()
+
+                time.sleep(1)
+                message_obj = await bot.send_message(
+                    chat_id=user,
+                    message_id=mode['id'],
+                    text=recommendation_text,
+                    reply_markup=menu_button()
+                )
+            else:
+                message_obj = await bot.send_message(
+                    chat_id=user,
+                    text=recommendation_text,
+                    reply_markup=menu_button()
+                )
         except:
             message_obj = await bot.send_message(
                 chat_id=user,
@@ -828,7 +834,7 @@ def menu_button():
 
 @dp.callback_query_handler(text_contains=f"show_categories")
 async def show_categories(call: types.CallbackQuery):
-    global foods_photo_message_id
+    global foods_photo_message_id, foods_photo_for_category_message_id
     try:
         user = call.from_user.id
         rest_name = db.get_client_temp_rest(user).split(':')[0]
@@ -837,13 +843,14 @@ async def show_categories(call: types.CallbackQuery):
             return None
 
         if "again" in call.data:
-            message_obj = await bot.edit_message_text(
+            await bot.delete_message(chat_id=user, message_id=foods_photo_for_category_message_id['message_id'])
+            message_obj = await bot.send_message(
                 chat_id=user,
-                message_id=call.message.message_id,
                 text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
                      f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
                 reply_markup=buttons_food_04(available_categories)
             )
+
         else:
             for mes in foods_photo_message_id:
                 await bot.delete_message(chat_id=user, message_id=mes["message_id"])
@@ -916,9 +923,9 @@ def buttons_food_04(available_categories):
 
 @dp.callback_query_handler(text_contains=f"food_category")
 async def food_category(call: types.CallbackQuery):
+    global foods_photo_for_category_message_id
     try:
         user = call.from_user.id
-
         data = call.data.split('_')
         if db.get_users_ban(user):
             return None
@@ -928,7 +935,6 @@ async def food_category(call: types.CallbackQuery):
             message_id=call.message.message_id,
             text=f"Одну секунду... ⏳"
         )
-        # Действие:
         category = '_'.join(data[2:])  # Если предполагается, что название категории может содержать подчеркивания
         if category:  # Проверка на наличие категории
             db.set_client_temp_category(user, category)
@@ -960,6 +966,7 @@ async def food_category(call: types.CallbackQuery):
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                     f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
             else:
+
                 text = (  # f"🍤 <b>Кафе:</b>\n"
                     # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
                     # f"\n"
@@ -986,12 +993,39 @@ async def food_category(call: types.CallbackQuery):
                     in_basket = False
             else:
                 in_basket = False
-            message_obj = await bot.edit_message_text(
-                chat_id=user,
-                message_id=loading_message.message_id,
-                text=text,
-                reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
-            )
+            photo_dir = 'Фудтумуд'
+            all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
+            if dish['Название'] in all_files:
+                file_path = all_files[dish['Название']]
+                if os.path.isfile(file_path):
+                    await bot.delete_message(
+                        chat_id=user,
+                        message_id=loading_message.message_id,
+                    )
+                    message_obj = await bot.send_photo(user, open(file_path, 'rb'),
+                                                                               caption=text,
+                                                                               reply_markup=buttons_food_05(
+                                                                                   db.get_client_temp_dish(user),
+                                                                                   length, numb, in_basket))
+                    foods_photo_for_category_message_id = message_obj
+                else:
+                    message_obj = await bot.edit_message_text(
+                        chat_id=user,
+                        message_id=loading_message.message_id,
+                        text=text,
+
+                        reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
+                    )
+                    foods_photo_for_category_message_id = message_obj
+            else:
+                message_obj = await bot.edit_message_text(
+                    chat_id=user,
+                    message_id=loading_message.message_id,
+                    text=text,
+
+                    reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
+                )
+            foods_photo_for_category_message_id = message_obj
             db.set_client_can_alert(user, round(time.time()))
             db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
         else:
@@ -1017,8 +1051,10 @@ async def food_category(call: types.CallbackQuery):
 
 @dp.callback_query_handler(text_contains=f"send_dish")
 async def send_dish(call: types.CallbackQuery):
+    global foods_photo_for_category_message_id
     try:
         user = call.from_user.id
+        mode = db.get_users_mode(user)
         data = call.data.split('_')
         if db.get_users_ban(user):
             return None
@@ -1091,12 +1127,59 @@ async def send_dish(call: types.CallbackQuery):
                 in_basket = False
         else:
             in_basket = False
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=call.message.message_id,
-            text=text,
-            reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
-        )
+
+        if dish['Ресторан'] != "Блан де Блан":
+            photo_dir = 'Фудтумуд'
+            all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
+            message_obj = None
+            last_message = foods_photo_for_category_message_id
+            if 'photo' in last_message:
+                if dish['Название'] in all_files:
+                    file_path = all_files[dish['Название']]
+                    f = open(file_path, 'rb')
+                    try:
+                        photo = InputMediaPhoto(media=f, caption=text)
+                        if os.path.isfile(file_path):
+                            foods_photo_for_category_message_id = await bot.edit_message_media(chat_id=user, message_id=call.message.message_id,
+                                                                                           media=photo,
+                                                                                           reply_markup=buttons_food_05(
+                                                                                               db.get_client_temp_dish(user),
+                                                                                               length, numb, in_basket))
+
+                            message_obj = foods_photo_for_category_message_id
+                    finally:
+                        f.close()
+                else:
+                    await bot.delete_message(chat_id=user, message_id=call.message.message_id)
+                    message_obj = await bot.send_message(
+                        chat_id=user,
+                        text=text,
+                        reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
+                    )
+                    foods_photo_for_category_message_id = message_obj
+            else:
+                if dish['Название'] in all_files:
+                    file_path = all_files[dish['Название']]
+                    f = open(file_path, 'rb')
+                    try:
+                        if os.path.isfile(file_path):
+                            await bot.delete_message(chat_id=user, message_id=mode['id'])
+                            message_obj = await bot.send_photo(user, f, caption=text, reply_markup=buttons_food_05(
+                                                                                                   db.get_client_temp_dish(
+                                                                                                       user),
+                                                                                                   length, numb,
+                                                                                                   in_basket))
+                            foods_photo_for_category_message_id = message_obj
+                    finally:
+                        f.close()
+                else:
+                    message_obj = await bot.edit_message_text(
+                        chat_id=user,
+                        message_id=call.message.message_id,
+                        text=text,
+                        reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
+                    )
+                    foods_photo_for_category_message_id = message_obj
         db.set_users_mode(user, message_obj.message_id, 'send_dish')
         db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
@@ -1115,19 +1198,27 @@ def calc_basket_cost(user):
 
 @dp.callback_query_handler(text_contains=f"check_order")
 async def check_order(call: types.CallbackQuery):
+    global foods_photo_for_category_message_id
     try:
         user = call.from_user.id
+        mode = db.get_users_mode(user)
         basket_cost = calc_basket_cost(user)
         text = "❗️<b>Проверь корзину, перед тем как сделать заказ</b> ❗️\n\n" \
                "<i><b>Нажми на позицию</b>, чтобы убрать ее из корзины 🚫\n" \
                "<b>Вернись к категориям</b>, чтобы добавить еще блюда ➕</i>\n\n" \
                f"<i><b>🛒ИТОГО</b>: {basket_cost} руб.</i>"
-        await bot.edit_message_text(
-            chat_id=user,
-            message_id=call.message.message_id,
-            text=text,
-            reply_markup=generate_basket(user)
-        )
+        if 'photo' not in foods_photo_for_category_message_id:
+            message_obj = await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text=text,
+                reply_markup=generate_basket(user)
+            )
+        else:
+            await bot.delete_message(chat_id=user, message_id=mode['id'])
+            message_obj = await bot.send_message(chat_id=user, text=text, reply_markup=generate_basket(user))
+        foods_photo_for_category_message_id = []
+        db.set_users_mode(user, message_obj.message_id, 'check_order')
     except Exception as e:
         print("order error", e)
 
@@ -1366,7 +1457,6 @@ def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_b
                 btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
                                             callback_data="send_dish_next")
                 menu.row(btn1, btn2)
-
         else:
             btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
                                         callback_data="send_dish_next")

@@ -15,11 +15,6 @@ from aiogram.utils.deep_linking import decode_payload
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
     ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle
-from pytz import timezone
-import ccxt.async_support as ccxt
-import json
-import requests
-
 import normalize
 from my_libraries import Tools
 from help import config
