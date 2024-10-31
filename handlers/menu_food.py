@@ -1446,21 +1446,22 @@ def search_dish_keyboard():
 
 def buttons_food_05(dish: int | None, length: int | None, last: int | None, in_basket: bool | None = None):
     menu = InlineKeyboardMarkup(row_width=3)
-    if dish is not None and length != 1:
-        if dish > 0:
-            btn1 = InlineKeyboardButton(text=f"« {length - last - 1}",
-                                        callback_data="send_dish_back")
+    if dish is not None:
+        if length != 1:
+            if dish > 0:
+                btn1 = InlineKeyboardButton(text=f"« {length - last - 1}",
+                                            callback_data="send_dish_back")
 
-            if last == 0:
-                menu.row(btn1)
+                if last == 0:
+                    menu.row(btn1)
+                else:
+                    btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
+                                                callback_data="send_dish_next")
+                    menu.row(btn1, btn2)
             else:
                 btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
                                             callback_data="send_dish_next")
-                menu.row(btn1, btn2)
-        else:
-            btn2 = InlineKeyboardButton(text=f"{length - last + 1} »",
-                                        callback_data="send_dish_next")
-            menu.add(btn2)
+                menu.add(btn2)
         if in_basket:
             btn0 = InlineKeyboardButton(text="Убрать из 🛒",
                                         callback_data=f"basket_remove")
