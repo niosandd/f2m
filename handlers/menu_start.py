@@ -5,7 +5,7 @@ import datetime
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
-import time
+from time import time
 from main import dp, bot, db, config, Tools
 admin = config()['telegram']['admin']
 
@@ -21,7 +21,7 @@ async def start(message: types.Message):
     if not db.check_users_user_exists(user):
 
         # Регистрируем пользователя:
-        reg_time = time.timenow()
+        reg_time = Tools.timenow()
         db.add_users_user(
             user,
             f'tg://user?id={user}',
