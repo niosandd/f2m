@@ -139,18 +139,18 @@ async def back_to_order(call: types.CallbackQuery):
 async def order_accepted(call: types.CallbackQuery):
     waiter = call.from_user.id
     temp_list = eval(db.get_waiter_score(waiter))
-    db.set_waiter_score(waiter, str(temp_list))
     text = "Заказ принят!\n" \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
     await bot.edit_message_text(chat_id=waiter, message_id=call.message.message_id, text=text)
 
 
 async def set_order(waiter, client_id, message_id=None):
-    try:
+    if not db.get_waiter_score(waiter):
+        temp_list = [client_id]
+    else:
         temp_list = eval(db.get_waiter_score(waiter))
         temp_list.append(client_id)
-    except Exception:
-        temp_list = [client_id]
+    db.set_waiter_score(waiter, str(temp_list))
     try:
         basket = list(eval(db.get_basket(client_id)).keys())
     except Exception as e:
