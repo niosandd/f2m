@@ -21,7 +21,7 @@ async def start(message: types.Message):
     if not db.check_users_user_exists(user):
 
         # Регистрируем пользователя:
-        reg_time = time.timenow()
+        reg_time = Tools.timenow()
         db.add_users_user(
             user,
             f'tg://user?id={user}',
