@@ -5,7 +5,7 @@ import datetime
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
-import time
+from time import time
 from main import dp, bot, db, config, Tools
 admin = config()['telegram']['admin']
 
