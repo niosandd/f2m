@@ -138,12 +138,7 @@ async def back_to_order(call: types.CallbackQuery):
 @dp.callback_query_handler(text_contains=f"order_accepted")
 async def order_accepted(call: types.CallbackQuery):
     waiter = call.from_user.id
-    client_id = eval(db.get_waiter_score(waiter))[-1]
-    if not db.get_waiter_score(waiter):
-        temp_list = [client_id]
-    else:
-        temp_list = eval(db.get_waiter_score(waiter))
-        temp_list.append(client_id)
+    temp_list = eval(db.get_waiter_score(waiter))
     db.set_waiter_score(waiter, str(temp_list))
     text = "Заказ принят!\n" \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
@@ -151,7 +146,11 @@ async def order_accepted(call: types.CallbackQuery):
 
 
 async def set_order(waiter, client_id, message_id=None):
-    temp_list = eval(db.get_waiter_score(waiter))
+    if not db.get_waiter_score(waiter):
+        temp_list = [client_id]
+    else:
+        temp_list = eval(db.get_waiter_score(waiter))
+        temp_list.append(client_id)
     try:
         basket = list(eval(db.get_basket(client_id)).keys())
     except Exception as e:
