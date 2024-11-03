@@ -146,11 +146,11 @@ async def order_accepted(call: types.CallbackQuery):
 
 
 async def set_order(waiter, client_id, message_id=None):
-    if not db.get_waiter_score(waiter):
-        temp_list = [client_id]
-    else:
+    try:
         temp_list = eval(db.get_waiter_score(waiter))
         temp_list.append(client_id)
+    except Exception:
+        temp_list = [client_id]
     try:
         basket = list(eval(db.get_basket(client_id)).keys())
     except Exception as e:
