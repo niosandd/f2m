@@ -936,3 +936,35 @@ class Database:
                 "DELETE FROM total_and_current_counts WHERE rest = ?",
                 (rest,))
 
+
+    # ======================================================================================================================
+    # ===== ТАБЛИЦА: admins =================================================================================================
+    # ======================================================================================================================
+
+    # --- Добавить значение ---
+
+    def add_admin(self, user_id, user_rest):
+        with self.connection:
+            return self.cursor.execute(
+                "INSERT INTO admins (admin_id, temp_rest) VALUES (?, ?)",
+                (user_id, user_rest))
+
+    def del_admin(self, user_id):
+        with self.connection:
+            return self.cursor.execute(
+                "DELETE FROM admins WHERE admin_id = ?",
+                (user_id,))
+
+    def check_admin_exists(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM admins WHERE admin_id=?", (user_id,)).fetchall()
+            return bool(len(result))
+
+    def set_admin_rest(self, user_id, rest):
+        with self.connection:
+            self.cursor.execute("UPDATE admins SET temp_rest = ? WHERE admin_id = ?", (rest, user_id,)).fetchall()
+
+    def get_admin_rest(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT temp_rest FROM admins WHERE admin_id=?", (user_id,)).fetchall()
+            return result[0][0]

@@ -78,6 +78,8 @@ time_wait = 1000  # Задержка в мс
 import handlers.menu_start as m_start
 import handlers.waiter_start as w_start
 import handlers.bosses as bosses
+import handlers.admins as admins
+import handlers.stop_lists as sl
 import handlers.menu_client as m_settings
 import handlers.menu_food as m_food
 
@@ -236,6 +238,11 @@ async def admin(message: types.Message):
     if user in [375565156, 1004320969, 803124861, 6728666475]:
         message_obj = await bot.send_message(
             chat_id=user,
+            text="Введите пароль: ",
+        )
+        db.set_users_mode(user, message_obj.message_id, 'admin_password')
+        message_obj = await bot.send_message(
+            chat_id=user,
             text="Отправьте рассылаемое сообщение в этот чат, после чего выберите режим оповещения",
         )
         db.set_users_mode(user, message_obj.message_id, 'notification')
@@ -325,7 +332,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
     user = inline_query.from_user.id
     mode = db.get_users_mode(user)
     # Поиск ресторана
-    if 'food_inline_handler' in mode['key']:
+    if 'food_inline_handler' in mode['key'] or mode['key'] == "admin_mode":
         db.add_user_action(user, 'Пользователь ищет кафе через поиск')
         if len(str(inline_query.query)) > 0:
             print(f'│ [{Tools.timenow()}] Пользователь ищет кафе... {str(inline_query.query)}')
@@ -485,10 +492,11 @@ async def bot_message(message):
             dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]
             await w_start.dish_added(user, dish_id)
 
-        if mode['key'] == "set_stop_list":
+        if "set_stop_list" in mode['key']:
             dish = message.text.split(':')
             dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]
-            await bosses.dish_added(user, dish_id)
+            actor = mode['key'].split('_')[-1]
+            await sl.dish_added(user, actor, dish_id)
 
         if mode['key'] == "notification":
             await bot.send_message(
@@ -497,6 +505,18 @@ async def bot_message(message):
                 reply_markup=notification(message.message_id)
             )
 
+        if mode['key'] == "admin_password" and message.text == "password":
+            await bot.send_message(
+                chat_id=user,
+                text="Выберите заведение: ",
+                reply_markup=InlineKeyboardMarkup(InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat=''))
+            )
+            db.set_users_mode(user, message_obj.message_id, 'admin_mode')
+
+        if mode['key'] == "admin_mode":
+            data = message.text.split(':')
+            rest = f"{data[0]}:{data[1]}"
+            await admins.generate_admin_menu(user, rest)
 
         # Выбор блюда из поиска
         if mode['key'] == 'write_review':
