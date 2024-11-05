@@ -82,7 +82,7 @@ async def boss_stop_list(call: types.CallbackQuery):
     rest = db.get_boss_rest(boss_id)
     if not db.check_stop_list_exists(rest):
         db.create_stop_list(rest)
-    await sl.set_stop_list(boss_id, call.message.message_id)
+    await sl.set_stop_list(boss_id, "boss", call.message.message_id)
 
 
 @dp.callback_query_handler(lambda call: call.data == "back_to_boss_menu")
