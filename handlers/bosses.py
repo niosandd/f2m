@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 
 from main import dp, bot, db, config, Tools
-import stop_lists as sl
+import handlers.stop_lists as sl
 
 
 def ind_to_number(ind):

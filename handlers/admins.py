@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 
 from main import dp, bot, db, config, Tools
-import stop_lists as sl
+import handlers.stop_lists as sl
 
 async def generate_admin_menu(admin_id, rest=None, message_id=None):
     if not db.check_admin_exists(admin_id):
