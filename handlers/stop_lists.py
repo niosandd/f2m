@@ -5,6 +5,14 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
 from main import dp, bot, db, config, Tools
 
 
+def ind_to_number(ind):
+    numbers = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
+    result = ""
+    for char in str(ind):
+        result += numbers[int(char)]
+    return result
+
+
 async def set_stop_list(user_id, actor, message_id=None):
     try:
         stop_list = list(eval(db.get_stop_list(db.get_admin_rest(user_id))).keys())
