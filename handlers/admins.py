@@ -57,5 +57,5 @@ async def admin_notification(call: types.CallbackQuery):
         chat_id=admin_id,
         text="Отправьте рассылаемое сообщение в этот чат, после чего выберите режим оповещения",
     )
-    db.set_users_mode(user, message_obj.message_id, 'notification')
+    db.set_users_mode(admin_id, message_obj.message_id, 'notification')
 
