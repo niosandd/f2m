@@ -395,7 +395,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
                 results.append(result)
             await inline_query.answer(results[:10], cache_time=1)
 
-    elif mode['key'] == "get_order" or mode['key'] == "set_stop_list":
+    elif mode['key'] == "get_order" or "set_stop_list" in mode['key']:
         db.add_user_action(user, 'Пользователь хочет оформить заказ')
         rest_name = db.get_client_temp_rest(user).split(':')[0]
         if len(str(inline_query.query)) > 0:
