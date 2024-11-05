@@ -19,6 +19,7 @@ import normalize
 from my_libraries import Tools
 from help import config
 from db import Database
+
 db = Database('files/db_users.db')
 
 """ 
@@ -26,7 +27,25 @@ db = Database('files/db_users.db')
 """
 
 reviews = config()['telegram']['reviews']
-
+restaurant_info = {'Молодёжь': 'Бар «Молодёжь» — это место, где каждый найдёт свой идеальный уголок отдыха и развлечений.\
+ Днём здесь царит атмосфера уютного кафе, где можно насладиться чашкой кофе, а к вечеру бар оживает, превращаясь в \
+  пространство для живого общения и отдыха, а ночью становится клубом с караоке. Многолетний опыт работы нашей команды \
+  в лучших заведениях Москвы воплощён в каждой детали. Мы предлагаем демократичные цены без компромиссов в качестве и \
+  комфорт, который так ценят наши гости.\n'
+                               'Наше особенное пространство разделено на шесть уникальных залов, каждый из которых обладает своим характером \
+   и неповторимой атмосферой. На двух этажах вы найдёте залы "Музыка" и "VIP Музыка" для меломанов, романтичную \
+   атмосферу зала "Романтика", активное пространство "Активити", уют и уединение "Библиотеки", а также, конечно, \
+   яркий зал для караоке. В интерьерах залов отражены важные моменты и сферы в жизни, которые делают её ярче и счастливее.\n'
+                               'Мы работаем круглосуточно, чтобы каждый мог найти время для отдыха и веселья, независимо \
+                               от распорядка дня. Приходите и откройте для себя «Молодёжь» — место, где всегда ждут своих гостей!',
+                   'Блан де Блан': 'Мы возродили дух Люсиновской улицы XIX века, вдохновляясь легендарным трактиром, о котором с восторгом писал \
+французский предприниматель Анри Брокар. Его восхищали европейская изысканность блюд, богатый выбор деликатесов и \
+уютная атмосфера. Вдохновленные этими традициями, мы создали место, где первоклассная кухня, радушный персонал и \
+тёплая обстановка позволяют гостям окунуться в атмосферу прошлого с комфортом современности.\n'
+'Наше заведение — идеальное пространство для дружеских встреч, уединенных размышлений, деловых переговоров и семейных \
+праздников. Мы устраиваем ретрофильмы, литературные вечера, живые музыкальные концерты на французском и английском, \
+а также творческие встречи с артистами французского театра.\n'
+}
 icons = {
     "Салаты и закуски": "🥗",
     "Первые блюда": "🍲",
@@ -84,7 +103,6 @@ import handlers.menu_client as m_settings
 import handlers.menu_food as m_food
 
 
-
 class ActionLoggingMiddleware(BaseMiddleware):
     async def on_pre_process_update(self, update: types.Update, data: dict):
         try:
@@ -108,7 +126,9 @@ class ActionLoggingMiddleware(BaseMiddleware):
                     action = f"Пользователь подтвердил свою анкету"
                 if update.callback_query.data == 'food_mood':
                     action = f"Пользователь перешел к выбору настроения"
-                if update.callback_query.data in ["food_choose_get_Радость", "food_choose_get_Печаль", "food_choose_get_Гнев", "food_choose_get_Спокойствие", "food_choose_get_Волнение"]:
+                if update.callback_query.data in ["food_choose_get_Радость", "food_choose_get_Печаль",
+                                                  "food_choose_get_Гнев", "food_choose_get_Спокойствие",
+                                                  "food_choose_get_Волнение"]:
                     action = "Пользователь выбрал свое настроение"
                 if update.callback_query.data == 'client_register_again':
                     action = 'Пользователь перешел в меню редактирование анкеты'
@@ -119,7 +139,7 @@ class ActionLoggingMiddleware(BaseMiddleware):
                 if update.callback_query.data == 'menu_start':
                     action = 'Пользователь вернулся в главное меню'
                 if update.callback_query.data == 'food_to_mood_coin_status':
-                    action= 'Пользователь проверяет количество своих коинов'
+                    action = 'Пользователь проверяет количество своих коинов'
                 if update.callback_query.data == 'leave_a_review':
                     action = 'Пользователь оставил отзыв'
                 if 'client_register_style' in update.callback_query.data:
@@ -141,7 +161,6 @@ class ActionLoggingMiddleware(BaseMiddleware):
                 if 'send_dish_del' in update.callback_query.data:
                     action = 'Пользователь вернулся к рекомендациям"'
 
-
             if user_id and action:
                 if not db.check_last_action(user_id, action):
                     db.add_user_action(user_id, action)
@@ -149,7 +168,9 @@ class ActionLoggingMiddleware(BaseMiddleware):
         except Exception as e:
             print("Ошибка клиентского пути:", e)
 
+
 dp.middleware.setup(ActionLoggingMiddleware())
+
 
 @dp.message_handler(commands=['start', 'restart'])
 async def start(message: types.Message):
@@ -445,7 +466,7 @@ async def bot_message(message):
             await m_food.food_rec_get(user, message)
             db.add_user_action(user, 'Пользователь выбирает ресторан из поиска')
 
-        if mode['key'] == 'food_inline_handler_x':
+        if mode['key'] == 'food_inline_handler_x':  # /mldzh
             db.add_user_action(user, 'Пользователь выбирает другой ресторан')
             data = message.text.split(':')
             db.set_client_temp_rest(user, f"{data[0]}:{data[1]}")
@@ -456,9 +477,10 @@ async def bot_message(message):
                 await bot.delete_message(user, mode['id'])
             except Exception as e:
                 print(e)
+            text = restaurant_info[data[0]]
             await bot.send_message(
                 chat_id=user,
-                text=f"Ресторан успешно установлен",
+                text=text,
                 reply_markup=get_to_menu()
             )
 
@@ -477,7 +499,8 @@ async def bot_message(message):
             db.set_client_temp_recommendation(user, None)
             if db.check_basket_exists(user):
                 db.set_basket(user, "{}")
-            await m_food.food_rec2(user, "food_rec_Нутрициолог".split('_'))
+
+            await bot.edit_message_text(chat_id=user, message_id=mode['id'], text=restaurant_info[data[0]], reply_markup=rec_key())
 
         if mode['key'] == "waiter_reg":
             await w_start.start(message)
@@ -562,6 +585,21 @@ async def bot_message(message):
     except:
         pass
 
+
+def rec_key():
+    menu = InlineKeyboardMarkup(row_width=1)
+
+    btn1 = InlineKeyboardButton(text="Получить рекомендацию",
+                                callback_data="get_rec_after_info")
+    menu.add(btn1)
+    return menu
+
+
+
+
+@dp.callback_query_handler(text_contains='get_rec_after_info')
+async def getting_recommendation(call:types.CallbackQuery):
+    await m_food.food_rec2(call.from_user.id, "food_rec_Нутрициолог".split('_'))
 
 async def client_register_blacklist(user, message: types.Message):
     message_obj = await message.answer(
@@ -811,7 +849,6 @@ async def review_end(call: types.CallbackQuery):
     db.set_users_mode(user, mode['id'], '')
 
 
-
 @dp.callback_query_handler(text_contains=f"review_star")
 async def review_star(call: types.CallbackQuery):
     user = call.from_user.id
@@ -852,6 +889,7 @@ async def review_star(call: types.CallbackQuery):
     db.set_users_mode(user, message_obj.message_id, 'type_review')
     db.add_user_action(user, 'Пользователь оставил отзыв')
 
+
 def buttons_05():
     menu = InlineKeyboardMarkup(row_width=1)
 
@@ -867,10 +905,8 @@ def buttons_05():
 Запуск.
 """
 
-
-
-
 if __name__ == '__main__':
     from handlers import dp
+
     loop = asyncio.get_event_loop()
     executor.start_polling(dp)
