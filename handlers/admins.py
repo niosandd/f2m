@@ -48,3 +48,14 @@ async def admin_stop_list(call: types.CallbackQuery):
 @dp.callback_query_handler(lambda call: call.data == "back_to_admin_menu")
 async def back_to_boss_menu(call: types.CallbackQuery):
     await generate_admin_menu(call.from_user.id, message_id=call.message.message_id)
+
+
+@dp.callback_query_handler(lambda call: call.data == "admin_notification")
+async def admin_notification(call: types.CallbackQuery):
+    admin_id = call.from_user.id
+    message_obj = await bot.send_message(
+        chat_id=admin_id,
+        text="Отправьте рассылаемое сообщение в этот чат, после чего выберите режим оповещения",
+    )
+    db.set_users_mode(user, message_obj.message_id, 'notification')
+

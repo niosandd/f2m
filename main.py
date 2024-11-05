@@ -241,11 +241,6 @@ async def admin(message: types.Message):
             text="Введите пароль: ",
         )
         db.set_users_mode(user, message_obj.message_id, 'admin_password')
-        message_obj = await bot.send_message(
-            chat_id=user,
-            text="Отправьте рассылаемое сообщение в этот чат, после чего выберите режим оповещения",
-        )
-        db.set_users_mode(user, message_obj.message_id, 'notification')
     else:
         await bot.send_message(user, "Отсутствуют права доступа")
 
