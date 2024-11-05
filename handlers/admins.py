@@ -4,6 +4,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
 
 from main import dp, bot, db, config, Tools
 import handlers.stop_lists as sl
+import handlers.auxiliary_functions as af
 
 async def generate_admin_menu(admin_id, rest=None, message_id=None):
     if not db.check_admin_exists(admin_id):
@@ -36,6 +37,48 @@ def admin_menu():
     return menu
 
 
+@dp.callback_query_handler(lambda call: call.data == "admin_waiters_stat")
+async def admin_waiters_stat(call: types.CallbackQuery):
+    try:
+        admin_id = call.from_user.id
+        rest = db.get_admin_rest(admin_id)
+        stats = db.get_waiters_names_and_stats(rest)
+        current_waiter_count = 0 # ВРЕМЕННО ПОКА НЕ ВВЕЛИ СМЕНЫ
+        text = "Общая статистика по официантам:\n\n"
+        for waiter in stats:
+            if None not in waiter:
+                text += (f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))} "
+                         f"({current_waiter_count})\n\n")
+        text += "(В скобках статистика за смену с 00:00 до 23:59)"
+        await bot.edit_message_text(chat_id=admin_id,
+                                    message_id=call.message.message_id,
+                                    text=text,
+                                    reply_markup=InlineKeyboardMarkup().row(
+                                        InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu")))
+    except Exception as e:
+        print(e)
+
+
+@dp.callback_query_handler(lambda call: call.data == "admin_commercial")
+async def admin_commercial(call: types.CallbackQuery):
+    try:
+        admin_id = call.from_user.id
+        rest = db.get_admin_rest(admin_id)
+        total_click_count, current_click_count, total_guests_count, current_guests_count = af.total_and_current_counter(rest)
+        text = (f"Статистика вовлеченности пользователей к заведению:\n\n"
+                f"Кликабельность заведения через поиск: {total_click_count} ({current_click_count})\n\n"
+                f"Обслужено гостей через f2m: {total_guests_count} ({current_guests_count})\n"
+                "(В скобках статистика за смену с 00:00 до 23:59)")
+
+        await bot.edit_message_text(chat_id=admin_id,
+                                    message_id=call.message.message_id,
+                                    text=text,
+                                    reply_markup=InlineKeyboardMarkup().row(
+                                        InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu")))
+    except Exception as e:
+        print(e)
+
+
 @dp.callback_query_handler(lambda call: call.data == "admin_stop_list")
 async def admin_stop_list(call: types.CallbackQuery):
     admin_id = call.from_user.id
@@ -48,6 +91,17 @@ async def admin_stop_list(call: types.CallbackQuery):
 @dp.callback_query_handler(lambda call: call.data == "back_to_admin_menu")
 async def back_to_boss_menu(call: types.CallbackQuery):
     await generate_admin_menu(call.from_user.id, message_id=call.message.message_id)
+
+
+@dp.callback_query_handler(lambda call: call.data == "admin_reviews")
+async def admin_reviews(call: types.CallbackQuery):
+    admin_id = call.from_user.id
+    message_obj = await bot.send_message(
+        chat_id=admin_id,
+        text="Отзывы отсутствуют",
+        reply_markup=InlineKeyboardMarkup().row(
+            InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu"))
+    )
 
 
 @dp.callback_query_handler(lambda call: call.data == "admin_notification")

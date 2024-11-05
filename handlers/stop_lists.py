@@ -3,6 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 
 from main import dp, bot, db, config, Tools
+import handlers.auxiliary_functions as af
 
 
 def ind_to_number(ind):
@@ -21,7 +22,7 @@ async def set_stop_list(user_id, actor, message_id=None):
             stop_list = list(eval(db.get_stop_list(db.get_boss_rest(user_id))).keys())
         stop_list_text = ""
         for i in range(len(stop_list)):
-            stop_list_text += ind_to_number(i + 1) + " " + stop_list[i] + "\n"
+            stop_list_text += af.ind_to_number(i + 1) + " " + stop_list[i] + "\n"
         text = f'\n<b>Сейчас в стоп-листе:</b>' \
                f'\n\n' \
                f'{stop_list_text}'

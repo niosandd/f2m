@@ -7,20 +7,13 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 
 from main import dp, bot, db, config, Tools
+import handlers.auxiliary_functions as af
 
 admin = config()['telegram']['admin']
 
 
 def waiter_action(first_name, location):
     print(f"│ [{Tools.timenow()}] {first_name} → {location}")
-
-
-def ind_to_number(ind):
-    numbers = ["0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"]
-    result = ""
-    for char in str(ind):
-        result += numbers[int(char)]
-    return result
 
 
 async def start(message: types.Message):
@@ -158,7 +151,7 @@ async def set_order(waiter, client_id, message_id=None):
         basket = []
     order_text = ""
     for i in range(len(basket)):
-        order_text += ind_to_number(i + 1) + " " + basket[i] + "\n"
+        order_text += af.ind_to_number(i + 1) + " " + basket[i] + "\n"
     text = f'\n<b>Новый заказ:</b>' \
            f'\n\n' \
            f'{order_text}' \

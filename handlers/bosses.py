@@ -4,16 +4,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
 
 from main import dp, bot, db, config, Tools
 import handlers.stop_lists as sl
-
-
-def total_and_current_counter(rest):
-    stats = db.get_waiters_names_and_stats(rest)
-    current_click_count = total_guests_count = current_guests_count = 0
-    total_click_count = db.get_total_click_count(rest)
-    for waiter in stats:
-        if None not in waiter:
-            total_guests_count += len(set(eval(waiter[4])))
-    return total_click_count, current_click_count, total_guests_count, current_guests_count
+import handlers.auxiliary_functions as af
 
 
 def boss_menu():
@@ -32,7 +23,7 @@ async def boss_commercial(call: types.CallbackQuery):
     try:
         boss_id = call.from_user.id
         rest = db.get_boss_rest(boss_id)
-        total_click_count, current_click_count, total_guests_count, current_guests_count = total_and_current_counter(rest)
+        total_click_count, current_click_count, total_guests_count, current_guests_count = af.total_and_current_counter(rest)
         text = (f"Статистика вовлеченности пользователей к заведению:\n\n"
                 f"Кликабельность заведения через поиск: {total_click_count} ({current_click_count})\n\n"
                 f"Обслужено гостей через f2m: {total_guests_count} ({current_guests_count})\n"
