@@ -501,12 +501,12 @@ async def bot_message(message):
             )
 
         if mode['key'] == "admin_password" and message.text == "password":
+            db.set_users_mode(user, message_obj.message_id, 'admin_mode')
             await bot.send_message(
                 chat_id=user,
                 text="Выберите заведение: ",
-                reply_markup=InlineKeyboardMarkup(InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat=''))
+                reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat=''))
             )
-            db.set_users_mode(user, message_obj.message_id, 'admin_mode')
 
         if mode['key'] == "admin_mode":
             data = message.text.split(':')
