@@ -96,12 +96,11 @@ async def back_to_boss_menu(call: types.CallbackQuery):
 @dp.callback_query_handler(lambda call: call.data == "admin_reviews")
 async def admin_reviews(call: types.CallbackQuery):
     admin_id = call.from_user.id
-    message_obj = await bot.send_message(
-        chat_id=admin_id,
-        text="Отзывы отсутствуют",
-        reply_markup=InlineKeyboardMarkup().row(
-            InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu"))
-    )
+    await bot.edit_message_text(chat_id=admin_id,
+                                message_id=call.message.message_id,
+                                text="Отзывы отсутствуют",
+                                reply_markup=InlineKeyboardMarkup().row(
+                                    InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu")))
 
 
 @dp.callback_query_handler(lambda call: call.data == "admin_notification")
