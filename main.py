@@ -510,6 +510,9 @@ async def bot_message(message):
             dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]
             await w_start.dish_added(user, dish_id)
 
+        if mode['key'] == "order_table":
+            await w_start.order_accepted(user, message)
+
         if "set_stop_list" in mode['key']:
             dish = message.text.split(':')
             dish_id = db.restaurants_get_dish(dish[0], dish[1], dish[2])[0]

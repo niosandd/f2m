@@ -129,12 +129,21 @@ async def back_to_order(call: types.CallbackQuery):
 
 
 @dp.callback_query_handler(text_contains=f"order_accepted")
-async def order_accepted(call: types.CallbackQuery):
+async def order_table(call: types.CallbackQuery):
     waiter = call.from_user.id
+    message_obj = await bot.edit_message_text(chat_id=waiter, message_id=call.message.message_id, text="Введите номер столика")
+    db.set_users_mode(waiter, message_obj.message_id, 'order_table')
+
+
+async def order_accepted(waiter, table):
+    mode = db.get_users_mode(waiter)
     temp_list = eval(db.get_waiter_score(waiter))
+    rest = db.get_client_temp_rest(waiter)
+    db.add_order(waiter, rest, table)
     text = "Заказ принят!\n" \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
-    await bot.edit_message_text(chat_id=waiter, message_id=call.message.message_id, text=text)
+    await bot.edit_message_text(chat_id=waiter, message_id=mode['id'], text=text)
+
 
 
 async def set_order(waiter, client_id, message_id=None):
