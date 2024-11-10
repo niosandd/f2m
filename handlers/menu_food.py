@@ -255,7 +255,7 @@ def get_user_profile_text(user_id):
             f"<b>——— Стиль питания ———</b>\n"
             f"{style} {emojis[style]}\n\n"
             f"<b>——— НЕ ЕШЬ ———</b>\n"
-            f"{blacklist}"
+            f"{blacklist}\n\n"
             f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
             f"{whitelist}"
         )
@@ -269,7 +269,7 @@ def get_user_profile_text(user_id):
             f"<b>——— Стиль питания ———</b>\n"
             f"{style}\n\n"
             f"<b>——— НЕ ЕШЬ ———</b>\n"
-            f"{blacklist}"
+            f"{blacklist}\n\n"
             f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
             f"{whitelist}"
         )
