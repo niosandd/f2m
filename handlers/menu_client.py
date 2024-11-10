@@ -136,7 +136,7 @@ async def client_register(call: types.CallbackQuery):
             reply_markup=buttons_client_00('ready')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_e_ready')
-    elif db.get_client_blacklist(user) == 'None':
+    elif db.get_client_blacklist(user) == 'None' and call.data != 'client_register_empty_blacklist':
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,

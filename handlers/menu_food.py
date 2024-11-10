@@ -205,6 +205,7 @@ def get_user_profile_text(user_id):
     age = db.get_client_age(user_id)
     style = db.get_client_style(user_id)
     blacklist = db.get_client_blacklist(user_id)
+    whitelist = db.get_client_whitelist(user_id)
 
     # Устанавливаем значения по умолчанию, если данных нет или они равны None
     try:
@@ -220,6 +221,9 @@ def get_user_profile_text(user_id):
         if not (blacklist and blacklist != 'None') or blacklist == "Пусто":
             blacklist = 'пусто ⭕️'
             db.set_client_blacklist(user_id, 'Пусто')
+        if not (whitelist and whitelist != 'None') or whitelist == "Пусто":
+            whitelist = 'пусто ⭕️'
+            db.set_client_whitelist(user_id, 'Пусто')
     except Exception as e:
         print(e)
 
@@ -252,6 +256,8 @@ def get_user_profile_text(user_id):
             f"{style} {emojis[style]}\n\n"
             f"<b>——— НЕ ЕШЬ ———</b>\n"
             f"{blacklist}"
+            f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
+            f"{whitelist}"
         )
     else:
         message_text = (
@@ -264,6 +270,8 @@ def get_user_profile_text(user_id):
             f"{style}\n\n"
             f"<b>——— НЕ ЕШЬ ———</b>\n"
             f"{blacklist}"
+            f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
+            f"{whitelist}"
         )
     return message_text
 
