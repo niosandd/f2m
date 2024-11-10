@@ -505,7 +505,7 @@ async def bot_message(message):
             await w_start.dish_added(user, dish_id)
 
         if mode['key'] == "order_table":
-            await w_start.order_accepted(user, message)
+            await w_start.order_accepted(user, message.text)
 
         if "set_stop_list" in mode['key']:
             dish = message.text.split(':')
