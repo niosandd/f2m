@@ -445,7 +445,10 @@ async def bot_message(message):
 
         # Чёрный список продуктов
         if mode['key'] == 'client_register_blacklist':
-            await client_register_blacklist(user, message)
+            await client_register_list(user, message, "blacklist")
+
+        if mode['key'] == 'client_register_whitelist':
+            await client_register_list(user, message, "whitelist")
 
         # Запросить заведение
         if mode['key'] == 'food_inline_handler_empty':
@@ -598,23 +601,28 @@ def rec_key():
 async def getting_recommendation(call:types.CallbackQuery):
     await m_food.food_rec2(call.from_user.id, "food_rec_Нутрициолог".split('_'))
 
-async def client_register_blacklist(user, message: types.Message):
+async def client_register_list(user, message: types.Message, list_type):
     message_obj = await message.answer(
         text=f"Одну секунду... ⏳"
     )
-    # products = str(chat_gpt.send_message(message.text)).strip('"')
     products = normalize.normal_list(message.text)
-    db.set_client_blacklist(user, products)
+    if list_type == "blacklist":
+        db.set_client_blacklist(user, products)
+        text = "<b>Эти продукты ты не употребляешь в пищу:</b>\n"
+        db.add_user_action(user, 'Пользователь составил свой блэклист продуктов')
+    else:
+        db.set_client_whitelist(user, products)
+        text = "<b>Эти продукты ты предпочитаешь:</b>\n"
+        db.add_user_action(user, 'Пользователь составил свой вайтлист продуктов')
+    text += (f"<code>{products}</code>\n"
+             "\n"
+             "Всё верно?")
     await bot.edit_message_text(
         chat_id=user,
         message_id=message_obj.message_id,
-        text=f"<b>Эти продукты ты не употребляешь в пищу:</b>\n"
-             f"<code>{products}</code>\n"
-             f"\n"
-             f"Всё верно?",
-        reply_markup=buttons_01()
+        text=text,
+        reply_markup=buttons_01(list_type)
     )
-    db.add_user_action(user, 'Пользователь составил свой блэклист продуктов')
 
 
 def buttons_00():
@@ -628,11 +636,15 @@ def buttons_00():
     return menu
 
 
-def buttons_01():
+def buttons_01(list_type):
     menu = InlineKeyboardMarkup(row_width=1)
 
-    btn1 = InlineKeyboardButton(text="Да, всё верно 👍🏻",
-                                callback_data="client_register_ready")
+    if list_type == "blacklist":
+        btn1 = InlineKeyboardButton(text="Да, всё верно 👍🏻",
+                                    callback_data="client_register_notready")
+    else:
+        btn1 = InlineKeyboardButton(text="Да, всё верно 👍🏻",
+                                    callback_data="client_register_ready")
 
     btn2 = InlineKeyboardButton(text="Нет! Сейчас напишу заново 👎🏻",
                                 callback_data="client_register_notready")

@@ -86,7 +86,7 @@ async def client_register(call: types.CallbackQuery):
             message_id=call.message.message_id,
             text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
-                    f"▶ Вопрос 1/4:\n"
+                    f"▶ Вопрос 1/5:\n"
                     f"\n"
                     f"<b>Выбери свой пол:</b>",
             reply_markup=buttons_client_00('sex')
@@ -99,7 +99,7 @@ async def client_register(call: types.CallbackQuery):
             message_id=call.message.message_id,
             text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
-                    f"▶ Вопрос 2/4:\n"
+                    f"▶ Вопрос 2/5:\n"
                     f"\n"
                     f"<b>Выбери свой возраст:</b>",
             reply_markup=buttons_client_00('age')
@@ -112,7 +112,7 @@ async def client_register(call: types.CallbackQuery):
             message_id=call.message.message_id,
             text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
-                    f"▶ Вопрос 3/4:\n"
+                    f"▶ Вопрос 3/5:\n"
                     f"\n"
                     f"<b>Какой стиль питания ты предпочитаешь?</b>",
             reply_markup=buttons_client_00('style')
@@ -128,7 +128,7 @@ async def client_register(call: types.CallbackQuery):
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_ready')
     elif call.data == 'client_register_e_ready':
-        db.set_client_blacklist(user, "Пусто")
+        db.set_client_whitelist(user, "Пусто")
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=int(db.get_users_mode(user)['id']),
@@ -136,14 +136,13 @@ async def client_register(call: types.CallbackQuery):
             reply_markup=buttons_client_00('ready')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_e_ready')
-
     elif db.get_client_blacklist(user) == 'None':
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
             text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
-                    f"▶ Вопрос 4/4:\n"
+                    f"▶ Вопрос 4/5:\n"
                     f"\n"
                     f"<b>Что ты не ешь?</b>\n"
                     f"\n"
@@ -152,6 +151,23 @@ async def client_register(call: types.CallbackQuery):
             reply_markup=buttons_client_00('blacklist')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_blacklist')
+    elif db.get_client_whitelist(user) == 'None' or call.data == 'client_register_empty_blacklist':
+        if call.data == 'client_register_empty_blacklist':
+            db.set_client_blacklist(user, "Пусто")
+        message_obj = await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
+                    f"\n"
+                    f"▶ Вопрос 5/5:\n"
+                    f"\n"
+                    f"<b>А что ты предпочитаешь из продуктов?</b>\n"
+                    f"\n"
+                    f"<i>Напишите ответ одним сообщением в чат, через запятую. Искусственный интеллект food2mood "
+                 f"проанализирует запрос😉✌️</i>",
+            reply_markup=buttons_client_00('whitelist')
+        )
+        db.set_users_mode(user, message_obj.message_id, 'client_register_whitelist')
     else:
         await bot.delete_message(user, call.message.message_id)
         db.set_client_blacklist(user, None)
@@ -212,6 +228,12 @@ def buttons_client_00(mode: str):
         # menu.row(btn5)
 
     elif mode == 'blacklist':
+        btn1 = InlineKeyboardButton(text="Пропустить вопрос",
+                                    callback_data="client_register_empty_blacklist")
+
+        menu.add(btn1)
+
+    elif mode == 'whitelist':
         btn1 = InlineKeyboardButton(text="Пропустить вопрос",
                                     callback_data="client_register_e_ready")
 

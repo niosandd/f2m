@@ -300,11 +300,28 @@ class Database:
                 blacklist = str(row[0])
             return blacklist
 
+    # --- Whitelist ---
+
+    def set_client_whitelist(self, user_id: int, whitelist: str):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE clients SET whitelist = ? WHERE id = ?",
+                (whitelist, user_id))
+
+    def get_client_whitelist(self, user_id) -> str:
+        with self.connection:
+            result = self.connection.execute(
+                "SELECT whitelist FROM clients WHERE id = ?",
+                (user_id,)).fetchall()
+            for row in result:
+                whitelist = str(row[0])
+            return whitelist
+
     # --- temp_rest ---
     def set_new_review(self, id, user_id, user_name, rating, review, dish_name, restaurant_name):
         with self.connection:
             self.cursor.execute(
-                "INSERT INTO reviews(id, user_name, rating, review, dish_name, restaurant_name) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO reviews(id, user_name, rating, `review, dish_name, restaurant_name) VALUES (?, ?, ?, ?, ?, ?)",
                 (id, user_id, user_name, rating, review, dish_name, restaurant_name))
 
     def set_client_temp_rest(self, user_id: int, temp_rest: str):
