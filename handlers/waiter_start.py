@@ -139,6 +139,7 @@ async def order_accepted(waiter, table):
     mode = db.get_users_mode(waiter)
     temp_list = eval(db.get_waiter_score(waiter))
     rest = db.get_client_temp_rest(waiter)
+    print(table)
     db.add_order(waiter, rest, table)
     text = "Заказ принят!\n" \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
