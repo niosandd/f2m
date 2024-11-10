@@ -976,8 +976,8 @@ class Database:
 
     # --- Добавить значение ---
 
-    def add_order(self, user_id, user_rest, table_number):
+    def add_order(self, user_id, user_rest, table_number, time):
         with self.connection:
             return self.cursor.execute(
-                "INSERT INTO orders (waiter_id, rest, table_number) VALUES (?, ?, ?)",
-                (user_id, user_rest, table_number))
+                "INSERT INTO orders (waiter_id, rest, table_number, time) VALUES (?, ?, ?, ?)",
+                (user_id, user_rest, table_number, time))

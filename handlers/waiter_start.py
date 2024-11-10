@@ -139,7 +139,7 @@ async def order_accepted(waiter, table_number):
     mode = db.get_users_mode(waiter)
     temp_list = eval(db.get_waiter_score(waiter))
     rest = db.get_client_temp_rest(waiter)
-    db.add_order(waiter, rest, table_number)
+    db.add_order(waiter, rest, table_number, datetime.datetime.now())
     text = "Заказ принят!\n" \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
     await bot.edit_message_text(chat_id=waiter, message_id=mode['id'], text=text)
