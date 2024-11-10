@@ -135,12 +135,11 @@ async def order_table(call: types.CallbackQuery):
     db.set_users_mode(waiter, message_obj.message_id, 'order_table')
 
 
-async def order_accepted(waiter, table):
+async def order_accepted(waiter, table_number):
     mode = db.get_users_mode(waiter)
     temp_list = eval(db.get_waiter_score(waiter))
     rest = db.get_client_temp_rest(waiter)
-    print(table)
-    db.add_order(waiter, rest, table)
+    db.add_order(waiter, rest, table_number)
     text = "Заказ принят!\n" \
            f'\n <b>Количество твоих уникальных заказов: {len(set(temp_list))}</b>'
     await bot.edit_message_text(chat_id=waiter, message_id=mode['id'], text=text)
