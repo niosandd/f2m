@@ -186,6 +186,8 @@ async def start(message: types.Message):
                         db.set_client_temp_rest(user, f"{rest_name}:{rest_address}")
                         if db.check_basket_exists(user):
                             db.set_basket(user, "{}")
+                    else:
+                        db.set_client_temp_rest(user, None)
                 except Exception as e:
                     print(e)
             except Exception as e:
