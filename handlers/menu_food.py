@@ -385,7 +385,7 @@ async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
         temp_state = db.get_client_temp_mood(user)
         if not temp_state or temp_state == "None":
             db.set_client_temp_mood(user, "Радость")
-        if len(temp) == 1:
+        if len(temp) <= 1:
             await bot.edit_message_text(
                 chat_id=user,
                 message_id=call.message.message_id,
