@@ -386,13 +386,13 @@ async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
         if not temp_state or temp_state == "None":
             db.set_client_temp_mood(user, "Радость")
         if len(temp) <= 1:
+            db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
             await bot.edit_message_text(
                 chat_id=user,
                 message_id=call.message.message_id,
                 text="Не знаешь куда сходить? 🧐\n\n"
                      "<b>Искусственный интеллект food2mood подобрал заведения под твоё настроение!</b>",
                 reply_markup=get_back())
-            db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
         else:
             await food_rec2(user, "food_rec_Нутрициолог".split('_'))
     except Exception as e:
