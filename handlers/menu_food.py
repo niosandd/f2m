@@ -834,6 +834,7 @@ async def food_rec2(user, data):
 def menu_button():
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(InlineKeyboardButton(text="Меню", callback_data="show_categories"))
+    markup.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="menu_start"))
     return markup
 
 
