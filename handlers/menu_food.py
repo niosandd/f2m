@@ -297,8 +297,10 @@ async def food_choose_get(call: types.CallbackQuery):
             db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
         else:
 
-            message_text = "Не знаешь куда сходить? 🧐 \n\n" \
-                           "<b>Искусственный интеллект food2mood  подобрал заведения под твоё настроение!</b>"
+            message_text = ('Давай выберем место под настроение! \n\n'
+                        'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                        'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
+                        'Если ты уже в заведении, наведи камеру телефона на QR твоего места')
 
             message_obj = await bot.edit_message_text(
                 chat_id=user,
@@ -310,8 +312,10 @@ async def food_choose_get(call: types.CallbackQuery):
     else:
         if len(data) > 3:
             db.set_client_temp_mood(user, data[-1])
-        message_text = "Не знаешь куда сходить? 🧐 \n\n" \
-                       "<b>Искусственный интеллект food2mood  подобрал заведения под твоё настроение!</b>"
+        message_text = ('Давай выберем место под настроение! \n\n'
+                        'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                        'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
+                        'Если ты уже в заведении, наведи камеру телефона на QR твоего места')
 
         message_obj = await bot.edit_message_text(
             chat_id=user,
@@ -320,13 +324,15 @@ async def food_choose_get(call: types.CallbackQuery):
             reply_markup=buttons_food_001()
         )
         db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
+        
 def buttons_food_001():
-    menu = InlineKeyboardMarkup(row_width=3)
-
-    btn1 = InlineKeyboardButton(text="Моя подборка заведений 🔍", switch_inline_query_current_chat='')
+    menu = InlineKeyboardMarkup(row_width=1)
+    btn1 = InlineKeyboardButton(text="Получить рекомендацию", callback_data="rest_recommendation")
+    btn2 = InlineKeyboardButton(text="Список заведений 🔍", switch_inline_query_current_chat='')
     btn9 = InlineKeyboardButton(text="« Поменять настроение",
                                 callback_data="food_mood")
     menu.add(btn1)
+    menu.add(btn2)
     menu.add(btn9)
 
     return menu
@@ -389,19 +395,22 @@ async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
     global media
     media = []
     user = call.from_user.id
+    message_text = ('Давай выберем место под настроение! \n\n'
+                    'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                    'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
+                    'Если ты уже в заведении, наведи камеру телефона на QR твоего места')
     try:
         temp = db.get_client_temp_rest(user).split(':')
         temp_state = db.get_client_temp_mood(user)
         if not temp_state or temp_state == "None":
             db.set_client_temp_mood(user, "Радость")
         if len(temp) <= 1:
+            db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
             await bot.edit_message_text(
                 chat_id=user,
                 message_id=call.message.message_id,
-                text="Не знаешь куда сходить? 🧐\n\n"
-                     "<b>Искусственный интеллект food2mood подобрал заведения под твоё настроение!</b>",
+                text=message_text,
                 reply_markup=get_back())
-            db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
         else:
             await food_rec2(user, "food_rec_Нутрициолог".split('_'))
     except Exception as e:
@@ -410,58 +419,26 @@ async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
 
 def get_back():
     keyboard = InlineKeyboardMarkup(row_width=1)
-    btn1 = InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')
-
-    # btn2 = InlineKeyboardButton(text="Настроить фильтр", callback_data="filter")
-    #
-    # btn3 = InlineKeyboardButton(text="Найти ближайшее заведение", callback_data="geolocation")
+    btn1 = InlineKeyboardButton(text="Получить рекомендацию", callback_data="rest_recommendation")
+    btn2 = InlineKeyboardButton(text="Список заведений 🔍", switch_inline_query_current_chat='')
 
     btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get")
 
-    keyboard.add(btn1, btn)
+    keyboard.add(btn1, btn2, btn)
     return keyboard
 
 
-# @dp.callback_query_handler(text_contains=f"filter")
-# async def filters(call: types.CallbackQuery):
-#     user = call.from_user.id
-#     data = call.data.split('_')
-#     actual_filter = eval(db.get_client_filter(user))
-#     if not actual_filter or actual_filter == "None":
-#         actual_filter = {"cost": "", "cuisine": ""}
-#     if "cost" in data:
-#         actual_filter["cost"] = data[-1]
-#     if "cuisine" in data:
-#         actual_filter["cuisine"] = data[-1]
-#     db.set_client_filter(user, str(actual_filter))
-#     await bot.edit_message_text(
-#         chat_id=user,
-#         message_id=call.message.message_id,
-#         text="Настрой фильтр с помощью кнопок",
-#         reply_markup=filter_keyboard(actual_filter))
-#
-#
-# def filter_keyboard(actual_filter):
-#     keyboard = InlineKeyboardMarkup(row_width=1)
-#     if "cost" in actual_filter:
-#         if "cheap" in actual_filter["cost"]:
-#             btn1 = InlineKeyboardButton(text="« Сначала дорогие", callback_data="filter_cost_expensive")
-#             keyboard.add(btn1)
-#         else:
-#             btn2 = InlineKeyboardButton(text="Сначала недорогие »", callback_data="filter_cost_cheap")
-#             keyboard.add(btn2)
-#     if "cuisine" in actual_filter:
-#         if "euro" in actual_filter["cuisine"]:
-#             btn3 = InlineKeyboardButton(text="« Азиатская кухня", callback_data="filter_cuisine_asia")
-#             keyboard.add(btn3)
-#         else:
-#             btn4 = InlineKeyboardButton(text="Европейская кухня »", callback_data="filter_cuisine_euro")
-#             keyboard.add(btn4)
-#
-#     btn = InlineKeyboardButton(text="« Вернуться назад", callback_data="scanned_qrcode")
-#
-#     keyboard.add(btn)
-#     return keyboard
+@dp.callback_query_handler(text_contains=f"rest_recommendation")
+async def rest_recommendation(call: types.CallbackQuery):
+    user = call.from_user.id
+    db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
+    message_obj = await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text="Пока этот раздел в разработке. Выбери заведение из общего списка)",
+        reply_markup=InlineKeyboardMarkup().row(
+            InlineKeyboardButton(text="Список заведений 🔍", switch_inline_query_current_chat=''))
+    )
 
 
 token = ""
@@ -841,6 +818,7 @@ async def food_rec2(user, data):
 def menu_button():
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(InlineKeyboardButton(text="Меню", callback_data="show_categories"))
+    markup.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="menu_start"))
     return markup
 
 
