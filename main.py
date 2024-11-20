@@ -1,7 +1,6 @@
 from uuid import uuid4
 import logging
 import qrcode
-from PIL import Image
 import asyncio
 import datetime
 import time
@@ -19,6 +18,7 @@ import normalize
 from my_libraries import Tools
 from help import config
 from db import Database
+import menu
 
 db = Database('files/db_users.db')
 
@@ -261,6 +261,83 @@ async def admin(message: types.Message):
     else:
         await bot.send_message(user, "Отсутствуют права доступа")
 
+def return_after_dish_info():
+    return InlineKeyboardMarkup(row_width=1).add(InlineKeyboardButton(text="«Назад", callback_data="return_to_dishes"))
+
+@dp.callback_query_handler(text_contains=f"return_to_dishes")
+async def return_to_dishes(message: types.Message):
+    user = message.from_user.id
+    mode = db.get_users_mode(user)
+    dish, length, numb = menu.get_dish(user)
+    if db.check_basket_exists(user):
+        basket = eval(db.get_basket(user))
+        if dish['Название'] in basket:
+            in_basket = True
+        else:
+            in_basket = False
+    else:
+        in_basket = False
+    if 'photo' in m_food.foods_photo_for_category_message_id:
+        await bot.delete_message(user, mode['id'])
+        message_obj = await bot.send_photo(user, photo=m_food.foods_photo_for_category_message_id.photo[-1].file_id, caption=m_food.foods_photo_for_category_message_id.caption, reply_markup=m_food.buttons_food_05(
+                                                                                                   db.get_client_temp_dish(
+                                                                                                       user),
+                                                                                                   length, numb,
+                                                                                                   in_basket))
+    else:
+        message_obj = await bot.edit_message_text(chat_id=user, message_id=mode['id'], text=m_food.foods_photo_for_category_message_id.text, reply_markup=m_food.buttons_food_05(
+                                                                                                   db.get_client_temp_dish(
+                                                                                                       user),
+                                                                                                   length, numb,
+                                                                                                   in_basket))
+    db.set_users_mode(user, message_obj.message_id, 'return_to_dishes')
+
+
+@dp.message_handler(commands=['kbzhu'])
+async def kbzhu(message: types.Message):
+    user = message.from_user.id
+    message = message.message_id
+    mode = db.get_users_mode(user)
+    await bot.delete_message(chat_id=user, message_id=message)
+    dish, length, numb = menu.get_dish(user)
+    if db.get_users_mode(user)['key'] in ['food_category', 'send_dish', 'sostav', 'com', 'return_to_dishes']:
+        await bot.delete_message(chat_id=user, message_id=mode['id'])
+        if dish['Ресторан'] == "Молодёжь":
+            message_obj = await bot.send_message(user, '📝КБЖУ на 100 г. :' + f"\n <i>{dish['Описание'].split(';')[1]}</i>\n", reply_markup=return_after_dish_info())
+        else:
+            message_obj = await bot.send_message(user,
+                                                 f"📝КБЖУ блюда :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n",
+                                                 reply_markup=return_after_dish_info())
+        db.set_users_mode(user, message_obj.message_id, 'kbzhu')
+
+
+@dp.message_handler(commands=['com'])
+async def com(message:types.Message):
+    user = message.from_user.id
+    message = message.message_id
+    mode = db.get_users_mode(user)
+    await bot.delete_message(chat_id=user, message_id=message)
+    dish, length, numb = menu.get_dish(user)
+    if db.get_users_mode(user)['key'] in ['food_category', 'send_dish', 'sostav', 'kbzhu', 'return_to_dishes']: 
+        await bot.delete_message(chat_id=user, message_id=mode['id'])
+        message_obj = await bot.send_message(user, f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n", reply_markup=return_after_dish_info())
+        db.set_users_mode(user, message_obj.message_id, 'com')
+
+
+@dp.message_handler(commands=['sostav'])
+async def com(message:types.Message):
+    user = message.from_user.id
+    message = message.message_id
+    mode = db.get_users_mode(user)
+    await bot.delete_message(chat_id=user, message_id=message)
+    dish, length, numb = menu.get_dish(user)
+    if db.get_users_mode(user)['key'] in ['food_category', 'send_dish', 'com', 'kbzhu', 'return_to_dishes']:
+        await bot.delete_message(chat_id=user, message_id=mode['id'])
+        message_obj = await bot.send_message(user,
+                                                 text=f"📝Состав блюда :\n <i>{', '.join(dish['Ингредиенты']).capitalize()}</i>\n",
+                                                 reply_markup=return_after_dish_info())
+
+        db.set_users_mode(user, message_obj.message_id, 'sostav')
 
 def notification(original_message_id):
     menu = InlineKeyboardMarkup()
