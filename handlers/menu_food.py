@@ -29,9 +29,7 @@ import menu
 import pyqrcode
 import png
 
-token = ""
 admin = config()['telegram']['admin']
-telepuzik = telebot.TeleBot(token)
 local_recommendation_text = ''
 media = []
 foods_photo_message_id = []
