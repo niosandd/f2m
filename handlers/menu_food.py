@@ -6,15 +6,7 @@ import random
 import pandas as pd
 import telebot
 import os
-
-import aiohttp
-from PIL import Image
-from io import BytesIO
-import requests
-
-import datetime
 import time
-import sqlite3
 
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
@@ -196,8 +188,9 @@ def buttons_food_00():
 #         reply_markup=buttons_food_01()
 #     )
 #     db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
-
+flag = True
 def get_user_profile_text(user_id):
+    global flag
     # Извлекаем данные из базы данных с использованием соответствующих функций
     sex = db.get_client_sex(user_id)
     age = db.get_client_age(user_id)
@@ -206,25 +199,32 @@ def get_user_profile_text(user_id):
     whitelist = db.get_client_whitelist(user_id)
 
     # Устанавливаем значения по умолчанию, если данных нет или они равны None
+
     try:
+        flag = True
         if not (sex and sex != 'None'):
             sex = 'не определен 🤷'
             db.set_client_sex(user_id, 'не определен 🤷')
+            flag = False
         if not (age and age != 'None'):
             age = 'не определен 🤷'
             db.set_client_age(user_id, 'не определен 🤷')
+            flag = False
         if not (style and style != 'None') or style == 'Стандартное':
             style = 'Стандартный 🥘'
             db.set_client_style(user_id, 'Стандартное')
         if not (blacklist and blacklist != 'None') or blacklist == "Пусто":
             blacklist = 'пусто ⭕️'
             db.set_client_blacklist(user_id, 'Пусто')
+            flag = False
         if not (whitelist and whitelist != 'None') or whitelist == "Пусто":
             whitelist = 'пусто ⭕️'
+            flag = False
             db.set_client_whitelist(user_id, 'Пусто')
+        if not (style and style != 'None'):
+            flag = False
     except Exception as e:
         print(e)
-
     # Формируем текст сообщения
     if age == "18":
         age = "До 18"
@@ -276,26 +276,43 @@ def get_user_profile_text(user_id):
 
 @dp.callback_query_handler(text_contains=f"food_choose_get")
 async def food_choose_get(call: types.CallbackQuery):
+    global flag
     user = call.from_user.id
     data = call.data.split('_')
     if db.get_users_ban(user):
         return None
+    message_text = get_user_profile_text(user)
+    if not flag:
+        if len(data) > 3:
+            db.set_client_temp_mood(user, data[-1])
 
-    if len(data) > 3:
-        db.set_client_temp_mood(user, data[-1])
+        last_qr_time = db.get_client_last_qr_time(user)
+        if (round(time.time()) - last_qr_time) // 3600 <= 3:
 
-    last_qr_time = db.get_client_last_qr_time(user)
-    if (round(time.time()) - last_qr_time) // 3600 <= 3:
-        message_text = get_user_profile_text(user)
+            message_obj = await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text=message_text,
+                reply_markup=buttons_food_01()
+            )
+            db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+        else:
 
-        message_obj = await bot.edit_message_text(
-            chat_id=user,
-            message_id=call.message.message_id,
-            text=message_text,
-            reply_markup=buttons_food_01()
-        )
-        db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+            message_text = ('Давай выберем место под настроение! \n\n'
+                        'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                        'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
+                        'Если ты уже в заведении, наведи камеру телефона на QR твоего места')
+
+            message_obj = await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text=message_text,
+                reply_markup=buttons_food_001()
+            )
+            db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
     else:
+        if len(data) > 3:
+            db.set_client_temp_mood(user, data[-1])
         message_text = ('Давай выберем место под настроение! \n\n'
                         'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
                         'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
@@ -308,8 +325,7 @@ async def food_choose_get(call: types.CallbackQuery):
             reply_markup=buttons_food_001()
         )
         db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
-
-
+        
 def buttons_food_001():
     menu = InlineKeyboardMarkup(row_width=1)
     btn1 = InlineKeyboardButton(text="Получить рекомендацию", callback_data="rest_recommendation")
@@ -655,13 +671,12 @@ def generate_recommendation(user):
         'Граммы',
         'Простые ингредиенты'
     ])
+
     df = df[df['Название ресторана'].str.contains(restaurant)]
     df = df[df['Настроение'].str.contains(mood)]
     df = df[df['Стиль питания'].str.contains(style)]
-
     if df.empty:
         return None
-
     dishes = []
     for dish in df.values.tolist():
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
@@ -674,7 +689,6 @@ def generate_recommendation(user):
             "Категория": dish[3],
             "Название": dish[4],
         })
-
     if dishes:
         recommendation = []
         banned_categories = ["Хлеб", "Соус"]
@@ -938,13 +952,17 @@ async def food_category(call: types.CallbackQuery):
                     # f"<code>{ingredients}</code>\n"
                     f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                     f"\n"
-                    f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                    f"📝КБЖУ блюда :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                    f"Дополнительная информация о блюде:"
+                    f"\n"
+                    f"/kbzhu - Узнать КБЖУ блюда"
+                    f"\n"
+                    f"/com - Посмотреть комментарий нейросети об этом блюде"
+                    f"\n"
+                    f"/sostav - Узнать состав блюда"
                     f"\n"
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                     f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
             else:
-
                 text = (  # f"🍤 <b>Кафе:</b>\n"
                     # f"<i>«{dish['Ресторан']}», {dish['Адрес']}</i>\n"
                     # f"\n"
@@ -958,8 +976,13 @@ async def food_category(call: types.CallbackQuery):
                     # f"<code>{ingredients}</code>\n"
                     f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                     f"\n"
-                    f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                    f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                    f"Дополнительная информация о блюде:"
+                    f"\n"
+                    f"/kbzhu - Узнать КБЖУ блюда"
+                    f"\n"
+                    f"/com - Посмотреть комментарий нейросети об этом блюде"
+                    f"\n"
+                    f"/sostav - Узнать состав блюда"
                     f"\n"
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                     f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -1022,6 +1045,7 @@ async def food_category(call: types.CallbackQuery):
                      f"——— {icons[db.get_client_temp_mood(user)]} <b>{db.get_client_temp_mood(user)}</b> ———\n",
                 reply_markup=buttons_food_05(None, None, None, None)
             )
+            foods_photo_for_category_message_id = message_obj
         db.set_users_mode(user, message_obj.message_id, 'food_category')
     except Exception as e:
         print("category error", e)
@@ -1073,8 +1097,13 @@ async def send_dish(call: types.CallbackQuery):
                 # f"<code>{ingredients}</code>\n"
                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                 f"\n"
-                f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                f"📝КБЖУ блюда :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                f"Дополнительная информация о блюде:"
+                f"\n"
+                f"/kbzhu - Узнать КБЖУ блюда"
+                f"\n"
+                f"/com - Посмотреть комментарий нейросети об этом блюде"
+                f"\n"
+                f"/sostav - Узнать состав блюда"
                 f"\n"
                 f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                 f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -1092,8 +1121,13 @@ async def send_dish(call: types.CallbackQuery):
                 # f"<code>{ingredients}</code>\n"
                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                 f"\n"
-                f"<blockquote><i>👨🏼‍⚕️: {dish['Описание'].split(';')[0]}</i></blockquote>\n\n"
-                f"📝КБЖУ на 100 г. :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n"
+                f"Дополнительная информация о блюде:"
+                f"\n"
+                f"/kbzhu - Узнать КБЖУ блюда"
+                f"\n"
+                f"/com - Посмотреть комментарий нейросети об этом блюде"
+                f"\n"
+                f"/sostav - Узнать состав блюда"
                 f"\n"
                 f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                 f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -1169,6 +1203,7 @@ async def send_dish(call: types.CallbackQuery):
                 text=text,
                 reply_markup=buttons_food_05(db.get_client_temp_dish(user), length, numb, in_basket)
             )
+            foods_photo_for_category_message_id = message_obj
         db.set_users_mode(user, message_obj.message_id, 'send_dish')
         db.set_client_can_alert(user, round(time.time()))
         db.set_client_temp_dish_id(user, db.restaurants_get_dish(rest[0], rest[1], dish['Название'])[0])
