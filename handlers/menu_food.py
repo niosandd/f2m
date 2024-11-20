@@ -20,6 +20,7 @@ import menu
 
 import pyqrcode
 import png
+
 admin = config()['telegram']['admin']
 local_recommendation_text = ''
 media = []
