@@ -164,7 +164,6 @@ def buttons_food_00():
 Выбрать самому или по рекомендациям
 """
 
-
 # @dp.callback_query_handler(text_contains=f"food_choose_get")
 # async def food_choose_get(call: types.CallbackQuery):
 #     user = call.from_user.id
@@ -189,6 +188,8 @@ def buttons_food_00():
 #     )
 #     db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
 flag = True
+
+
 def get_user_profile_text(user_id):
     global flag
     # Извлекаем данные из базы данных с использованием соответствующих функций
@@ -298,10 +299,10 @@ async def food_choose_get(call: types.CallbackQuery):
             db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
         else:
 
-            message_text = ('Давай выберем место под настроение! \n\n'
-                        'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
-                        'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
-                        'Если ты уже в заведении, наведи камеру телефона на QR твоего места')
+            message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
+                            '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                            '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
+                            '📷 Если ты <b>уже в заведении, наведи камеру телефона на QR</b> твоего места')
 
             message_obj = await bot.edit_message_text(
                 chat_id=user,
@@ -313,10 +314,10 @@ async def food_choose_get(call: types.CallbackQuery):
     else:
         if len(data) > 3:
             db.set_client_temp_mood(user, data[-1])
-        message_text = ('Давай выберем место под настроение! \n\n'
-                        'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
-                        'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
-                        'Если ты уже в заведении, наведи камеру телефона на QR твоего места')
+        message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
+                        '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                        '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
+                        '📷 Если ты <b>уже в заведении, наведи камеру телефона на QR</b> твоего места')
 
         message_obj = await bot.edit_message_text(
             chat_id=user,
@@ -325,7 +326,8 @@ async def food_choose_get(call: types.CallbackQuery):
             reply_markup=buttons_food_001()
         )
         db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
-        
+
+
 def buttons_food_001():
     menu = InlineKeyboardMarkup(row_width=1)
     btn1 = InlineKeyboardButton(text="Получить рекомендацию", callback_data="rest_recommendation")
@@ -396,10 +398,10 @@ async def confirmation_of_the_questionnaire(call: types.CallbackQuery):
     global media
     media = []
     user = call.from_user.id
-    message_text = ('Давай выберем место под настроение! \n\n'
-                    'Нажимай "Получить рекомендацию", чтобы мы посоветовали тебе заведение под настроение! \n\n'
-                    'Если ты уже знаешь куда идти, нажимай "Список заведений" и ищи нужное место \n\n'
-                    'Если ты уже в заведении, наведи камеру телефона на QR твоего места')
+    message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
+                    '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                    '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
+                    '📷 Если ты <b>уже в заведении, наведи камеру телефона на QR</b> твоего места')
     try:
         temp = db.get_client_temp_rest(user).split(':')
         temp_state = db.get_client_temp_mood(user)
@@ -633,7 +635,7 @@ async def return_to_recommendation(call: types.CallbackQuery):
         file_path = all_files[e['caption'][7:]]
         photo = open(file_path, 'rb')
         openf.append(InputMediaPhoto(photo, caption=f"Блюдо: {e['caption'][7:]}"))
-    #foods_photo_message_id = await bot.send_media_group(chat_id=user, media=openf)
+    # foods_photo_message_id = await bot.send_media_group(chat_id=user, media=openf)
     await bot.send_message(
         chat_id=user,
         text=local_recommendation_text,
@@ -722,8 +724,13 @@ async def food_rec(call: types.CallbackQuery):
     try:
         recommendation = generate_recommendation(user)
         db.set_client_recommendation(user, f"{recommendation}")
+        rest = db.get_client_temp_rest(user)
         for dish in recommendation:
+            list_with_info = (db.restaurants_get_dish(rest.split(':')[0], rest.split(':')[1], dish[1]))
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
+            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>\n"
+            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>"
+            recommendation_text += f"\n\n"
             list_of_dishes.append(dish[1])
         photo_dir = 'Фудтумуд'
         all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
@@ -765,8 +772,13 @@ async def food_rec2(user, data):
     try:
         recommendation = generate_recommendation(user)
         db.set_client_recommendation(user, f"{recommendation}")
+        rest = db.get_client_temp_rest(user)
         for dish in recommendation:
+            list_with_info = (db.restaurants_get_dish(rest.split(':')[0], rest.split(':')[1], dish[1]))
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
+            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>\n"
+            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>"
+            recommendation_text += f"\n\n"
             list_of_dishes.append(dish[1])
         photo_dir = 'Фудтумуд'
         all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
@@ -844,8 +856,8 @@ async def show_categories(call: types.CallbackQuery):
             )
 
         else:
-            #for mes in foods_photo_message_id:
-                #await bot.delete_message(chat_id=user, message_id=mes["message_id"])
+            # for mes in foods_photo_message_id:
+            # await bot.delete_message(chat_id=user, message_id=mes["message_id"])
             message_obj = await bot.edit_message_text(chat_id=user, message_id=call.message.message_id,
                                                       text=f"<b>Выбери категорию блюд из основного меню 🔍</b>\n\n"
                                                            f"<i>PS: о сезонных предложениях тебе подробно расскажет официант\n</i>",
@@ -952,13 +964,15 @@ async def food_category(call: types.CallbackQuery):
                     # f"<code>{ingredients}</code>\n"
                     f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                     f"\n"
-                    f"Дополнительная информация о блюде:"
+                    f"<i>Узнай больше нажав команду:</i>"
                     f"\n"
-                    f"/kbzhu - Узнать КБЖУ блюда"
                     f"\n"
-                    f"/com - Посмотреть комментарий нейросети об этом блюде"
+                    f"🔢/kbzhu - КБЖУ блюда"
                     f"\n"
-                    f"/sostav - Узнать состав блюда"
+                    f"🤖/com - Объяснение рекомендации от нейросети"
+                    f"\n"
+                    f"🧾/sostav - Состав блюда"
+                    f"\n"
                     f"\n"
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                     f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -976,13 +990,15 @@ async def food_category(call: types.CallbackQuery):
                     # f"<code>{ingredients}</code>\n"
                     f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                     f"\n"
-                    f"Дополнительная информация о блюде:"
+                    f"<i>Узнай больше нажав команду:</i>"
                     f"\n"
-                    f"/kbzhu - Узнать КБЖУ блюда"
                     f"\n"
-                    f"/com - Посмотреть комментарий нейросети об этом блюде"
+                    f"🔢/kbzhu - КБЖУ блюда"
                     f"\n"
-                    f"/sostav - Узнать состав блюда"
+                    f"🤖/com - Объяснение рекомендации от нейросети"
+                    f"\n"
+                    f"🧾/sostav - Состав блюда"
+                    f"\n"
                     f"\n"
                     f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                     f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -1097,13 +1113,15 @@ async def send_dish(call: types.CallbackQuery):
                 # f"<code>{ingredients}</code>\n"
                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                 f"\n"
-                f"Дополнительная информация о блюде:"
+                f"<i>Узнай больше нажав команду:</i>"
                 f"\n"
-                f"/kbzhu - Узнать КБЖУ блюда"
                 f"\n"
-                f"/com - Посмотреть комментарий нейросети об этом блюде"
+                f"🔢/kbzhu - КБЖУ блюда"
                 f"\n"
-                f"/sostav - Узнать состав блюда"
+                f"🤖/com - Объяснение рекомендации от нейросети"
+                f"\n"
+                f"🧾/sostav - Состав блюда"
+                f"\n"
                 f"\n"
                 f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                 f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -1121,13 +1139,15 @@ async def send_dish(call: types.CallbackQuery):
                 # f"<code>{ingredients}</code>\n"
                 f"—— {icons[dish['Настроение']]} <b>{dish['Настроение']}</b> ——\n"
                 f"\n"
-                f"Дополнительная информация о блюде:"
+                f"<i>Узнай больше нажав команду:</i>"
                 f"\n"
-                f"/kbzhu - Узнать КБЖУ блюда"
                 f"\n"
-                f"/com - Посмотреть комментарий нейросети об этом блюде"
+                f"🔢/kbzhu - КБЖУ блюда"
                 f"\n"
-                f"/sostav - Узнать состав блюда"
+                f"🤖/com - Объяснение рекомендации от нейросети"
+                f"\n"
+                f"🧾/sostav - Состав блюда"
+                f"\n"
                 f"\n"
                 f"<i>Листай рекомендации с помощью кнопок « и »👇🏻</i>\n\n"
                 f"<b>Понравилось блюдо? Добавь его в корзину! 🛒</b>")
@@ -1153,13 +1173,13 @@ async def send_dish(call: types.CallbackQuery):
                         photo = InputMediaPhoto(media=f, caption=text)
                         if os.path.isfile(file_path):
                             message_obj = await bot.edit_message_media(chat_id=user,
-                                                                                               message_id=call.message.message_id,
-                                                                                               media=photo,
-                                                                                               reply_markup=buttons_food_05(
-                                                                                                   db.get_client_temp_dish(
-                                                                                                       user),
-                                                                                                   length, numb,
-                                                                                                   in_basket))
+                                                                       message_id=call.message.message_id,
+                                                                       media=photo,
+                                                                       reply_markup=buttons_food_05(
+                                                                           db.get_client_temp_dish(
+                                                                               user),
+                                                                           length, numb,
+                                                                           in_basket))
 
                             foods_photo_for_category_message_id = message_obj
                     finally:
