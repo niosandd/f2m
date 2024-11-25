@@ -6,6 +6,7 @@ from main import dp, bot, db, config, Tools
 import handlers.stop_lists as sl
 import handlers.auxiliary_functions as af
 
+
 async def generate_admin_menu(admin_id, rest=None, message_id=None):
     if not db.check_admin_exists(admin_id):
         db.add_admin(admin_id, rest)
@@ -24,8 +25,8 @@ async def generate_admin_menu(admin_id, rest=None, message_id=None):
             reply_markup=admin_menu()
         )
     db.set_users_mode(admin_id, message_obj.message_id, 'admin_menu')
-    
-    
+
+
 def admin_menu():
     menu = InlineKeyboardMarkup(row_width=1)
     btn1 = InlineKeyboardButton(text="СТОП-ЛИСТ", callback_data="admin_stop_list")
@@ -33,7 +34,8 @@ def admin_menu():
     btn3 = InlineKeyboardButton(text="РЕКЛАМА", callback_data="admin_commercial")
     btn4 = InlineKeyboardButton(text="ОТЗЫВЫ", callback_data="admin_reviews")
     btn5 = InlineKeyboardButton(text="РАССЫЛКА", callback_data="admin_notification")
-    menu.add(btn1, btn2, btn3, btn4, btn5)
+    btn6 = InlineKeyboardButton(text='НАЗАД', callback_data='return_to_choice_of_restaurant')
+    menu.add(btn1, btn2, btn3, btn4, btn5, btn6)
     return menu
 
 
@@ -43,12 +45,13 @@ async def admin_waiters_stat(call: types.CallbackQuery):
         admin_id = call.from_user.id
         rest = db.get_admin_rest(admin_id)
         stats = db.get_waiters_names_and_stats(rest)
-        current_waiter_count = 0 # ВРЕМЕННО ПОКА НЕ ВВЕЛИ СМЕНЫ
+        current_waiter_count = 0  # ВРЕМЕННО ПОКА НЕ ВВЕЛИ СМЕНЫ
         text = "Общая статистика по официантам:\n\n"
         for waiter in stats:
             if None not in waiter:
-                text += (f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))} "
-                         f"({current_waiter_count})\n\n")
+                text += (
+                    f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))} "
+                    f"({current_waiter_count})\n\n")
         text += "(В скобках статистика за смену с 00:00 до 23:59)"
         await bot.edit_message_text(chat_id=admin_id,
                                     message_id=call.message.message_id,
@@ -64,7 +67,8 @@ async def admin_commercial(call: types.CallbackQuery):
     try:
         admin_id = call.from_user.id
         rest = db.get_admin_rest(admin_id)
-        total_click_count, current_click_count, total_guests_count, current_guests_count = af.total_and_current_counter(rest)
+        total_click_count, current_click_count, total_guests_count, current_guests_count = af.total_and_current_counter(
+            rest)
         text = (f"Статистика вовлеченности пользователей к заведению:\n\n"
                 f"Кликабельность заведения через поиск: {total_click_count} ({current_click_count})\n\n"
                 f"Обслужено гостей через f2m: {total_guests_count} ({current_guests_count})\n"
@@ -112,3 +116,13 @@ async def admin_notification(call: types.CallbackQuery):
     )
     db.set_users_mode(admin_id, message_obj.message_id, 'notification')
 
+
+@dp.callback_query_handler(lambda call: call.data == 'return_to_choice_of_restaurant')
+async def return_to_choice_of_restaurant(call: types.CallbackQuery):
+    admin_id = call.from_user.id
+    message_obj = await bot.edit_message_text(chat_id=admin_id,
+                                message_id=call.message.message_id,
+                                text='Выберите заведение:',
+                                reply_markup=InlineKeyboardMarkup().add(
+                                    InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')))
+    db.set_users_mode(admin_id, message_obj.message_id, 'admin_mode')

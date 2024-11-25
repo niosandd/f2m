@@ -252,7 +252,7 @@ async def boss_mldzh(message: types.Message):
 @dp.message_handler(commands=['admin'])
 async def admin(message: types.Message):
     user = message.from_user.id
-    if user in [375565156, 1004320969, 803124861, 6728666475]:
+    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115]:
         message_obj = await bot.send_message(
             chat_id=user,
             text="Введите пароль: ",
