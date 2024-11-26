@@ -5,6 +5,7 @@ import asyncio
 import datetime
 import time
 import logging
+import random
 from datetime import datetime
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram import Bot, Dispatcher, types
@@ -639,7 +640,6 @@ async def bot_message(message):
             #          f"\n"
             #          f"<i>{message.text}</i>"
             # )
-            await bot.delete_message(user, message.message_id)
             await bot.edit_message_text(
                 chat_id=user,
                 message_id=mode['id'],
@@ -651,11 +651,11 @@ async def bot_message(message):
 
             if len(message.text.split()) >= 10:
                 coin_counter = 2
-                await db.add_food_to_mood_coin(user, coin_counter)
+                db.add_food_to_mood_coin(user, coin_counter)
             else:
                 coin_counter = 1
-                await db.add_food_to_mood_coin(user, coin_counter)
-            db.set_new_review(unique_uuid, username, rating, review, dish_name, restaurant_name)
+                db.add_food_to_mood_coin(user, coin_counter)
+            db.set_new_review(str(random.randint(1, 10000000000)), username, rating, review, dish_name, restaurant_name)
             db.restaurants_set_review(db.get_client_temp_dish_id(user), message.text)
             db.set_users_mode(user, mode['id'], '')
     try:
@@ -913,7 +913,6 @@ async def review_end(call: types.CallbackQuery):
     data = call.data.split('_')
     if db.get_users_ban(user):
         return None
-
     coin_counter = 1
     unique_uuid = uuid4
     username = call.from_user.username
@@ -921,7 +920,6 @@ async def review_end(call: types.CallbackQuery):
     review = ""
     dish_name = user_data.get('dish_name')
     restaurant_name = user_data.get('restaurant_name')
-
     mode = db.get_users_mode(user)
     await bot.edit_message_text(
         chat_id=user,
@@ -931,8 +929,8 @@ async def review_end(call: types.CallbackQuery):
         reply_markup=buttons_02()
     )
     db.add_user_action(user, 'Пользователь оставил отзыв')
-    await db.add_food_to_mood_coin(user, coin_counter)
-    db.set_new_review(unique_uuid, user, username, rating, review, dish_name, restaurant_name)
+    db.add_food_to_mood_coin(user, coin_counter)
+    db.set_new_review(str(random.randint(1, 10000000000)), username, rating, review, dish_name, restaurant_name)
     # db.set_users_last_recomendation_time(user, current_time)
     db.set_users_mode(user, mode['id'], '')
 
