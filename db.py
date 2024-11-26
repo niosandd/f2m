@@ -318,11 +318,11 @@ class Database:
             return whitelist
 
     # --- temp_rest ---
-    def set_new_review(self, id, user_id, user_name, rating, review, dish_name, restaurant_name):
+    def set_new_review(self, id, user_name, rating, review, dish_name, restaurant_name):
         with self.connection:
             self.cursor.execute(
-                "INSERT INTO reviews(id, user_name, rating, `review, dish_name, restaurant_name) VALUES (?, ?, ?, ?, ?, ?)",
-                (id, user_id, user_name, rating, review, dish_name, restaurant_name))
+                "INSERT INTO reviews(id, user_name, rating, review, dish_name, restaurant_name) VALUES (?, ?, ?, ?, ?, ?)",
+                (id, user_name, rating, review, dish_name, restaurant_name))
 
     def set_client_temp_rest(self, user_id: int, temp_rest: str):
         with self.connection:
