@@ -1365,7 +1365,7 @@ async def bon_appetite(call: types.CallbackQuery):
     db.set_client_can_alert(user, 0)
     db.set_users_mode(user, mode, 'write_review')
 
-    await asyncio.sleep(1)  # Подождать час
+    await asyncio.sleep(3601)  # Подождать час
     try:
         await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
     except:
