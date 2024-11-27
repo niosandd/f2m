@@ -220,8 +220,8 @@ async def waiter(message: types.Message):
     if not db.check_waiter_exists(user):
         message_obj = await bot.send_message(
             chat_id=user,
-            text="Пожалуйста, введи свое ФИО/название ресторана в формате: "
-                 "Иванов Иван Иванович/Блан де Блан"
+            text="Пожалуйста, введи свое ФИО в формате: "
+                 "Иванов Иван Иванович"
         )
         db.set_users_mode(user, message_obj.message_id, 'waiter_reg')
     else:
@@ -418,7 +418,7 @@ async def food_restaurant_search(inline_query: InlineQuery):
     user = inline_query.from_user.id
     mode = db.get_users_mode(user)
     # Поиск ресторана
-    if 'food_inline_handler' in mode['key'] or mode['key'] == "admin_mode":
+    if 'food_inline_handler' in mode['key'] or mode['key'] == "admin_mode" or "waiter_restaurant" in mode['key']:
         db.add_user_action(user, 'Пользователь ищет кафе через поиск')
         if len(str(inline_query.query)) > 0:
             print(f'│ [{Tools.timenow()}] Пользователь ищет кафе... {str(inline_query.query)}')
@@ -611,6 +611,9 @@ async def bot_message(message):
             data = message.text.split(':')
             rest = f"{data[0]}:{data[1]}"
             await admins.generate_admin_menu(user, rest)
+
+        if "waiter_restaurant" in mode['key']:
+            await w_start.waiter_registration(message)
 
         # Выбор блюда из поиска
         if mode['key'] == 'write_review':

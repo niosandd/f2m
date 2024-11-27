@@ -18,10 +18,18 @@ def waiter_action(first_name, location):
 
 async def start(message: types.Message):
     waiter = message.from_user.id
+    name = message.text
+    message_obj = await bot.send_message(chat_id=waiter, text="Выбери свое заведение:", reply_markup=InlineKeyboardMarkup().add(
+                                    InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat='')))
+    db.set_users_mode(waiter, message_obj.message_id, f'waiter_restaurant_{name}')
+
+async def waiter_registration(message):
+    waiter = message.from_user.id
+    mode = db.get_users_mode(waiter)
+    name = mode['key'].split('_')[-1].split()
+    data = message.text.split(':')
+    rest = f"{data[0]}:{data[1]}"
     try:
-        info = message.text.split("/")
-        name = info[0].split()
-        rest = info[1]
         # Новый официант:
         if not db.check_waiter_exists(waiter):
             # Регистрируем официанта:
@@ -46,7 +54,7 @@ async def start(message: types.Message):
             text = f'\nТы уже зарегистрировался(ась) как официант'
             await bot.send_message(waiter, text)
     except Exception:
-        text = f'\nОшибка ввода ФИО/ресторан'
+        text = f'\nОшибка ввода ФИО'
         await bot.send_message(waiter, text)
 
 
