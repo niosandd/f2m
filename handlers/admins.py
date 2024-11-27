@@ -102,7 +102,6 @@ async def admin_reviews(call: types.CallbackQuery):
     admin_id = call.from_user.id
     rest_name = db.get_admin_rest(admin_id).split(":")[0]
     reviews = db.get_reviews(rest_name)
-    print(reviews)
     if reviews:
         text = ""
         for review in reviews:
