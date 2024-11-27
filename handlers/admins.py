@@ -100,9 +100,21 @@ async def back_to_boss_menu(call: types.CallbackQuery):
 @dp.callback_query_handler(lambda call: call.data == "admin_reviews")
 async def admin_reviews(call: types.CallbackQuery):
     admin_id = call.from_user.id
+    rest_name = db.get_admin_rest(admin_id).split(":")[0]
+    reviews = db.get_reviews(rest_name)
+    if reviews:
+        text = ""
+        for review in reviews:
+            if review[0] and review[0] != "None" and review[1] and review[1] != "None":
+                text += (f"Блюдо: {review[0]}\n"
+                         f"Оценка: {review[1]}\n\n")
+                if review[3] and review[3] != "None":
+                    text += f"Отзыв:\n {review[3]}\n\n"
+    else:
+        text = "Отзывы отсутствуют"
     await bot.edit_message_text(chat_id=admin_id,
                                 message_id=call.message.message_id,
-                                text="Отзывы отсутствуют",
+                                text=text,
                                 reply_markup=InlineKeyboardMarkup().row(
                                     InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu")))
 
