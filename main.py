@@ -622,8 +622,6 @@ async def bot_message(message):
         # Отправить отзыв
         if mode['key'] == 'type_review':
             user_data = await dp.storage.get_data(user=user)
-
-
             username = message.from_user.username
             rating = user_data.get('rating')
             review = message.text
@@ -664,7 +662,7 @@ async def bot_message(message):
 def rec_key():
     menu = InlineKeyboardMarkup(row_width=1)
 
-    btn1 = InlineKeyboardButton(text="Получить рекомендацию",
+    btn1 = InlineKeyboardButton(text="Иду сюда",
                                 callback_data="get_rec_after_info")
     menu.add(btn1)
     return menu

@@ -34,7 +34,7 @@ def admin_menu():
     btn3 = InlineKeyboardButton(text="РЕКЛАМА", callback_data="admin_commercial")
     btn4 = InlineKeyboardButton(text="ОТЗЫВЫ", callback_data="admin_reviews")
     btn5 = InlineKeyboardButton(text="РАССЫЛКА", callback_data="admin_notification")
-    btn6 = InlineKeyboardButton(text='НАЗАД', callback_data='return_to_choice_of_restaurant')
+    btn6 = InlineKeyboardButton(text='ВЕРНУТЬСЯ НА ГЛАВНУЮ', callback_data='return_to_choice_of_restaurant')
     menu.add(btn1, btn2, btn3, btn4, btn5, btn6)
     return menu
 

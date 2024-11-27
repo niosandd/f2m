@@ -278,37 +278,7 @@ async def food_choose_get(call: types.CallbackQuery):
     if db.get_users_ban(user):
         return None
     message_text = get_user_profile_text(user)
-    if not flag:
-        if len(data) > 3:
-            db.set_client_temp_mood(user, data[-1])
-
-        last_qr_time = db.get_client_last_qr_time(user)
-        if (round(time.time()) - last_qr_time) // 3600 <= 3:
-
-            message_obj = await bot.edit_message_text(
-                chat_id=user,
-                message_id=call.message.message_id,
-                text=message_text,
-                reply_markup=buttons_food_01()
-            )
-            db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
-        else:
-
-            message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
-                            '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
-                            '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
-                            '📷 Если ты <b>уже в заведении, наведи камеру телефона на QR</b> твоего места')
-
-            message_obj = await bot.edit_message_text(
-                chat_id=user,
-                message_id=call.message.message_id,
-                text=message_text,
-                reply_markup=buttons_food_001()
-            )
-            db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
-    else:
-        if len(data) > 3:
-            db.set_client_temp_mood(user, data[-1])
+    if '+' in call.data:
         message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
                         '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
                         '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
@@ -321,6 +291,50 @@ async def food_choose_get(call: types.CallbackQuery):
             reply_markup=buttons_food_001()
         )
         db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
+    else:
+        if not flag:
+            if len(data) > 3:
+                db.set_client_temp_mood(user, data[-1])
+
+            last_qr_time = db.get_client_last_qr_time(user)
+            if (round(time.time()) - last_qr_time) // 3600 <= 3:
+
+                message_obj = await bot.edit_message_text(
+                    chat_id=user,
+                    message_id=call.message.message_id,
+                    text=message_text,
+                    reply_markup=buttons_food_01()
+                )
+                db.set_users_mode(user, message_obj.message_id, 'food_choose_get')
+            else:
+
+                message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
+                                '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                                '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
+                                '📷 Если ты <b>уже в заведении, наведи камеру телефона на QR</b> твоего места')
+
+                message_obj = await bot.edit_message_text(
+                    chat_id=user,
+                    message_id=call.message.message_id,
+                    text=message_text,
+                    reply_markup=buttons_food_001()
+                )
+                db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
+        else:
+            if len(data) > 3:
+                db.set_client_temp_mood(user, data[-1])
+            message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
+                            '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
+                            '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
+                            '📷 Если ты <b>уже в заведении, наведи камеру телефона на QR</b> твоего места')
+
+            message_obj = await bot.edit_message_text(
+                chat_id=user,
+                message_id=call.message.message_id,
+                text=message_text,
+                reply_markup=buttons_food_001()
+            )
+            db.set_users_mode(user, message_obj.message_id, 'food_inline_handler_y')
 
 
 def buttons_food_001():
@@ -828,7 +842,7 @@ async def food_rec2(user, data):
 def menu_button():
     markup = InlineKeyboardMarkup(row_width=1)
     markup.add(InlineKeyboardButton(text="Меню", callback_data="show_categories"))
-    markup.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="menu_start"))
+    markup.add(InlineKeyboardButton(text="« Вернуться назад", callback_data="food_choose_get+"))
     return markup
 
 
