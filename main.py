@@ -1,12 +1,8 @@
 from uuid import uuid4
-import logging
-import qrcode
 import asyncio
-import datetime
 import time
 import logging
 import random
-from datetime import datetime
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
@@ -625,12 +621,12 @@ async def bot_message(message):
 
         # Отправить отзыв
         if mode['key'] == 'type_review':
-            await dp.storage.set_data(user=user, data={'review': message.text})
             user_data = await dp.storage.get_data(user=user)
-            unique_uuid = uuid4
+
+
             username = message.from_user.username
             rating = user_data.get('rating')
-            review = user_data.get('review')
+            review = message.text
             dish_name = user_data.get('dish_name')
             restaurant_name = user_data.get('restaurant_name')
             print("got message")
