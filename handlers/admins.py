@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
 
-from main import dp, bot, db, config, Tools
+from main import dp, bot, db
 import handlers.stop_lists as sl
 import handlers.auxiliary_functions as af
 
