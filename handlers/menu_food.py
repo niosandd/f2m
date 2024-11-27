@@ -1,10 +1,6 @@
 from __future__ import annotations
-
-import asyncio
-import logging
 import random
 import pandas as pd
-import telebot
 import os
 import time
 
@@ -13,13 +9,12 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
     ReplyKeyboardMarkup, InlineQuery, InputTextMessageContent, InlineQueryResultArticle, InputMediaPhoto
 from aiogram.utils.deep_linking import get_start_link
 
-from main import dp, bot, db, config, Tools
+from main import dp, bot, db, config
 
 from db import Database
 import menu
 
 import pyqrcode
-import png
 
 admin = config()['telegram']['admin']
 local_recommendation_text = ''
@@ -728,8 +723,9 @@ async def food_rec(call: types.CallbackQuery):
         for dish in recommendation:
             list_with_info = (db.restaurants_get_dish(rest.split(':')[0], rest.split(':')[1], dish[1]))
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
-            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>\n"
-            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>"
+            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>\n"
+            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>"
+
             recommendation_text += f"\n\n"
             list_of_dishes.append(dish[1])
         photo_dir = 'Фудтумуд'
@@ -776,8 +772,9 @@ async def food_rec2(user, data):
         for dish in recommendation:
             list_with_info = (db.restaurants_get_dish(rest.split(':')[0], rest.split(':')[1], dish[1]))
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
-            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>\n"
-            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>"
+            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>\n"
+            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>"
+
             recommendation_text += f"\n\n"
             list_of_dishes.append(dish[1])
         photo_dir = 'Фудтумуд'
@@ -1365,7 +1362,7 @@ async def bon_appetite(call: types.CallbackQuery):
     db.set_client_can_alert(user, 0)
     db.set_users_mode(user, mode, 'write_review')
 
-    await asyncio.sleep(3601)  # Подождать час
+    await asyncio.sleep(3600)  # Подождать час
     try:
         await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
     except:

@@ -1,10 +1,5 @@
 import sqlite3
-import time
-import random
 import datetime
-from io import BytesIO
-from tkinter import Image
-from unittest import result
 
 
 
