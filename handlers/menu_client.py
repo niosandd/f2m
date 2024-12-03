@@ -240,7 +240,7 @@ def buttons_client_00(mode: str):
         menu.add(btn1)
 
     elif mode == 'ready':
-        btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data='confirmation_of_the_questionnaire')
+        btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data='food_mood')
         btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
 
         menu.add(btn1)

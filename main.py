@@ -231,19 +231,28 @@ async def waiter(message: types.Message):
 
 @dp.message_handler(commands=['boss_mldzh'])
 async def boss_mldzh(message: types.Message):
-    try:
-        user = message.from_user.id
-        if "Молодёжь" in db.get_client_temp_rest(user):
-            if db.check_boss_exists(user):
-                await bosses.generate_boss_menu(user)
-            else:
-                db.add_boss(user, db.get_client_temp_rest(user))  # ПОКА НЕТ КОМАНДЫ ADMIN ДЛЯ РЕГИСТРАЦИИ
-                await bosses.generate_boss_menu(user)
-        else:
-            text = f'\nТы не зарегистрирован(ана) как менеджер заведения'
-            await bot.send_message(user, text)
-    except Exception as e:
-        print(e)
+    user = message.from_user.id
+    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115]:
+        message_obj = await bot.send_message(
+            chat_id=user,
+            text="Введите пароль: ",
+        )
+        db.set_users_mode(user, message_obj.message_id, 'boss_mldzh_password')
+    else:
+        await bot.send_message(user, 'Ты не зарегистрирован(ана) как менеджер заведения')
+
+
+@dp.message_handler(commands=['boss_bdb'])
+async def boss_bdb(message: types.Message):
+    user = message.from_user.id
+    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115]:
+        message_obj = await bot.send_message(
+            chat_id=user,
+            text="Введите пароль: ",
+        )
+        db.set_users_mode(user, message_obj.message_id, 'boss_bdb_password')
+    else:
+        await bot.send_message(user, 'Ты не зарегистрирован(ана) как менеджер заведения')
 
 
 @dp.message_handler(commands=['admin'])
@@ -517,7 +526,7 @@ async def bot_message(message):
     user = message.from_user.id
     mode = db.get_users_mode(user)
 
-    if message.text not in ['/start', '/waiter', '/admin', '/mldzh', '/f2m_coins', '/boss_mldzh']:
+    if message.text not in ['/start', '/waiter', '/admin', '/mldzh', '/f2m_coins', '/boss_mldzh', '/boss_bdb']:
 
         # Чёрный список продуктов
         if mode['key'] == 'client_register_blacklist':
@@ -606,6 +615,28 @@ async def bot_message(message):
                 reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat=''))
             )
             db.set_users_mode(user, message_obj.message_id, 'admin_mode')
+
+        if mode['key'] == 'boss_mldzh_password' and message.text == 'password':
+            try:
+                user = message.from_user.id
+                if db.check_boss_exists(user):
+                    await bosses.generate_boss_menu(user)
+                else:
+                    db.add_boss(user, db.get_client_temp_rest(user))  # ПОКА НЕТ КОМАНДЫ ADMIN ДЛЯ РЕГИСТРАЦИИ
+                    await bosses.generate_boss_menu(user)
+            except Exception as e:
+                print(e)
+
+        if mode['key'] == 'boss_bdb_password' and message.text == 'password':
+            try:
+                user = message.from_user.id
+                if db.check_boss_exists(user):
+                    await bosses.generate_boss_menu(user)
+                else:
+                    db.add_boss(user, db.get_client_temp_rest(user))  # ПОКА НЕТ КОМАНДЫ ADMIN ДЛЯ РЕГИСТРАЦИИ
+                    await bosses.generate_boss_menu(user)
+            except Exception as e:
+                print(e)
 
         if mode['key'] == "admin_mode":
             data = message.text.split(':')
