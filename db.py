@@ -710,7 +710,7 @@ class Database:
     # --- Добавить значение ---
 
     def add_waiter(self, user_id, user_rest, user_link, user_name=None, user_last_name=None, user_first_name=None,
-                   user_surname=None, score=0):
+                   user_surname=None, score="[]"):
         with self.connection:
             return self.cursor.execute(
                 "INSERT INTO waiters (waiter_id, waiter_rest, waiter_link, waiter_name, waiter_last_name,"
