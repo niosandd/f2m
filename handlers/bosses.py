@@ -44,18 +44,19 @@ async def boss_waiters_stat(call: types.CallbackQuery):
         boss_id = call.from_user.id
         rest = db.get_boss_rest(boss_id)
         stats = db.get_waiters_names_and_stats(rest)
-        current_waiter_count = 0 # ВРЕМЕННО ПОКА НЕ ВВЕЛИ СМЕНЫ
+        current_waiter_count = 0 # ВРЕМЕННО, ПОКА НЕ ВВЕЛИ СМЕНЫ
         text = "Общая статистика по официантам:\n\n"
         for waiter in stats:
             if None not in waiter:
                 text += (f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))} "
                          f"({current_waiter_count})\n\n")
         text += "(В скобках статистика за смену с 00:00 до 23:59)"
-        await bot.edit_message_text(chat_id=boss_id,
+        message_obj = await bot.edit_message_text(chat_id=boss_id,
                                     message_id=call.message.message_id,
                                     text=text,
                                     reply_markup=InlineKeyboardMarkup().row(
                                         InlineKeyboardButton(text="Назад", callback_data="back_to_boss_menu")))
+        db.set_users_mode(boss_id, message_obj.message_id, 'boss_waiters_stat')
     except Exception as e:
         print(e)
 
@@ -75,16 +76,19 @@ async def back_to_boss_menu(call: types.CallbackQuery):
 
 
 async def generate_boss_menu(boss_id, message_id=None):
+    mode = db.get_users_mode(boss_id)
     text = ("Привет!\n\n"
             f"Это панель управления для менеджера заведения {db.get_boss_rest(boss_id)}\n\n"
             "/СТОП-ЛИСТ - добавление блюд в стоп-лист\n\n"
             "/ОФИЦИАНТЫ - статистика по работе официантов\n\n"
             "/РЕКЛАМА - статистика вовлеченности пользователей")
-    if message_id:
+    if message_id or 'password' in mode['key']:
         message_obj = await bot.edit_message_text(chat_id=boss_id,
-                                                  message_id=message_id,
+                                                  message_id=mode['id'],
                                                   text=text,
                                                   reply_markup=boss_menu())
+        if 'password' in mode['key']:
+            await bot.delete_message(chat_id=boss_id, message_id=mode['id']+1)
     else:
         message_obj = await bot.send_message(
             chat_id=boss_id,
