@@ -116,7 +116,7 @@ async def go_to_review(call: types.CallbackQuery):
         text += f"📅 **Дата и время:**   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
         text += f"🍽️ **Блюдо:**   {review[1]}\n"
         if review[2] and review[2] != "None":
-            rating_stars = "⭐" * review[2] * (5 - review[2])
+            rating_stars = "⭐" * review[2]
             text += f"🌟 **Оценка:**   {rating_stars} ({review[2]}/5)\n"
         if review[3] and review[3] != "None":
             text += f"💬 **Мнение:**   \"{review[3]}\"\n\n"
@@ -179,7 +179,7 @@ async def admin_reviews(call: types.CallbackQuery):
             text += f"📅 **Дата и время:**   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
             text += f"🍽️ **Блюдо:**   {review[1]}\n"
             if review[2] and review[2] != "None":
-                rating_stars = "⭐" * review[2] * (5 - review[2])
+                rating_stars = "⭐" * review[2]
                 text += f"🌟 **Оценка:**   {rating_stars} ({review[2]}/5)\n"
             if review[3] and review[3] != "None":
                 text += f"💬 **Мнение:**   \"{review[3]}\"\n\n"
