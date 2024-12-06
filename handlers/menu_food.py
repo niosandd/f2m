@@ -737,8 +737,8 @@ async def food_rec(call: types.CallbackQuery):
         for dish in recommendation:
             list_with_info = (db.restaurants_get_dish(rest.split(':')[0], rest.split(':')[1], dish[1]))
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
-            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>\n"
-            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>"
+            recommendation_text += f"💰 <i>Цена: {list_with_info[-3]} руб.</i>\n"
+            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-2]} г.</i>"
 
             recommendation_text += f"\n\n"
             list_of_dishes.append(dish[1])
@@ -786,8 +786,8 @@ async def food_rec2(user, data):
         for dish in recommendation:
             list_with_info = (db.restaurants_get_dish(rest.split(':')[0], rest.split(':')[1], dish[1]))
             recommendation_text += f"<b>——{dish[0]}——</b>\n<i>{dish[1]}</i>\n\n"
-            recommendation_text += f"💰 <i>Цена: {list_with_info[-2]} руб.</i>\n"
-            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-3]} г.</i>"
+            recommendation_text += f"💰 <i>Цена: {list_with_info[-3]} руб.</i>\n"
+            recommendation_text += f"⚖️ <i>Вес: {list_with_info[-2]} г.</i>"
 
             recommendation_text += f"\n\n"
             list_of_dishes.append(dish[1])
@@ -1372,23 +1372,21 @@ async def bon_appetite(call: types.CallbackQuery):
         reply_markup=bon_appetite_keyboard(),
         parse_mode='HTML'
     )
+    db.add_users_order(user, db.get_client_temp_rest(user), db.get_basket(user))
     db.set_basket(user, "{}")
     db.set_client_can_alert(user, 0)
     db.set_users_mode(user, mode, 'write_review')
-    await asyncio.sleep(3600)  # Подождать час
+    await asyncio.sleep(10)  # Подождать час
     try:
         await bot.delete_message(chat_id=user, message_id=message_obj.message_id)
     except:
         pass
-
     await send_reminder_message(user)  # Отправить напоминалку
 
 
 async def send_reminder_message(user_id):
     user_first_name = db.get_users_user_first_name(user_id)
-    cafe = db.get_client_temp_rest(user_id)
-    cafe = cafe.split(":")[0]
-
+    cafe = db.get_last_users_order(user_id)[-1].split(':')[0]
     keyboard = InlineKeyboardMarkup()
     btn1 = InlineKeyboardButton(text="Оставить отзыв", callback_data="leave_a_review")
     btn2 = InlineKeyboardButton(text="Не интересно", callback_data="menu_start")
@@ -1409,9 +1407,9 @@ def bon_appetite_keyboard():
                                 callback_data="menu_start")
 
     btn2 = InlineKeyboardButton(text="« Вернуться к категориям",
-                                callback_data="show_categories_again")
+                                callback_data="back_to_categories")
 
-    btn3 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="send_dish")
+    btn3 = InlineKeyboardButton(text="« Вернуться к рекомендациям", callback_data="return_to_recommendation")
 
     keyboard.row(btn1)
     keyboard.row(btn2)
