@@ -1,3 +1,4 @@
+import datetime
 from uuid import uuid4
 import asyncio
 import time
@@ -77,7 +78,6 @@ except:
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 main_loop = asyncio.get_event_loop()
-
 last_time = {}
 time_wait = 1000  # Задержка в мс
 
@@ -238,6 +238,7 @@ async def boss_mldzh(message: types.Message):
             text="Введите пароль: ",
         )
         db.set_users_mode(user, message_obj.message_id, 'boss_mldzh_password')
+        db.set_boss_rest(user, 'Молодёжь:Москва, Сущёвская ул., 21, стр. 8')
     else:
         await bot.send_message(user, 'Ты не зарегистрирован(ана) как менеджер заведения')
 
@@ -251,6 +252,7 @@ async def boss_bdb(message: types.Message):
             text="Введите пароль: ",
         )
         db.set_users_mode(user, message_obj.message_id, 'boss_bdb_password')
+        db.set_boss_rest(user, 'Блан де Блан:Москва, ул. Люсиновская, 36/50')
     else:
         await bot.send_message(user, 'Ты не зарегистрирован(ана) как менеджер заведения')
 
@@ -683,7 +685,7 @@ async def bot_message(message):
             else:
                 coin_counter = 1
                 db.add_food_to_mood_coin(user, coin_counter)
-            db.set_new_review(str(random.randint(1, 10000000000)), username, rating, review, dish_name, restaurant_name)
+            db.set_new_review(f'{str(datetime.datetime.now().date())} {str(datetime.datetime.now().strftime("%X"))[:-3]}', username, rating, review, dish_name, restaurant_name)
             db.restaurants_set_review(db.get_client_temp_dish_id(user), message.text)
             db.set_users_mode(user, mode['id'], '')
     try:
@@ -958,7 +960,7 @@ async def review_end(call: types.CallbackQuery):
     )
     db.add_user_action(user, 'Пользователь оставил отзыв')
     db.add_food_to_mood_coin(user, coin_counter)
-    db.set_new_review(str(random.randint(1, 10000000000)), username, rating, review, dish_name, restaurant_name)
+    db.set_new_review(f'{str(datetime.datetime.now().date())} {str(datetime.datetime.now().strftime("%X"))[:-3]}', username, rating, review, dish_name, restaurant_name)
     # db.set_users_last_recomendation_time(user, current_time)
     db.set_users_mode(user, mode['id'], '')
 

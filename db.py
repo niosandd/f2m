@@ -2,7 +2,6 @@ import sqlite3
 import datetime
 
 
-
 class Database:
     def __init__(self, db_file):
         self.connection = sqlite3.connect(db_file)
@@ -140,8 +139,8 @@ class Database:
                 user_reg_time = str(row[0])
             return user_reg_time
 
-
             # --- User last recommendation time ---
+
     # def set_users_last_recomendation_time(self, user_id, current_time):
     #             with self.connection:
     #                 return self.cursor.execute(
@@ -149,22 +148,24 @@ class Database:
     #                     (user_id, current_time))
 
     def get_users_last_recomendation_time(self, user_id):
-                with self.connection:
-                    result = self.connection.execute("SELECT last_recomendation_time FROM users WHERE user_id = ?",
-                                                     (user_id,)).fetchall()
+        with self.connection:
+            result = self.connection.execute("SELECT last_recomendation_time FROM users WHERE user_id = ?",
+                                             (user_id,)).fetchall()
 
-                for row in result:
-                    last_recomendation_time = str(row[0])
-                    return last_recomendation_time
+        for row in result:
+            last_recomendation_time = str(row[0])
+            return last_recomendation_time
 
     # --- Food2Mood Coin
     def add_food_to_mood_coin(self, user_id: int, coin_count: int):
         with self.connection:
-            self.cursor.execute("UPDATE users SET foodToMoodCoin = foodToMoodCoin + ? WHERE user_id = ?", (coin_count, user_id))
+            self.cursor.execute("UPDATE users SET foodToMoodCoin = foodToMoodCoin + ? WHERE user_id = ?",
+                                (coin_count, user_id))
 
     def clear_food_to_mood_coin(self, user_id: int):
         with self.connection:
             self.cursor.execute("UPDATE users SET foodToMoodCoin = foodToMoodCoin + ? WHERE user_id = ?", (user_id,))
+
     def get_users_food_to_mood_coin(self, user_id: int):
         with self.connection:
             result = self.connection.execute("SELECT foodToMoodCoin FROM users WHERE user_id = ?", (user_id,))
@@ -313,15 +314,15 @@ class Database:
             return whitelist
 
     # --- temp_rest ---
-    def set_new_review(self, id, user_name, rating, review, dish_name, restaurant_name):
+    def set_new_review(self, date, user_name, rating, review, dish_name, restaurant_name):
         with self.connection:
             self.cursor.execute(
-                "INSERT INTO reviews(id, user_name, rating, review, dish_name, restaurant_name) VALUES (?, ?, ?, ?, ?, ?)",
-                (id, user_name, rating, review, dish_name, restaurant_name))
+                "INSERT INTO reviews(date, user_name, rating, review, dish_name, restaurant_name) VALUES (?, ?, ?, ?, ?, ?)",
+                (date, user_name, rating, review, dish_name, restaurant_name))
 
     def get_reviews(self, rest_name):
         with self.connection:
-            result = self.connection.execute("SELECT dish_name, rating, review FROM reviews WHERE restaurant_name = ?",
+            result = self.connection.execute("SELECT date, dish_name, rating, review FROM reviews WHERE restaurant_name = ?",
                                              (rest_name,)).fetchall()
             # Использование множества для удаления дубликатов и преобразование его обратно в список
             return result
@@ -512,15 +513,16 @@ class Database:
     # ======================================================================================================================
     # ===== ТАБЛИЦА: restaurants =================================================================================================
     # ======================================================================================================================
-            # --- all categories ---
-        # --- all categories ---
+    # --- all categories ---
+    # --- all categories ---
     def restaurants_get_all_categories(self, rest_name):
-            with self.connection:
-                result = self.connection.execute("SELECT dish_category FROM restaurants WHERE rest_name = ?",
-                                                 (rest_name,)).fetchall()
-                # Использование множества для удаления дубликатов и преобразование его обратно в список
-                unique_categories = list(set(category[0] for category in result))
-                return unique_categories
+        with self.connection:
+            result = self.connection.execute("SELECT dish_category FROM restaurants WHERE rest_name = ?",
+                                             (rest_name,)).fetchall()
+            # Использование множества для удаления дубликатов и преобразование его обратно в список
+            unique_categories = list(set(category[0] for category in result))
+            return unique_categories
+
     def restaurants_find_all(self, keyword):
         with self.connection:
             self.connection.execute("DROP TABLE IF EXISTS rest_fts")
@@ -890,6 +892,12 @@ class Database:
             result = self.cursor.execute("SELECT boss_rest FROM bosses WHERE boss_id=?", (user_id,)).fetchall()
             return result[0][0]
 
+    def set_boss_rest(self, user_id, user_rest):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE bosses SET boss_rest = ? WHERE boss_id = ?",
+                (user_rest, user_id))
+
     # ======================================================================================================================
     # ===== ТАБЛИЦА: stop_lists =================================================================================================
     # ======================================================================================================================
@@ -946,7 +954,8 @@ class Database:
 
     def get_total_click_count(self, rest):
         with self.connection:
-            result = self.cursor.execute("SELECT total_click_count FROM total_and_current_counts WHERE rest=?", (rest,)).fetchall()
+            result = self.cursor.execute("SELECT total_click_count FROM total_and_current_counts WHERE rest=?",
+                                         (rest,)).fetchall()
             return result[0][0]
 
     def del_rest(self, rest):
@@ -954,7 +963,6 @@ class Database:
             return self.cursor.execute(
                 "DELETE FROM total_and_current_counts WHERE rest = ?",
                 (rest,))
-
 
     # ======================================================================================================================
     # ===== ТАБЛИЦА: admins =================================================================================================
@@ -988,7 +996,6 @@ class Database:
             result = self.cursor.execute("SELECT temp_rest FROM admins WHERE admin_id=?", (user_id,)).fetchall()
             return result[0][0]
 
-
     # ======================================================================================================================
     # ===== ТАБЛИЦА: orders =================================================================================================
     # ======================================================================================================================
@@ -1000,3 +1007,18 @@ class Database:
             return self.cursor.execute(
                 "INSERT INTO orders (waiter_id, rest, table_number, time) VALUES (?, ?, ?, ?)",
                 (user_id, user_rest, table_number, time))
+
+# ======================================================================================================================
+    # ===== ТАБЛИЦА: orders_history =================================================================================================
+    # ======================================================================================================================
+
+
+
+    def add_users_order(self, user_id, rest, basket):
+        with self.connection:
+            return self.cursor.execute("INSERT INTO orders_history (user_id, rest, basket) VALUES (?, ?, ?)", (user_id, rest, basket))
+
+    def get_last_users_order(self, user_id):
+        with self.connection:
+            result = self.cursor.execute(f"SELECT rest FROM orders_history WHERE user_id={user_id}").fetchall()
+            return result[-1]

@@ -1,3 +1,4 @@
+from datetime import datetime
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
@@ -6,6 +7,8 @@ from main import dp, bot, db
 import handlers.stop_lists as sl
 import handlers.auxiliary_functions as af
 
+
+temp_review = -1
 
 async def generate_admin_menu(admin_id, rest=None, message_id=None):
     if not db.check_admin_exists(admin_id):
@@ -97,27 +100,104 @@ async def back_to_admin_menu(call: types.CallbackQuery):
     await generate_admin_menu(call.from_user.id, message_id=call.message.message_id)
 
 
-@dp.callback_query_handler(lambda call: call.data == "admin_reviews")
-async def admin_reviews(call: types.CallbackQuery):
+@dp.callback_query_handler(text_contains="go_to")
+async def go_to_review(call: types.CallbackQuery):
+    global temp_review
     admin_id = call.from_user.id
     rest_name = db.get_admin_rest(admin_id).split(":")[0]
     reviews = db.get_reviews(rest_name)
-    if reviews:
-        text = ""
-        for review in reviews:
-            if review[0] and review[0] != "None" and review[1] and review[1] != "None":
-                text += (f"Блюдо: {review[0]}\n"
-                         f"Оценка: {review[1]}\n\n")
-                if review[2] and review[2] != "None":
-                    text += f"Отзыв:\n {review[2]}\n\n"
+    if 'next' in call.data:
+        temp_review -= 1
     else:
-        text = "Отзывы отсутствуют"
-    await bot.edit_message_text(chat_id=admin_id,
+        temp_review += 1
+    text = ""
+    review = reviews[temp_review]
+    if review[0] and review[0] != "None" and review[1] and review[1] != "None":
+        text += f"📅 **Дата и время:**   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
+        text += f"🍽️ **Блюдо:**   {review[1]}\n"
+        if review[2] and review[2] != "None":
+            rating_stars = "⭐" * review[2] * (5 - review[2])
+            text += f"🌟 **Оценка:**   {rating_stars} ({review[2]}/5)\n"
+        if review[3] and review[3] != "None":
+            text += f"💬 **Мнение:**   \"{review[3]}\"\n\n"
+    if temp_review == 0:
+        await bot.edit_message_text(chat_id=admin_id,
                                 message_id=call.message.message_id,
                                 text=text,
-                                reply_markup=InlineKeyboardMarkup().row(
-                                    InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu")))
+                                reply_markup=InlineKeyboardMarkup().row(InlineKeyboardButton(text="Предыдущий отзыв",
+                                                                                             callback_data="go_to_last_review"),
+                                                                        InlineKeyboardButton(text="Назад",
+                                                                                             callback_data="back_to_admin_menu")))
+    elif 1 <= temp_review < len(reviews) - 1:
+        await bot.edit_message_text(chat_id=admin_id,
+                                    message_id=call.message.message_id,
+                                    text=text,
+                                    reply_markup=InlineKeyboardMarkup().row(
+                                        InlineKeyboardButton(text="Предыдущий отзыв",
+                                                             callback_data="go_to_last_review"),
+                                        InlineKeyboardButton(text="Следующий отзыв",
+                                                             callback_data="go_to_next_review"),
+                                        InlineKeyboardButton(text="Назад",
+                                                             callback_data="back_to_admin_menu")))
+    else:
+        await bot.edit_message_text(chat_id=admin_id,
+                                    message_id=call.message.message_id,
+                                    text=text,
+                                    reply_markup=InlineKeyboardMarkup().row(InlineKeyboardButton(text="Следующий отзыв",
+                                                             callback_data="go_to_next_review"),
+                                        InlineKeyboardButton(text="Назад",
+                                                             callback_data="back_to_admin_menu")))
 
+
+
+@dp.callback_query_handler(lambda call: call.data == "next_review")
+async def back_to_admin_menu(call: types.CallbackQuery):
+    await bot.edit_message_text()
+
+def format_date(date_str):
+    months = {
+        1: "января", 2: "февраля", 3: "марта", 4: "апреля", 5: "мая", 6: "июня",
+        7: "июля", 8: "августа", 9: "сентября", 10: "октября", 11: "ноября", 12: "декабря"
+    }
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+    day = date_obj.day
+    month = months[date_obj.month]
+    year = date_obj.year
+    return f"{day} {month} {year} годa"
+
+@dp.callback_query_handler(lambda call: call.data == "admin_reviews")
+async def admin_reviews(call: types.CallbackQuery):
+    global temp_review
+    admin_id = call.from_user.id
+    rest_name = db.get_admin_rest(admin_id).split(":")[0]
+    reviews = db.get_reviews(rest_name)
+    temp_review = len(reviews) - 1
+    if reviews:
+        text = ""
+        review = reviews[temp_review]
+        if review[0] and review[0] != "None" and review[1] and review[1] != "None":
+            text += f"📅 **Дата и время:**   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
+            text += f"🍽️ **Блюдо:**   {review[1]}\n"
+            if review[2] and review[2] != "None":
+                rating_stars = "⭐" * review[2] * (5 - review[2])
+                text += f"🌟 **Оценка:**   {rating_stars} ({review[2]}/5)\n"
+            if review[3] and review[3] != "None":
+                text += f"💬 **Мнение:**   \"{review[3]}\"\n\n"
+    else:
+        text = "Отзывы отсутствуют"
+    if len(reviews) > 1:
+        await bot.edit_message_text(chat_id=admin_id,
+                                message_id=call.message.message_id,
+                                text=text,
+                                reply_markup=InlineKeyboardMarkup().row(InlineKeyboardButton(text="Следующий отзыв",
+                                                                                             callback_data="go_to_next_review"),
+                                    InlineKeyboardButton(text="Назад", callback_data="back_to_admin_menu")))
+    else:
+        await bot.edit_message_text(chat_id=admin_id,
+                                    message_id=call.message.message_id,
+                                    text=text,
+                                    reply_markup=InlineKeyboardMarkup().row(InlineKeyboardButton(text="Назад",
+                                                                                                 callback_data="back_to_admin_menu")))
 
 @dp.callback_query_handler(lambda call: call.data == "admin_notification")
 async def admin_notification(call: types.CallbackQuery):
