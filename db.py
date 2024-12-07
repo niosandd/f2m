@@ -958,6 +958,42 @@ class Database:
                                          (rest,)).fetchall()
             return result[0][0]
 
+    def set_current_click_count(self, rest, current_click_count):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE total_and_current_counts SET current_click_count = ? WHERE rest = ?",
+                (current_click_count, rest))
+
+    def get_current_click_count(self, rest):
+        with self.connection:
+            result = self.cursor.execute("SELECT current_click_count FROM total_and_current_counts WHERE rest=?",
+                                         (rest,)).fetchall()
+            return result[0][0]
+
+    def set_total_guests_count(self, rest, total_guests_count):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE total_and_current_counts SET total_guests_count = ? WHERE rest = ?",
+                (total_guests_count, rest))
+
+    def get_total_guests_count(self, rest):
+        with self.connection:
+            result = self.cursor.execute("SELECT total_guests_count FROM total_and_current_counts WHERE rest=?",
+                                         (rest,)).fetchall()
+            return result[0][0]
+
+    def set_current_guests_count(self, rest, current_guests_count):
+        with self.connection:
+            self.cursor.execute(
+                "UPDATE total_and_current_counts SET current_guests_count = ? WHERE rest = ?",
+                (current_guests_count, rest))
+
+    def get_current_guests_count(self, rest):
+        with self.connection:
+            result = self.cursor.execute("SELECT current_guests_count FROM total_and_current_counts WHERE rest=?",
+                                         (rest,)).fetchall()
+            return result[0][0]
+
     def del_rest(self, rest):
         with self.connection:
             return self.cursor.execute(
