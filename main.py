@@ -578,6 +578,10 @@ async def bot_message(message):
                 total_click_count = int(db.get_total_click_count(rest))
                 total_click_count += 1
                 db.set_total_click_count(rest, total_click_count)
+                current_click_count = int(db.get_current_click_count(rest))
+                current_click_count += 1
+                db.set_current_click_count(rest, current_click_count)
+
             except Exception as e:
                 print(e)
             db.set_client_temp_recommendation(user, None)

@@ -1,12 +1,13 @@
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, \
     ReplyKeyboardRemove, KeyboardButton, ReplyKeyboardMarkup
-
 from main import dp, bot, db, config, Tools
 
 def total_and_current_counter(rest):
     stats = db.get_waiters_names_and_stats(rest)
-    current_click_count = total_guests_count = current_guests_count = 0
+    current_click_count = db.get_current_click_count(rest)
+    current_guests_count = db.current_guests_count(rest)
+    total_guests_count = db.get_total_guests_count(rest)
     total_click_count = db.get_total_click_count(rest)
     for waiter in stats:
         if None not in waiter:
