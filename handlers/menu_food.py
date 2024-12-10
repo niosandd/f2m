@@ -15,7 +15,7 @@ from db import Database
 import menu
 
 import pyqrcode
-
+is_form = False
 admin = config()['telegram']['admin']
 local_recommendation_text = ''
 media = []
@@ -272,13 +272,14 @@ def get_user_profile_text(user_id):
 
 @dp.callback_query_handler(text_contains=f"food_choose_get")
 async def food_choose_get(call: types.CallbackQuery):
-    global flag
+    global flag, is_form
     user = call.from_user.id
     data = call.data.split('_')
     if db.get_users_ban(user):
         return None
     message_text = get_user_profile_text(user)
-    if '+' in call.data:
+    if '+' in call.data or is_form == True:
+        is_form = False
         message_text = ('✨ Теперь давай выберем место под <b>твоё настроение!</b> \n\n'
                         '⚡ <b>Нажимай "Получить рекомендацию"</b>, чтобы мы посоветовали тебе заведение под настроение! \n\n'
                         '🔎 Если ты <b>уже знаешь куда идти, нажимай "Список заведений"</b> и ищи нужное место \n\n'
@@ -352,9 +353,11 @@ def buttons_food_001():
 
 @dp.message_handler(commands=['form'])
 async def send_profile(message: types.Message):
+    global is_form
+    is_form = True
     user = message.from_user.id
     message_text = get_user_profile_text(user)
-    await message.answer(text=message_text, reply_markup=buttons_food_01())
+    await message.answer(text=message_text, reply_markup=buttons_food_01b())
 
 
 def buttons_food_01():
@@ -366,6 +369,15 @@ def buttons_food_01():
     menu.add(btn1)
     menu.add(btn2)
     menu.add(btn3)
+    return menu
+
+
+def buttons_food_01b():
+    menu = InlineKeyboardMarkup(row_width=3)
+    btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data="food_mood")
+    btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
+    menu.add(btn1)
+    menu.add(btn2)
     return menu
 
 

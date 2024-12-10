@@ -615,8 +615,9 @@ async def bot_message(message):
             )
 
         if mode['key'] == "admin_password" and message.text == "password":
-            message_obj = await bot.send_message(
+            message_obj = await bot.edit_message_text(
                 chat_id=user,
+                message_id=mode['id'],
                 text="Выберите заведение: ",
                 reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat=''))
             )
