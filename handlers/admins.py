@@ -11,13 +11,20 @@ import handlers.auxiliary_functions as af
 temp_review = -1
 
 async def generate_admin_menu(admin_id, rest=None, message_id=None):
+    mode = db.get_users_mode(admin_id)
     if not db.check_admin_exists(admin_id):
         db.add_admin(admin_id, rest)
     elif rest:
         db.set_admin_rest(admin_id, rest)
     text = "Какая информация вас интересует: "
-    if message_id:
-        message_obj = await bot.edit_message_text(chat_id=admin_id,
+    if message_id or mode['key'] == 'admin_mode':
+        if mode['key'] == 'admin_mode':
+            message_obj = await bot.edit_message_text(chat_id=admin_id,
+                                                      message_id=mode['id'],
+                                                      text=text,
+                                                      reply_markup=admin_menu())
+        else:
+            message_obj = await bot.edit_message_text(chat_id=admin_id,
                                                   message_id=message_id,
                                                   text=text,
                                                   reply_markup=admin_menu())
@@ -113,13 +120,13 @@ async def go_to_review(call: types.CallbackQuery):
     text = ""
     review = reviews[temp_review]
     if review[0] and review[0] != "None" and review[1] and review[1] != "None":
-        text += f"📅 **Дата и время:**   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
-        text += f"🍽️ **Блюдо:**   {review[1]}\n"
+        text += f"📅 <b>**</b>Дата и время:<b>**</b>   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
+        text += f"🍽️ <b>**</b>Блюдо:<b>**</b>   {review[1]}\n"
         if review[2] and review[2] != "None":
             rating_stars = "⭐" * review[2]
-            text += f"🌟 **Оценка:**   {rating_stars} ({review[2]}/5)\n"
+            text += f"🌟 <b>**</b>Оценка:<b>**</b>   {rating_stars} ({review[2]}/5)\n"
         if review[3] and review[3] != "None":
-            text += f"💬 **Мнение:**   \"{review[3]}\"\n\n"
+            text += f"💬 <b>**</b>Мнение:<b>**</b>   \"{review[3]}\"\n\n"
     if temp_review == 0:
         await bot.edit_message_text(chat_id=admin_id,
                                 message_id=call.message.message_id,
@@ -176,13 +183,13 @@ async def admin_reviews(call: types.CallbackQuery):
         text = ""
         review = reviews[temp_review]
         if review[0] and review[0] != "None" and review[1] and review[1] != "None":
-            text += f"📅 **Дата и время:**   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
-            text += f"🍽️ **Блюдо:**   {review[1]}\n"
+            text += f"📅 <b>**</b>Дата и время:<b>**</b>   {review[0].split()[1]}  {format_date(review[0].split()[0])}\n"
+            text += f"🍽️ <b>**</b>Блюдо:<b>**</b>   {review[1]}\n"
             if review[2] and review[2] != "None":
                 rating_stars = "⭐" * review[2]
-                text += f"🌟 **Оценка:**   {rating_stars} ({review[2]}/5)\n"
+                text += f"🌟 <b>**</b>Оценка:<b>**</b>   {rating_stars} ({review[2]}/5)\n"
             if review[3] and review[3] != "None":
-                text += f"💬 **Мнение:**   \"{review[3]}\"\n\n"
+                text += f"💬 <b>**</b>Мнение:<b>**</b>   \"{review[3]}\"\n\n"
     else:
         text = "Отзывы отсутствуют"
     if len(reviews) > 1:
