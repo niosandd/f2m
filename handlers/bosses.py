@@ -44,10 +44,10 @@ async def boss_waiters_stat(call: types.CallbackQuery):
         boss_id = call.from_user.id
         rest = db.get_boss_rest(boss_id)
         stats = db.get_waiters_names_and_stats(rest)
-        current_waiter_count = 0 # ВРЕМЕННО, ПОКА НЕ ВВЕЛИ СМЕНЫ
         text = "Общая статистика по официантам:\n\n"
         for waiter in stats:
             if None not in waiter:
+                current_waiter_count = db.get_current_waiter_guests(rest, waiter[0])
                 text += (f"{waiter[1]} {waiter[2]} {waiter[3]}\nКоличество уникальных заказов: {len(set(eval(waiter[4])))} "
                          f"({current_waiter_count})\n\n")
         text += "(В скобках статистика за смену с 00:00 до 23:59)"

@@ -1037,9 +1037,18 @@ class Database:
         with self.connection:
             result = self.cursor.execute(f"SELECT time FROM orders WHERE rest=? AND time LIKE '%{current_time}%'",
                                          (rest,)).fetchall()
-            print(result)
             if result:
-                return len(result[0][0])
+                return len(result[0])
+            else:
+                return 0
+
+    def get_current_waiter_guests(self, rest, waiter_id):
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d")
+        with self.connection:
+            result = self.cursor.execute(f"SELECT time FROM orders WHERE rest=? AND waiter_id=? AND time LIKE '%{current_time}%'",
+                                         (rest, waiter_id,)).fetchall()
+            if result:
+                return len(result[0])
             else:
                 return 0
 
