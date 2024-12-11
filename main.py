@@ -578,9 +578,14 @@ async def bot_message(message):
                 total_click_count = int(db.get_total_click_count(rest))
                 total_click_count += 1
                 db.set_total_click_count(rest, total_click_count)
-                current_click_count = int(db.get_current_click_count(rest))
-                current_click_count += 1
+                last_check_time = db.get_last_check_time(rest)
+                if last_check_time == datetime.datetime.now().strftime("%Y-%m-%d"):
+                    current_click_count = int(db.get_current_click_count(rest))
+                    current_click_count += 1
+                else:
+                    current_click_count = 1
                 db.set_current_click_count(rest, current_click_count)
+                db.set_last_check_time(rest, datetime.datetime.now().strftime("%Y-%m-%d"))
 
             except Exception as e:
                 print(e)

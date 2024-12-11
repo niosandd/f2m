@@ -5,9 +5,15 @@ from main import dp, bot, db, config, Tools
 
 def total_and_current_counter(rest):
     stats = db.get_waiters_names_and_stats(rest)
-    current_click_count = db.get_current_click_count(rest)
+    last_check_time = db.get_last_check_time(rest)
+    if last_check_time == datetime.datetime.now().strftime("%Y-%m-%d"):
+        current_click_count = db.get_current_click_count(rest)
+    else:
+        current_click_count = 0
+        db.set_current_click_count(rest, current_click_count)
+    db.set_last_check_time(rest, datetime.datetime.now().strftime("%Y-%m-%d"))
     current_guests_count = db.get_current_guests_count(rest)
-    total_guests_count = db.get_total_guests_count(rest)
+    total_guests_count = 0
     total_click_count = db.get_total_click_count(rest)
     for waiter in stats:
         if None not in waiter:

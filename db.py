@@ -970,27 +970,15 @@ class Database:
                                          (rest,)).fetchall()
             return result[0][0]
 
-    def set_total_guests_count(self, rest, total_guests_count):
+    def set_last_check_time(self, rest, time):
         with self.connection:
             self.cursor.execute(
-                "UPDATE total_and_current_counts SET total_guests_count = ? WHERE rest = ?",
-                (total_guests_count, rest))
+                "UPDATE total_and_current_counts SET last_check_time = ? WHERE rest = ?",
+                (time, rest))
 
-    def get_total_guests_count(self, rest):
+    def get_last_check_time(self, rest):
         with self.connection:
-            result = self.cursor.execute("SELECT total_guests_count FROM total_and_current_counts WHERE rest=?",
-                                         (rest,)).fetchall()
-            return result[0][0]
-
-    def set_current_guests_count(self, rest, current_guests_count):
-        with self.connection:
-            self.cursor.execute(
-                "UPDATE total_and_current_counts SET current_guests_count = ? WHERE rest = ?",
-                (current_guests_count, rest))
-
-    def get_current_guests_count(self, rest):
-        with self.connection:
-            result = self.cursor.execute("SELECT current_guests_count FROM total_and_current_counts WHERE rest=?",
+            result = self.cursor.execute("SELECT last_check_time FROM total_and_current_counts WHERE rest=?",
                                          (rest,)).fetchall()
             return result[0][0]
 
@@ -1043,6 +1031,14 @@ class Database:
             return self.cursor.execute(
                 "INSERT INTO orders (waiter_id, rest, table_number, time) VALUES (?, ?, ?, ?)",
                 (user_id, user_rest, table_number, time))
+
+    def get_current_guests_count(self, rest):
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d")
+        with self.connection:
+            result = self.cursor.execute("SELECT time FROM orders WHERE rest=? AND ? IN time",
+                                         (rest, current_time)).fetchall()
+            print(result)
+            return len(result[0][0])
 
 # ======================================================================================================================
     # ===== ТАБЛИЦА: orders_history =================================================================================================
