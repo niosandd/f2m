@@ -648,6 +648,7 @@ async def bot_message(message):
         if mode['key'] == "admin_mode":
             data = message.text.split(':')
             rest = f"{data[0]}:{data[1]}"
+            db.set_client_temp_rest(user, rest)
             await admins.generate_admin_menu(user, rest)
 
         if "waiter_restaurant" in mode['key']:
