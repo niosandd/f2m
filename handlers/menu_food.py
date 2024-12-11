@@ -463,6 +463,26 @@ async def rest_recommendation(call: types.CallbackQuery):
         reply_markup=InlineKeyboardMarkup().row(
             InlineKeyboardButton(text="Список заведений 🔍", switch_inline_query_current_chat=''))
     )
+    # if not db.check_filters_exists(user):
+    #     db.add_search_filters(user, str({"Тип кухни":"", "Средний чек":"" }))
+    # filters = db.get_search_filters(user)
+    # message_obj = await bot.edit_message_text(
+    #     chat_id=user,
+    #     message_id=call.message.message_id,
+    #     text="Укажи параметры нужного тебе заведения:",
+    #     reply_markup=buttons_search()
+    # )
+    # db.set_users_mode(user, message_obj.message_id, 'rest_recommendation')
+
+
+def buttons_search():
+    menu = InlineKeyboardMarkup(row_width=1)
+    btn1 = InlineKeyboardButton(text="Тип кухни", callback_data="kitchen_type_filter")
+    btn2 = InlineKeyboardButton(text="Средний чек", callback_data="average_bill_filter")
+    btn3 = InlineKeyboardButton(text="Поиск по параметрам", callback_data="filters_search")
+    btn4 = InlineKeyboardButton(text="Поиск по геопозиции", callback_data="location_search")
+    menu.add(btn1, btn2, btn3, btn4)
+    return menu
 
 
 token = ""

@@ -1066,3 +1066,26 @@ class Database:
         with self.connection:
             result = self.cursor.execute(f"SELECT rest FROM orders_history WHERE user_id={user_id}").fetchall()
             return result[-1]
+
+
+# ======================================================================================================================
+# ===== ТАБЛИЦА: client_rest_search =================================================================================================
+# ======================================================================================================================
+
+    def add_search_filters(self, user_id, filters):
+        with self.connection:
+            return self.cursor.execute("INSERT INTO client_rest_search (user_id, filters) VALUES (?, ?)", (user_id, filters))
+
+    def check_filters_exists(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM client_rest_search WHERE id=?", (user_id,)).fetchall()
+            return bool(len(result))
+
+    def set_search_filters(self, user_id, filters):
+        with self.connection:
+            self.cursor.execute("UPDATE client_rest_search SET filters=? WHERE id=?", (filters, user_id,)).fetchall()
+
+    def get_search_filters(self, user_id):
+        with self.connection:
+            result = self.cursor.execute("SELECT filters FROM client_rest_search WHERE user_id=?", (user_id,)).fetchall()
+            return result[0][0]
