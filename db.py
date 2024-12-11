@@ -1038,7 +1038,10 @@ class Database:
             result = self.cursor.execute(f"SELECT time FROM orders WHERE rest=? AND time LIKE '%{current_time}%'",
                                          (rest,)).fetchall()
             print(result)
-            return len(result[0][0])
+            if result:
+                return len(result[0][0])
+            else:
+                return 0
 
 # ======================================================================================================================
     # ===== ТАБЛИЦА: orders_history =================================================================================================
