@@ -1035,8 +1035,8 @@ class Database:
     def get_current_guests_count(self, rest):
         current_time = datetime.datetime.now().strftime("%Y-%m-%d")
         with self.connection:
-            result = self.cursor.execute("SELECT time FROM orders WHERE rest=? AND ? IN time",
-                                         (rest, current_time)).fetchall()
+            result = self.cursor.execute(f"SELECT time FROM orders WHERE rest=? AND time LIKE '%{current_time}%'",
+                                         (rest,)).fetchall()
             print(result)
             return len(result[0][0])
 
