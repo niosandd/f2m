@@ -232,7 +232,7 @@ async def waiter(message: types.Message):
 @dp.message_handler(commands=['boss_mldzh'])
 async def boss_mldzh(message: types.Message):
     user = message.from_user.id
-    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115]:
+    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115, 1324611166]:
         message_obj = await bot.send_message(
             chat_id=user,
             text="Введите пароль: ",
@@ -246,7 +246,7 @@ async def boss_mldzh(message: types.Message):
 @dp.message_handler(commands=['boss_bdb'])
 async def boss_bdb(message: types.Message):
     user = message.from_user.id
-    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115]:
+    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115, 1324611166]:
         message_obj = await bot.send_message(
             chat_id=user,
             text="Введите пароль: ",
@@ -260,7 +260,7 @@ async def boss_bdb(message: types.Message):
 @dp.message_handler(commands=['admin'])
 async def admin(message: types.Message):
     user = message.from_user.id
-    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115]:
+    if user in [375565156, 1004320969, 803124861, 6728666475, 1456241115, 1324611166]:
         message_obj = await bot.send_message(
             chat_id=user,
             text="Введите пароль: ",
