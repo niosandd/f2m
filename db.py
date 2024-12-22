@@ -1082,7 +1082,7 @@ class Database:
 
     def add_search_filters(self, user_id, filters):
         with self.connection:
-            return self.cursor.execute("INSERT INTO client_rest_search (user_id, filters) VALUES (?, ?)", (user_id, filters))
+            return self.cursor.execute("INSERT INTO client_rest_search (id, filters) VALUES (?, ?)", (user_id, filters))
 
     def check_filters_exists(self, user_id):
         with self.connection:
@@ -1095,5 +1095,5 @@ class Database:
 
     def get_search_filters(self, user_id):
         with self.connection:
-            result = self.cursor.execute("SELECT filters FROM client_rest_search WHERE user_id=?", (user_id,)).fetchall()
+            result = self.cursor.execute("SELECT filters FROM client_rest_search WHERE id=?", (user_id,)).fetchall()
             return result[0][0]
