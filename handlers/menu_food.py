@@ -590,6 +590,38 @@ async def kitchen_filters(call: types.CallbackQuery):
         reply_markup=buttons_search()
     )
 
+@dp.callback_query_handler(text_contains=f"filters_search")
+async def filters_search(call: types.CallbackQuery):
+    user = call.from_user.id
+    mode = db.get_users_mode(user)
+    filters = eval(db.get_search_filters(user))
+    if filters["Тип кухни"] == "Европейская" or filters["Средний чек"] == "3000":
+        rest = "Молодёжь:Москва, Сущёвская ул., 21, стр. 8"
+    else:
+        rest = "Блан де Блан:Москва, ул. Люсиновская, 36/50"
+    db.set_client_temp_rest(user, rest)
+    try:
+        if not db.check_rest_exists(rest):
+            db.add_rest(rest)
+        total_click_count = int(db.get_total_click_count(rest))
+        total_click_count += 1
+        db.set_total_click_count(rest, total_click_count)
+        last_check_time = db.get_last_check_time(rest)
+        if last_check_time == datetime.datetime.now().strftime("%Y-%m-%d"):
+            current_click_count = int(db.get_current_click_count(rest))
+            current_click_count += 1
+        else:
+            current_click_count = 1
+        db.set_current_click_count(rest, current_click_count)
+        db.set_last_check_time(rest, datetime.datetime.now().strftime("%Y-%m-%d"))
+    except Exception as e:
+        print(e)
+    db.set_client_temp_recommendation(user, None)
+    if db.check_basket_exists(user):
+        db.set_basket(user, "{}")
+    await bot.edit_message_text(chat_id=user, message_id=mode['id'], text=main.restaurant_info[data[0]],
+                                reply_markup=main.rec_key())
+
 
 token = ""
 
