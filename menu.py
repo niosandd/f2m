@@ -6,7 +6,7 @@ import json
 import random
 import pandas as pd
 
-def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
+def read_table(user, restaurant: str, category: str, mood: str, style: str, rec: str,
                blacklist: list, numb: int, price: int, g: int, first_dish_name: str or None):
     # Загружаем таблицу с меню
     df = pd.DataFrame(db.restaurants_get(restaurant), columns=[
@@ -44,7 +44,6 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
     '''
     df = df[df['Название ресторана'].str.contains(restaurant)]
     df = df[df['Настроение'].str.contains(mood)]
-    df = df[df['Стиль питания'].str.contains(style)]
     df = df.loc[df['Категория'] == category]
     df = df.values.tolist()
     if not len(df):
@@ -81,9 +80,13 @@ def read_table(restaurant: str, category: str, mood: str, style: str, rec: str,
                 if mood_name.strip() == mood:
                     min_order = min(min_order, int(mood_order))
         return min_order
-
     # Изменение в сортировке, передача rec_item в sort_by функцию
-    df_new = sorted(df, key=lambda x: sort_by(x))
+    ccal_user = db.get_client_ccal(user)
+    df2 = []
+    for e in df:
+        if float(e[5].split(';')[-1].split('Кк')[1].replace(',', '.')) < float(ccal_user):
+            df2.append(e)
+    df_new = sorted(df2, key=lambda x: sort_by(x))
     dishes = []
     if first_dish_name:
         first_dish = db.restaurants_get_by_name(restaurant, first_dish_name)
@@ -151,7 +154,7 @@ def get_dish(user: int):
         for item in recommendation:
             if category in item[0]:
                 first_dish = item[1]
-    return read_table(restaurant[0], category, mood, style, rec, blacklist, numb, price, g, first_dish)
+    return read_table(user, restaurant[0], category, mood, style, rec, blacklist, numb, price, g, first_dish)
 
 
 def check_blacklist_with_ai(blacklist, dish_ingredients):

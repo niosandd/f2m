@@ -193,6 +193,9 @@ def get_user_profile_text(user_id):
     style = db.get_client_style(user_id)
     blacklist = db.get_client_blacklist(user_id)
     whitelist = db.get_client_whitelist(user_id)
+    ccal = 'None'
+    if style == 'Диетическое':
+        ccal = db.get_client_ccal(user_id)
 
     # Устанавливаем значения по умолчанию, если данных нет или они равны None
 
@@ -209,6 +212,9 @@ def get_user_profile_text(user_id):
         if not (style and style != 'None') or style == 'Стандартное':
             style = 'Стандартный 🥘'
             db.set_client_style(user_id, 'Стандартное')
+        if not (ccal and ccal != 'None') and style == 'Диетическое':
+            ccal = '-'
+            db.get_client_ccal(user_id)
         if not (blacklist and blacklist != 'None') or blacklist == "Пусто":
             blacklist = 'пусто ⭕️'
             db.set_client_blacklist(user_id, 'Пусто')
@@ -230,6 +236,13 @@ def get_user_profile_text(user_id):
         age = "26-35"
     elif age == "45":
         age = "36-45"
+
+    if ccal == 300:
+        ccal = 'До 300'
+    elif ccal == 500:
+        ccal = 'До 500'
+    elif ccal == 700:
+        ccal = 'До 700'
     emojis = {
         "Мужчина": "🙋🏻‍♂",
         "Женщина": "🙋🏻‍♀",
@@ -239,34 +252,68 @@ def get_user_profile_text(user_id):
         "Веганство": "🥜",
         "Сыроедение": "🥦"
     }
-    if sex in emojis and style in emojis:
-        message_text = (
-            f"<b>Твоя анкета 📃</b>\n\n"
-            f"<b>——— Пол ———</b>\n"
-            f"{sex} {emojis[sex]}\n\n"
-            f"<b>——— Возраст ———</b>\n"
-            f"{age}\n\n"
-            f"<b>——— Стиль питания ———</b>\n"
-            f"{style} {emojis[style]}\n\n"
-            f"<b>——— НЕ ЕШЬ ———</b>\n"
-            f"{blacklist}\n\n"
-            f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
-            f"{whitelist}"
-        )
+    if ccal != 'None':
+        if sex in emojis and style in emojis:
+            message_text = (
+                f"<b>Твоя анкета 📃</b>\n\n"
+                f"<b>——— Пол ———</b>\n"
+                f"{sex} {emojis[sex]}\n\n"
+                f"<b>——— Возраст ———</b>\n"
+                f"{age}\n\n"
+                f"<b>——— Стиль питания ———</b>\n"
+                f"{style} {emojis[style]}\n\n"
+                f"<b>——— Калораж каждого блюда ———</b>\n"
+                f"{ccal}\n\n"
+                f"<b>——— НЕ ЕШЬ ———</b>\n"
+                f"{blacklist}\n\n"
+                f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
+                f"{whitelist}"
+            )
+        else:
+            message_text = (
+                f"<b>Твоя анкета 📃</b>\n\n"
+                f"<b>——— Пол ———</b>\n"
+                f"{sex}\n\n"
+                f"<b>——— Возраст ———</b>\n"
+                f"{age}\n\n"
+                f"<b>——— Стиль питания ———</b>\n"
+                f"{style}\n\n"
+                f"<b>——— Калораж каждого блюда ———</b>\n"
+                f"{ccal}\n\n"
+                f"<b>——— НЕ ЕШЬ ———</b>\n"
+                f"{blacklist}\n\n"
+                f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
+                f"{whitelist}")
+
     else:
-        message_text = (
-            f"<b>Твоя анкета 📃</b>\n\n"
-            f"<b>——— Пол ———</b>\n"
-            f"{sex}\n\n"
-            f"<b>——— Возраст ———</b>\n"
-            f"{age}\n\n"
-            f"<b>——— Стиль питания ———</b>\n"
-            f"{style}\n\n"
-            f"<b>——— НЕ ЕШЬ ———</b>\n"
-            f"{blacklist}\n\n"
-            f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
-            f"{whitelist}"
-        )
+        if sex in emojis and style in emojis:
+            message_text = (
+                f"<b>Твоя анкета 📃</b>\n\n"
+                f"<b>——— Пол ———</b>\n"
+                f"{sex} {emojis[sex]}\n\n"
+                f"<b>——— Возраст ———</b>\n"
+                f"{age}\n\n"
+                f"<b>——— Стиль питания ———</b>\n"
+                f"{style} {emojis[style]}\n\n"
+                f"<b>——— НЕ ЕШЬ ———</b>\n"
+                f"{blacklist}\n\n"
+                f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
+                f"{whitelist}"
+            )
+        else:
+            message_text = (
+                f"<b>Твоя анкета 📃</b>\n\n"
+                f"<b>——— Пол ———</b>\n"
+                f"{sex}\n\n"
+                f"<b>——— Возраст ———</b>\n"
+                f"{age}\n\n"
+                f"<b>——— Стиль питания ———</b>\n"
+                f"{style}\n\n"
+                f"<b>——— НЕ ЕШЬ ———</b>\n"
+                f"{blacklist}\n\n"
+                f"<b>——— ПРЕДПОЧИТАЕШЬ ———</b>\n"
+                f"{whitelist}"
+            )
     return message_text
 
 
@@ -714,7 +761,6 @@ def generate_recommendation(user):
         'Граммы',
         'Простые ингредиенты'
     ])
-
     df = df[df['Название ресторана'].str.contains(restaurant)]
     df = df[df['Настроение'].str.contains(mood)]
     df = df[df['Стиль питания'].str.contains(style)]
@@ -804,7 +850,6 @@ async def food_rec2(user, data):
     mode = db.get_users_mode(user)
     rest_name = db.get_client_temp_rest(user).split(':')[0]
     list_of_dishes = []
-
     if db.get_users_ban(user):
         return None
     db.set_client_temp_category(user, None)
@@ -826,7 +871,6 @@ async def food_rec2(user, data):
         photo_dir = 'Фудтумуд'
         all_files = {os.path.splitext(file)[0]: os.path.join(photo_dir, file) for file in os.listdir(photo_dir)}
         open_files = []
-
         for index, dish_name in enumerate(list_of_dishes):
             if dish_name in all_files:
                 file_path = all_files[dish_name]

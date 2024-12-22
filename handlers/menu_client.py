@@ -12,13 +12,15 @@ from main import dp, bot, db, config, Tools
 import handlers.menu_food as m_food
 admin = config()['telegram']['admin']
 
-
+k = 0
 """
 Регистрация клиента
 """
 
 @dp.callback_query_handler(text_contains=f"client_register")
 async def client_register(call: types.CallbackQuery):
+    global k
+    k = 0
     user = call.from_user.id
     data = call.data.split('_')
     temp_rest = None
@@ -36,7 +38,6 @@ async def client_register(call: types.CallbackQuery):
         last_qr_time = db.get_client_last_qr_time(user)
         temp_state = db.get_client_temp_mood(user)
         db.del_client(user)
-
     if not db.check_client(user):
         try:
             db.add_client(user, call.from_user.username)
@@ -79,7 +80,13 @@ async def client_register(call: types.CallbackQuery):
                 db.set_client_style(user, 'Веганство')
             if data[3] == 'raw':
                 db.set_client_style(user, 'Сыроедение')
-
+        elif data[2] == 'ccal':
+            if data[3] == '300':
+                db.set_client_ccal(user, 300)
+            if data[3] == '500':
+                db.set_client_ccal(user, 500)
+            if data[3] == '700':
+                db.set_client_ccal(user, 700)
     if db.get_client_sex(user) == 'None':
         message_obj = await bot.edit_message_text(
             chat_id=user,
@@ -118,6 +125,20 @@ async def client_register(call: types.CallbackQuery):
             reply_markup=buttons_client_00('style')
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_style')
+    elif db.get_client_ccal(user) == 'None' and db.get_client_style(user) == 'Диетическое':
+        k = 1
+        message_obj = await bot.edit_message_text(
+            chat_id=user,
+            message_id=call.message.message_id,
+            text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
+                 f"\n"
+                 f"▶ Вопрос 4/6:\n"
+                 f"\n"
+                 f"<b>Каллораж?</b>",
+            reply_markup=buttons_client_00('ccal')
+        )
+        db.set_users_mode(user, message_obj.message_id, 'client_register_ccal')
+
     elif call.data == 'client_register_ready':
         await bot.delete_message(user, call.message.message_id)
         message_obj = await bot.edit_message_text(
@@ -137,12 +158,14 @@ async def client_register(call: types.CallbackQuery):
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_e_ready')
     elif db.get_client_blacklist(user) == 'None' and call.data != 'client_register_empty_blacklist':
+        if db.get_client_ccal(user) != 'None':
+            k = 1
         message_obj = await bot.edit_message_text(
             chat_id=user,
             message_id=call.message.message_id,
             text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
-                    f"▶ Вопрос 4/5:\n"
+                    f"▶ Вопрос {4+k}/{5+k}:\n"
                     f"\n"
                     f"<b>Что ты не ешь?</b>\n"
                     f"\n"
@@ -152,6 +175,8 @@ async def client_register(call: types.CallbackQuery):
         )
         db.set_users_mode(user, message_obj.message_id, 'client_register_blacklist')
     elif db.get_client_whitelist(user) == 'None' or call.data == 'client_register_empty_blacklist':
+        if db.get_client_ccal(user) != 'None':
+            k = 1
         if call.data == 'client_register_empty_blacklist':
             db.set_client_blacklist(user, "Пусто")
         message_obj = await bot.edit_message_text(
@@ -159,7 +184,7 @@ async def client_register(call: types.CallbackQuery):
             message_id=call.message.message_id,
             text=f"<blockquote><b>🆔: Анкета поможет лучше понять тебя и твои вкусовые предпочтения! 🫶☺️</b></blockquote>\n"
                     f"\n"
-                    f"▶ Вопрос 5/5:\n"
+                    f"▶ Вопрос {5+k}/{5+k}:\n"
                     f"\n"
                     f"<b>А что ты предпочитаешь из продуктов?</b>\n"
                     f"\n"
@@ -226,6 +251,11 @@ def buttons_client_00(mode: str):
         menu.row(btn1, btn2)
         # menu.row(btn3, btn4)
         # menu.row(btn5)
+    elif mode == 'ccal':
+        btn1 = InlineKeyboardButton(text='< 300 ккал', callback_data='client_register_ccal_300')
+        btn2 = InlineKeyboardButton(text='< 500 ккал', callback_data='client_register_ccal_500')
+        btn3 = InlineKeyboardButton(text='< 700 ккал', callback_data='client_register_ccal_700')
+        menu.row(btn1, btn2, btn3)
 
     elif mode == 'blacklist':
         btn1 = InlineKeyboardButton(text="Пропустить вопрос",
@@ -240,7 +270,7 @@ def buttons_client_00(mode: str):
         menu.add(btn1)
 
     elif mode == 'ready':
-        btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data='food_mood')
+        btn1 = InlineKeyboardButton(text="Все так! ✅", callback_data='confirmation_of_the_questionnaire')
         btn2 = InlineKeyboardButton(text="Изменить анкету 📝", callback_data="client_register_again")
 
         menu.add(btn1)

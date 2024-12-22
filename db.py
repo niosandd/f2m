@@ -279,6 +279,14 @@ class Database:
                 (user_id,)).fetchall()
             return str(result[0][0])
 
+    # --- Ccal ---
+    def set_client_ccal(self, user_id: int, ccal: int):
+        with self.connection:
+            self.cursor.execute('UPDATE clients SET ccal=? WHERE id=?', (ccal, user_id))
+    def get_client_ccal(self, user_id):
+        with self.connection:
+            result = self.connection.execute("SELECT ccal FROM clients WHERE id = ?", (user_id,)).fetchall()
+            return str(result[0][0])
     # --- Blacklist ---
 
     def set_client_blacklist(self, user_id: int, blacklist: str):

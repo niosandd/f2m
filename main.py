@@ -310,10 +310,7 @@ async def kbzhu(message: types.Message):
     dish, length, numb = menu.get_dish(user)
     if db.get_users_mode(user)['key'] in ['food_category', 'send_dish', 'sostav', 'com', 'return_to_dishes']:
         await bot.delete_message(chat_id=user, message_id=mode['id'])
-        if dish['Ресторан'] == "Молодёжь":
-            message_obj = await bot.send_message(user, '📝КБЖУ на 100 г. :' + f"\n <i>{dish['Описание'].split(';')[1]}</i>\n", reply_markup=return_after_dish_info())
-        else:
-            message_obj = await bot.send_message(user,
+        message_obj = await bot.send_message(user,
                                                  f"📝КБЖУ блюда :\n <tg-spoiler><i>{dish['Описание'].split(';')[1]}</i></tg-spoiler>\n",
                                                  reply_markup=return_after_dish_info())
         db.set_users_mode(user, message_obj.message_id, 'kbzhu')
@@ -592,7 +589,6 @@ async def bot_message(message):
             db.set_client_temp_recommendation(user, None)
             if db.check_basket_exists(user):
                 db.set_basket(user, "{}")
-
             await bot.edit_message_text(chat_id=user, message_id=mode['id'], text=restaurant_info[data[0]], reply_markup=rec_key())
 
         if mode['key'] == "waiter_reg":
