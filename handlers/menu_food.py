@@ -10,6 +10,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
 from aiogram.utils.deep_linking import get_start_link
 
 from main import dp, bot, db, config
+import main
 
 from db import Database
 import menu
