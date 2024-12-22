@@ -503,23 +503,22 @@ def get_back():
 async def rest_recommendation(call: types.CallbackQuery):
     user = call.from_user.id
     db.set_users_mode(user, call.message.message_id, 'food_inline_handler_y')
-    message_obj = await bot.edit_message_text(
-        chat_id=user,
-        message_id=call.message.message_id,
-        text="Пока этот раздел в разработке. Выбери заведение из общего списка)",
-        reply_markup=InlineKeyboardMarkup().row(
-            InlineKeyboardButton(text="Список заведений 🔍", switch_inline_query_current_chat=''))
-    )
-    # if not db.check_filters_exists(user):
-    #     db.add_search_filters(user, str({"Тип кухни":"", "Средний чек":"" }))
-    # filters = db.get_search_filters(user)
     # message_obj = await bot.edit_message_text(
     #     chat_id=user,
     #     message_id=call.message.message_id,
-    #     text="Укажи параметры нужного тебе заведения:",
-    #     reply_markup=buttons_search()
+    #     text="Пока этот раздел в разработке. Выбери заведение из общего списка)",
+    #     reply_markup=InlineKeyboardMarkup().row(
+    #         InlineKeyboardButton(text="Список заведений 🔍", switch_inline_query_current_chat=''))
     # )
-    # db.set_users_mode(user, message_obj.message_id, 'rest_recommendation')
+    if not db.check_filters_exists(user):
+        db.add_search_filters(user, str({"Тип кухни":"", "Средний чек":"" }))
+    message_obj = await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text="Укажи параметры нужного тебе заведения и выбери вариант поиска:",
+        reply_markup=buttons_search()
+    )
+    db.set_users_mode(user, message_obj.message_id, 'rest_recommendation')
 
 
 def buttons_search():
@@ -530,6 +529,66 @@ def buttons_search():
     btn4 = InlineKeyboardButton(text="Поиск по геопозиции", callback_data="location_search")
     menu.add(btn1, btn2, btn3, btn4)
     return menu
+
+
+@dp.callback_query_handler(text_contains=f"kitchen_type_filter")
+async def kitchen_type_filter(call: types.CallbackQuery):
+    user = call.from_user.id
+    await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text="Выбери тип кухни:",
+        reply_markup=kitchen_types()
+    )
+
+
+def kitchen_types():
+    menu = InlineKeyboardMarkup(row_width=1)
+    btn1 = InlineKeyboardButton(text="Европейская", callback_data="kitchen_filters_euro")
+    btn2 = InlineKeyboardButton(text="Французская", callback_data="kitchen_filters_french")
+    menu.add(btn1, btn2)
+    return menu
+
+
+@dp.callback_query_handler(text_contains=f"average_bill_filter")
+async def average_bill_filter(call: types.CallbackQuery):
+    user = call.from_user.id
+    await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text="Выбери средний чек:",
+        reply_markup=average_bills()
+    )
+
+
+def average_bills():
+    menu = InlineKeyboardMarkup(row_width=1)
+    btn1 = InlineKeyboardButton(text="3000 рублей", callback_data="kitchen_filters_3000")
+    btn2 = InlineKeyboardButton(text="4000 рублей", callback_data="kitchen_filters_4000")
+    menu.add(btn1, btn2)
+    return menu
+
+
+@dp.callback_query_handler(text_contains=f"kitchen_filters")
+async def kitchen_filters(call: types.CallbackQuery):
+    user = call.from_user.id
+    data = call.data.split('_')
+    filters = eval(db.get_search_filters(user))
+    if data[-1] == "euro":
+        filters["Тип кухни"] = "Европейская"
+    elif data[-1] == "french":
+        filters["Тип кухни"] = "Французская"
+    elif data[-1] == "3000":
+        filters["Средний чек"] = "3000"
+    elif data[-1] == "4000":
+        filters["Средний чек"] = "4000"
+    db.set_search_filters(user, str(filters))
+    await bot.edit_message_text(
+        chat_id=user,
+        message_id=call.message.message_id,
+        text="Укажи параметры нужного тебе заведения и выбери вариант поиска:",
+        reply_markup=buttons_search()
+    )
 
 
 token = ""
