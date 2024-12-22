@@ -3,6 +3,7 @@ import random
 import pandas as pd
 import os
 import time
+import datetime
 
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton, \
@@ -620,7 +621,7 @@ async def filters_search(call: types.CallbackQuery):
     db.set_client_temp_recommendation(user, None)
     if db.check_basket_exists(user):
         db.set_basket(user, "{}")
-    await bot.edit_message_text(chat_id=user, message_id=mode['id'], text=main.restaurant_info[data[0]],
+    await bot.edit_message_text(chat_id=user, message_id=mode['id'], text=main.restaurant_info[rest.split(":")[0]],
                                 reply_markup=main.rec_key())
 
 
