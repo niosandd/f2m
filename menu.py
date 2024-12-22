@@ -84,8 +84,9 @@ def read_table(user, restaurant: str, category: str, mood: str, style: str, rec:
     ccal_user = db.get_client_ccal(user)
     df2 = []
     for e in df:
-        if float(e[5].split(';')[-1].split('Кк')[1].replace(',', '.')) < float(ccal_user):
-            df2.append(e)
+        if ccal_user != 'None':
+            if float(e[5].split(';')[-1].split('Кк')[1].replace(',', '.')) < float(ccal_user):
+                df2.append(e)
     df_new = sorted(df2, key=lambda x: sort_by(x))
     dishes = []
     if first_dish_name:
