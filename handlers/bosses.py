@@ -9,9 +9,9 @@ import handlers.auxiliary_functions as af
 
 def boss_menu():
     menu = InlineKeyboardMarkup()
-    btn1 = InlineKeyboardButton(text="СТОП-ЛИСТ", callback_data="boss_stop_list")
-    btn2 = InlineKeyboardButton(text="ОФИЦИАНТЫ", callback_data="boss_waiters_stat")
-    btn3 = InlineKeyboardButton(text="РЕКЛАМА", callback_data="boss_commercial")
+    btn1 = InlineKeyboardButton(text="⛔️СТОП-ЛИСТ", callback_data="boss_stop_list")
+    btn2 = InlineKeyboardButton(text="📝ОФИЦИАНТЫ", callback_data="boss_waiters_stat")
+    btn3 = InlineKeyboardButton(text="📶РЕКЛАМА", callback_data="boss_commercial")
     menu.add(btn1)
     menu.add(btn2)
     menu.add(btn3)

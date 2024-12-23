@@ -23,7 +23,7 @@ async def set_stop_list(user_id, actor, message_id=None):
         stop_list_text = ""
         for i in range(len(stop_list)):
             stop_list_text += af.ind_to_number(i + 1) + " " + stop_list[i] + "\n"
-        text = f'\n<b>Сейчас в стоп-листе:</b>' \
+        text = f'\n<b>⛔️ Сейчас в стоп-листе:</b>' \
                f'\n\n' \
                f'{stop_list_text}'
         if message_id:
