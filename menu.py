@@ -109,6 +109,8 @@ def read_table(user, restaurant: str, category: str, mood: str, style: str, rec:
             "Цена": first_dish[17],
             "Грамм": first_dish[18]
         })
+    whitelist = [ingredient.strip() for ingredient in db.get_client_whitelist(user_id).split(",")]
+    dishes_white = []
     for dish in df_new:
         dish_ingredients = [ingredient.strip() for ingredient in str(dish[19]).lower().split(',')]
         if set(blacklist) & set(dish_ingredients):
@@ -117,20 +119,37 @@ def read_table(user, restaurant: str, category: str, mood: str, style: str, rec:
         if dish[4] == first_dish_name:
             continue
 
-        dishes.append({
-            "Ресторан": dish[1],
-            "Адрес": dish[2],
-            "Категория": dish[3],
-            "Название": dish[4],
-            "Описание": dish[5],
-            "Ингредиенты": dish_ingredients,
-            "Стиль питания": dish[7],
-            "Настроение": mood,
-            "Ссылка": dish[9],
-            "Рейтинг": dish[14],
-            "Цена": dish[17],
-            "Грамм": dish[18]
-        })
+        if set(whitelist) & set(dish_ingredients):
+            dishes_white.append({
+                "Ресторан": dish[1],
+                "Адрес": dish[2],
+                "Категория": dish[3],
+                "Название": dish[4],
+                "Описание": dish[5],
+                "Ингредиенты": dish_ingredients,
+                "Стиль питания": dish[7],
+                "Настроение": mood,
+                "Ссылка": dish[9],
+                "Рейтинг": dish[14],
+                "Цена": dish[17],
+                "Грамм": dish[18]
+            })
+        else:
+            dishes.append({
+                "Ресторан": dish[1],
+                "Адрес": dish[2],
+                "Категория": dish[3],
+                "Название": dish[4],
+                "Описание": dish[5],
+                "Ингредиенты": dish_ingredients,
+                "Стиль питания": dish[7],
+                "Настроение": mood,
+                "Ссылка": dish[9],
+                "Рейтинг": dish[14],
+                "Цена": dish[17],
+                "Грамм": dish[18]
+            })
+    dishes = dishes_white + dishes
     # Возвращаем результат
     if len(dishes) > 0:
         if len(dishes) > numb:
