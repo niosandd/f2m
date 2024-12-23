@@ -619,7 +619,7 @@ async def bot_message(message):
             message_obj = await bot.edit_message_text(
                 chat_id=user,
                 message_id=mode['id'],
-                text="Выберите заведение: ",
+                text="🍽️ Выберите заведение: ",
                 reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton(text="🔎 Поиск кафе", switch_inline_query_current_chat=''))
             )
             db.set_users_mode(user, message_obj.message_id, 'admin_mode')
